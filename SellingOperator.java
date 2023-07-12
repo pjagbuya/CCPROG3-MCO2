@@ -5,7 +5,7 @@ import java.util.Map;
 import java.util.Scanner;
 
 /** This class represents a Selling Operator
-  * which bridges the user to interact with the Vending Machine Features
+  * which provides for selling of regular items only
   * through the use of text based prompt
   *
   * @author Paul Josef P. Agbuya
@@ -27,38 +27,21 @@ public class SellingOperator
     }
 
     
-	 
+	/**
+	 * Activates regular selling method immediately.
+	 *
+	 * @param duplicate		a duplicate set of the VM's current denominations	 
+	 * @param payment		the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
+	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
+     * @param order			the order object, contains the user's order
+	 */
 	public void sellingOperation(
 		Money duplicate,
 		Money payment,
 		Money change,
 		Order order )
-	{
-		Scanner sc = new Scanner(System.in);
-		String input;
-		
-		if( !(vm instanceof VM_Special) )
-			sellRegularItems( duplicate, payment, change, order );
-		else
-		{
-			System.out.print("Choose:\n [R] Regular Vending Feautures\n [S] Special Vending Features\n >> ");
-			input = sc.next();
-			if(input.equalsIgnoreCase("R"))
-				sellRegularItems( duplicate, payment, change, order );
-			else if(input.equalsIgnoreCase("S"))
-				sellSpecialItems( duplicate, payment, change, order );
-		}
-	}
+	{ sellRegularItems( duplicate, payment, change, order ); }
 	
-	
-	public void sellSpecialItems(
-		Money duplicate,
-		Money payment,
-		Money change,
-		Order order )
-	{
-		System.out.print("TEST: SPECIAL ITEM SOLD!\n");
-	}
 			
 	
 	/**
