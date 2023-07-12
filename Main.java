@@ -16,10 +16,8 @@ import java.util.InputMismatchException;
 
 public class Main
 {
-	
-	
 	/**
-	 * Determines all possible items in the program
+	 * Sets all non-special items within the universe of the program
 	 *
 	 */
 	public Main()
@@ -85,17 +83,11 @@ public class Main
 			if(vm == null)
 				break;
 			
-			/* Test a Vending Machine */     // assumes only Regular Vending Machine is available
-			//if( vm != null )
-			//{
-				vmDraw = new VM_Draw(vm);
-				vmDraw.drawAndSetVM();
-				maintenance.updateStockedInfos(vm);
-				System.out.println("\033[1;32mVENDING MACHINE CREATION SUCCESSFUL!\033[0m\n");
-			//}
-				
-			/* Features of the Vending Machine */
-			//if(vm != null)
+			vmDraw = new VM_Draw(vm);
+			vmDraw.drawAndSetVM();
+			maintenance.updateStockedInfos(vm);
+			System.out.println("\033[1;32mVENDING MACHINE CREATION SUCCESSFUL!\033[0m\n");
+
 			while(true) 
 			{	
 				System.out.print("\t\033[1;36m[V]\033[0m Vending Features\n\t\033[1;36m[M]\033[0m Maintenance Features\n\t\033[1;36m[C]\033[0m Create a New Vending Machine\n>> ");
