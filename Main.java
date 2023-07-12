@@ -48,7 +48,7 @@ public class Main
 		
 		Main mainHelp = new Main();
 		Maintenance maintenance = new Maintenance(Main.getPossibleItems());
-		SellingOperator sellingOperator;
+		SellingOperator sellingOperator = null;
 		Scanner sc = new Scanner(System.in);
 		String input;
 		String userHelp;
@@ -101,7 +101,10 @@ public class Main
 						vmDraw.updateVM(vm);
 						vmDraw.drawAndSetVM();
 					}
-					sellingOperator = new SellingOperator(vm);
+					if( vm instanceof VM_Special )
+						sellingOperator = new SpecialSellingOperator(vm);
+					else if( vm instanceof VM_Regular )
+						sellingOperator = new SellingOperator(vm);
 					sellingOperator.sellingOperation(duplicate, payment, change, order);
 				}
 				/* Maintenance Features */
