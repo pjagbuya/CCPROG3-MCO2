@@ -26,7 +26,42 @@ public class SellingOperator
         this.vm = vm;
     }
 
-    /**
+    
+	 
+	public void sellingOperation(
+		Money duplicate,
+		Money payment,
+		Money change,
+		Order order )
+	{
+		Scanner sc = new Scanner(System.in);
+		String input;
+		
+		if( !(vm instanceof VM_Special) )
+			sellRegularItems( duplicate, payment, change, order );
+		else
+		{
+			System.out.print("Choose:\n [R] Regular Vending Feautures\n [S] Special Vending Features\n >> ");
+			input = sc.next();
+			if(input.equalsIgnoreCase("R"))
+				sellRegularItems( duplicate, payment, change, order );
+			else if(input.equalsIgnoreCase("S"))
+				sellSpecialItems( duplicate, payment, change, order );
+		}
+	}
+	
+	
+	public void sellSpecialItems(
+		Money duplicate,
+		Money payment,
+		Money change,
+		Order order )
+	{
+		System.out.print("TEST: SPECIAL ITEM SOLD!\n");
+	}
+			
+	
+	/**
 	 * This method takes user's order and accepts their payment,
 	 * validates inputs,
 	 * and decides whether to proceed with transaction or not.
@@ -38,7 +73,7 @@ public class SellingOperator
 	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      * @param order			the order object, contains the user's order
 	 */
-	public void sellingOperation(
+	private void sellRegularItems(
 		Money duplicate,
 		Money payment,
 		Money change,
@@ -57,61 +92,55 @@ public class SellingOperator
 		double cashReservesTotal = 0;
 		double changeDue = 0;
 		
-
 		int calorieTotal = 0;
 		
 
 		orderConfirmed = true; // intially true
 		transactionIsValid = true; // initially true
 
-		// order is made blank
+
+		/* order is made blank */
 		order = new Order();
 		
-		
-		// display VM's initial stock
+		/* display VM's initial stock */
 		vm.displayAllItems();
 		
 	
-		System.out.println();
-		System.out.println();
+		System.out.print("\n\n");
 
 	
-		// Prompt user payment
+		/* Asks user for their order */
 		promptOrder(order);
 
-		// Prompt user payment for this order
+		/* Asks user for their payment */
 		promptPayment(payment.getDenominations());
 		
 		
-		/* duplicating denomination hashmap of VM, while setting change denominations to zero */
+		/* duplicating cash reserves of VM, while setting change to zero */
 		for(String s : vm.getCurrentMoney().getDenominations().keySet()) {
 			duplicate.getDenominations().put(s, vm.getCurrentMoney().getDenominations().get(s));
 			change.getDenominations().put(s, 0);
 		}
 		
+		/* calculates the total amount of cash reserves currently in the VM */
 		cashReservesTotal = vm.getCurrentMoney().getTotalMoney();
 		System.out.println("\nCash Reserves Total: " + FORMAT.format(cashReservesTotal) + " PHP");
 		
-		/* calculating payment total */
+		/* calculates payment total */
 		for(String s : payment.getDenominations().keySet())
 			paymentTotal += payment.getDenominations().get(s)*Money.getStrToVal().get(s);
 		
-		/* calculating order total */
+		/* calculates order total */
         orderTotal = order.getTotalCost();
 		
-		/* calculating calorie total */
+		/* calculates calorie total */
 		calorieTotal = order.getTotalCalories();
 		
-		
-		/* calculating total of cash reserves in the machine */
-		cashReservesTotal = vm.getCurrentMoney().getTotalMoney();
-		
-		/* calculating change due */
+		/* calculates change due */
 		changeDue = paymentTotal - orderTotal;
 		
 
-
-		/* display total of order, total of payment received, and change due */
+		/* display all transaction information */
 		System.out.println();
 		System.out.println("Order Total: " + orderTotal + " PHP");
 		System.out.println("Payment Received: " + paymentTotal + " PHP");
@@ -120,7 +149,7 @@ public class SellingOperator
 		
 		
 		
-		/* asks user to confirm order */
+		/* asks user to confirm or cancel order */
 		System.out.print("Continue with order (\033[1;33mEnter Y to confirm, any other key to discontinue order\033[0m)? : ");
 		input = sc.next();
 		if( input.equalsIgnoreCase("Y") && orderTotal != 0 )
@@ -129,54 +158,37 @@ public class SellingOperator
 			orderConfirmed = false;
 		
 		
-		
-		
-		/* checks whether transaction is valid */
-		System.out.println();
+		System.out.print("\n");
 
-		
+
 		/*checks whether a set of denominations can be released to meet a certain change amount */
 		changeIsPossible = deductChange(changeDue, duplicate.getDenominations());
 		
 		/* transaction validation */
         if( !hasEnoughStock(order) ) {
 			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202mm-ERROR: INSUFFICIENT STOCK\033[0m");
-		}
+			System.out.println("\033[1;38;5;202mm-ERROR: INSUFFICIENT STOCK\033[0m"); }
 		if( paymentTotal < orderTotal ) {
 			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: INSUFFICIENT PAYMENT\033[0m");
-		}
+			System.out.println("\033[1;38;5;202m-ERROR: INSUFFICIENT PAYMENT\033[0m"); }
 		if ( cashReservesTotal < orderTotal && !changeIsPossible ) {
 			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: NOT ENOUGH MONEY RESERVES\033[0m");
-		}
-		
+			System.out.println("\033[1;38;5;202m-ERROR: NOT ENOUGH MONEY RESERVES\033[0m"); }
 		if( changeDue >= 0 && !changeIsPossible ) {
 			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: CANNOT RETURN CHANGE, INSERT EXACT AMOUNT\033[0m");
-		}
-		
+			System.out.println("\033[1;38;5;202m-ERROR: CANNOT RETURN CHANGE, INSERT EXACT AMOUNT\033[0m"); }
 		if(orderTotal == 0)
 			transactionIsValid = true;
+		
 		/* decides whether to proceed with transaction or not */
 		if( transactionIsValid && orderConfirmed )
-		{
 			displayTransactionProceed(duplicate.getDenominations(), payment.getDenominations(), change.getDenominations(), order);
-		}
 		else
-		{
             displayFailedOrDiscontinue(orderConfirmed, transactionIsValid, payment.getDenominations(), change.getDenominations());
-		}
-		
 		
 		
 		vm.displayAllItems();
 		System.out.println();
-		
-		
-		/* recalculating total of cash reserves in the machine */
-		cashReservesTotal = vm.getCurrentMoney().getTotalMoney();
 		
 		
 		/* clearing payment tray */
@@ -185,20 +197,20 @@ public class SellingOperator
 		
 
 		/* display change */
-		System.out.println();
-		System.out.println("CHANGE RETURNED:");
+		System.out.println("\nCHANGE RETURNED:");
 		for(Map.Entry<String, Integer> m : change.getDenominations().entrySet() )
 		System.out.println(" " + m.getValue() + " " + m.getKey());
-		System.out.println("\n");
+		System.out.print("\n\n");
 		
 		sc = null;
 	}
 	
 	
+	
 
 	/**
-	 * Checks whether the machine has sufficient stock
-	 * for all the items in the order
+	 * Checks whether the VM has sufficient stock
+	 * of all ordered items
 	 *
 	 * @param order the item containing the list of items to be released from the VM,
 					including how many of each should be released
@@ -431,8 +443,7 @@ public class SellingOperator
 
 
     /**
-     * This helper method shows what happens when the transaction is proceeded due to valied
-     * order requests
+     * This helper method provides for when the transaction is valid and the user chooses to proceed with it.
 	 * 
      * @param duplicate		a duplicate set of the VM's current denominations	 
 	 * @param payment		the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
