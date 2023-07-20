@@ -1,7 +1,6 @@
 
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 /** This class represents a Special Selling Operator
@@ -18,12 +17,16 @@ public class SpecialSellingOperator extends SellingOperator
 	 * This constructor represent a Selling Operator that manages how
 	 * the flow of prompts and how the Vending machine would get affected
 	 * by such prompts
+	 *
+	 * Also sets up the ingredient hashmaps, detailing the stocks of each
 	 * 
 	 * @param vm the target vending machine for results and effects of this class
 	 */
     public SpecialSellingOperator(VM_Regular vm)
     {
         super(vm);
+		
+		recipeChecker = new RecipeChecker(vm);
     }
 
     
@@ -66,6 +69,83 @@ public class SpecialSellingOperator extends SellingOperator
 		Money change,
 		Order order )
 	{
-		System.out.print("TEST: SPECIAL ITEM SOLD!\n");
+		int chosenFlavor;
+		
+		if( recipeChecker.allAbsoluteBaseIngredientsAreInStock() )
+		{
+			chosenFlavor = promptFlavor();
+		}
+		else
+			System.out.println("\033[1;38;5;202m-NOT ALL ABSOLUTE BASE INGREDIENTS ARE IN STOCK!\033[0m");
 	}
+	
+	
+	
+	
+	/**
+	 * Ensures that user picks a flavor with a stock of at least 1
+	 *
+	 */
+	private int promptFlavor()
+	{
+		String input;
+		int chosenFlavor = 0;
+		int i;
+		int totalOfAllFlavorStock = 0;
+
+		Scanner sc;
+		
+		sc = new Scanner(System.in);
+		
+		LinkedHashMap<Integer, String> flavors = recipeChecker.getFlavors();
+		LinkedHashMap<Integer, Integer> flavorStock = recipeChecker.getFlavorStock();
+		
+		for( int k : flavorStock.keySet() )
+			totalOfAllFlavorStock += flavorStock.get(k);
+		
+		if( totalOfAllFlavorStock > 0 )
+			while(true)
+			try
+			{
+				System.out.print("Choose a flavor:\n");
+				/* displaying AVAILABLE flavors */
+				for( int k : flavors.keySet() )
+					if( flavorStock.get(k) > 0 )
+						System.out.print( " [" + k + "] " + flavors.get(k) );
+					
+				System.out.print(" >> ");
+				
+				input = sc.next();
+				
+				chosenFlavor = Integer.parseInt(input);
+				
+				
+				// only when selected slot num is within range, this will trigger to add that order
+				if( flavors.get(chosenFlavor) != null &&  flavorStock.get(chosenFlavor) > 0 )
+					break;
+				else
+					System.out.println("\033[1;38;5;202m-ERROR: FLAVOR NOT AVAILABLE\033[0m");
+			}
+			catch(NumberFormatException e)
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: NOT PARSABLE TO INT, Please enter slot number\033[0m");
+			}
+		else
+			System.out.println("\033[1;38;5;202m-NO FLAVOR AVAILABLE! PLAIN FLAVOR CHOSEN\033[0m");
+		
+		sc = null;
+		return chosenFlavor;
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public RecipeChecker getRecipeChecker() { return recipeChecker; }
+	
+	private RecipeChecker recipeChecker;
 }
