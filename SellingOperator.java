@@ -199,7 +199,7 @@ public class SellingOperator
 					including how many of each should be released
 	 * @return true if VM's stock contains all required items, false otherwise
 	 */
-	private boolean hasEnoughStock(Order order) {
+	protected boolean hasEnoughStock(Order order) {
 		int i;
 		VM_Slot[] slots = vm.getSlots();
 		LinkedHashMap<String, Integer> orders;
@@ -230,7 +230,7 @@ public class SellingOperator
 	 * @param duplicate a duplicate of the VM's cash reserves
 	 * @return true if deduction leads to zero or extremely close to zero, false otherwise
 	 */
-	private boolean deductChange(double amt, LinkedHashMap<String, Integer> duplicate)
+	protected boolean deductChange(double amt, LinkedHashMap<String, Integer> duplicate)
 	{
 
 		amt = Math.round(amt*100)/100.0;
@@ -308,7 +308,7 @@ public class SellingOperator
 	 * This helper method sets up the console based interaction with the user.
 	 * It would then setup his/her order depending on his/her comments
 	 * 
-	 * @param
+	 * @param order the ordered items
 	 */
 	private void promptOrder(Order order)
 	{	
@@ -362,7 +362,7 @@ public class SellingOperator
 	 * 
 	 * @param payment the payment where the user would store his/her denominations as payment
 	 */
-	private void promptPayment(LinkedHashMap<String, Integer> payment)
+	protected void promptPayment(LinkedHashMap<String, Integer> payment)
 	{
 		String input;
 		String inputQty;
@@ -407,7 +407,7 @@ public class SellingOperator
      * @param payment the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
      * @param change the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      */
-    private void displayFailedOrDiscontinue(boolean orderConfirmed, 
+    protected void displayFailedOrDiscontinue(boolean orderConfirmed, 
                                             boolean transactionIsValid, 
                                             LinkedHashMap<String, Integer> payment,
 		                                    LinkedHashMap<String, Integer> change)
@@ -433,7 +433,7 @@ public class SellingOperator
 	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      * @param order			the order object, contains the user's order
      */
-    private void displayTransactionProceed( LinkedHashMap<String, Integer> duplicate,
+    protected void displayTransactionProceed( LinkedHashMap<String, Integer> duplicate,
                                             LinkedHashMap<String, Integer> payment,
                                             LinkedHashMap<String, Integer> change,
                                             Order order)
