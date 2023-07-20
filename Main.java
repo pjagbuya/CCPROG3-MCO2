@@ -17,22 +17,23 @@ import java.util.InputMismatchException;
 public class Main
 {
 	/**
-	 * Sets all non-special items within the universe of the program
+	 * Sets all items within the universe of the program
 	 *
 	 */
 	public Main()
 	{
-		possibleItems.put("CHEESE", 0);
+		/* a value of 1 means the item is STANDALONE */
+		possibleItems.put("CHEESE", 1);
 		possibleItems.put("COCOA", 0);
 		possibleItems.put("CREAM", 0);
-		possibleItems.put("EGG", 0);
-		possibleItems.put("KANGKONG", 0);
-		possibleItems.put("MILK", 0);
+		possibleItems.put("EGG", 1);
+		possibleItems.put("KANGKONG", 1);
+		possibleItems.put("MILK", 1);
 		possibleItems.put("SALT", 0);
 		possibleItems.put("SUGAR", 0);
 		possibleItems.put("CORNSTARCH", 0);
-		possibleItems.put("TOFU", 0);
-		possibleItems.put("CHICKEN", 0);
+		possibleItems.put("TOFU", 1);
+		possibleItems.put("CHICKEN", 1);
 		possibleItems.put("BBQ", 0);
 		possibleItems.put("FLOUR", 0);
 	}
@@ -243,7 +244,7 @@ public class Main
 	
 	
 
-	/* a list of all possible non-special items in the universe of the program */
+	/* a list of all possible items in the universe of the program */
 	private static LinkedHashMap<String, Integer> possibleItems = new LinkedHashMap<String, Integer>();
 }
 
