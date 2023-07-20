@@ -14,9 +14,11 @@ public class VM_Factory
 	VM_Regular vm = null;
 	int noOfSlots;
 	int noOfItems; // no. of items PER SLOT
+	int nOfInitialStandaloneItems;
 	int qty;
 	double amt;
 	int i;
+	int j;
 
 	/* inventory of VM straight out of the factory */ 
 	LinkedHashMap<String, Integer> initialStock = null;
@@ -95,8 +97,13 @@ public class VM_Factory
 				while(true)
 				try
 				{
-					/* Prevents factory from adding more item types than slots */
-					if(vm.getSlots().length == initialStock.size())
+					nOfInitialStandaloneItems = 0;
+					for( String s : initialStock.keySet() )
+						if( Main.getPossibleItems().get(s) != null &&  Main.getPossibleItems().get(s) == 1 )
+							nOfInitialStandaloneItems++;
+					
+					/* Prevents factory from adding more STANDALONE item types than regular slots (which are reserved for standalone items) */
+					if(vm.getSlots().length == nOfInitialStandaloneItems)
 						break;
 
 					System.out.print("Specify initial stocks, \033[1;32m<name> <number>\033[0m "+ userHelp + "\n>> ");
@@ -109,7 +116,7 @@ public class VM_Factory
 								
 					if(qty >= 0)
 						if( possibleItems.get( input.toUpperCase() ) != null )
-							initialStock.put(input, qty);
+							initialStock.put( input.toUpperCase(), qty );
 						else
 							System.out.println("\033[1;38;5;202m-ERROR: UNKNOWN ITEM CLASS\033[0m");		
 					else
@@ -151,11 +158,23 @@ public class VM_Factory
 				
 				/* Initializing Vending Machine Stocks */
 				i = 0;
+				j = 0;
 				if( initialStock.size() > 0 )
 				for( String s : initialStock.keySet() )
 				{	
-					vm.addItemStock(s, i, initialStock.get(s));
-					i++;
+					if( Main.getPossibleItems().get(s) == 1 )
+					{
+						vm.addItemStock(s, i, initialStock.get(s));
+						i++;
+					}
+					else
+						if( vm instanceof VM_Special )
+						{
+							vm.addItemStock(s, j, initialStock.get(s));
+							j++;
+						}
+						else
+							System.out.println("\033[1;38;5;202m-NOTE: A NON-STANDALONE ITEM WAS NOT ADDED TO VM_Regular!\033[0m");
 				}
 					
 				/* Initializing Vending Machine Cash Reserves */
