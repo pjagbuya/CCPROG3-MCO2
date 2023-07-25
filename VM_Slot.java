@@ -2,13 +2,13 @@ import java.util.Scanner;
 
 
 
-/** The class VM_Slot represents a slot of the VM
+/** The class VM_Slot represents an abstract slot of the VM
   *
   * @author Paul Josef P. Agbuya
   * @author Vince Kenneth D. Rojo
   * @version 1.0
   */
-public class VM_Slot {
+public abstract class VM_Slot {
 
 
     /**
@@ -19,13 +19,13 @@ public class VM_Slot {
      */
     public VM_Slot(int capacity){
 
-        storedProfit = 0;
+        storedProfit = 0.0;
         slotItemName = null;
         item = null;
 		
         slotItemStock = 0;
 		slotItemSold = 0;
-
+		
         if(capacity >= 10)
             MAX = capacity;
         else
@@ -119,9 +119,9 @@ public class VM_Slot {
 	public double computePartialCost(int qty) 
     {
         double sum = 0;
-        sum = item.getItemPrice() * qty;
+		if(item != null)
+			sum = item.getItemPrice() * qty;
         return sum;
-
 	}
 
 	
@@ -302,7 +302,10 @@ public class VM_Slot {
      * @param amt the new price of the item
 
      */
-	public void repriceItem(double amt) {
+	public void repriceItem(double amt)
+	{
+		if(amt < 0.5) // minimum price of an item is 50 Cents
+			amt = 0.5;
 		item.setPrice(amt);
 	}
 	
@@ -380,7 +383,6 @@ public class VM_Slot {
         sc = null;
     }
 	
-
 	
     /** the item held by this slot */
     private VM_Item item;
