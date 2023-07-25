@@ -19,11 +19,10 @@ public class SellingOperator
 	 * the flow of prompts and how the Vending machine would get affected
 	 * by such prompts
 	 * 
-	 * @param vm the target vending machine for results and effects of this class
 	 */
-    public SellingOperator(VM_Regular vm)
+    public SellingOperator()
     {
-        this.vm = vm;
+		
     }
 
     
@@ -36,11 +35,12 @@ public class SellingOperator
      * @param order			the order object, contains the user's order
 	 */
 	public void sellingOperation(
+		VM_Regular vm,
 		Money duplicate,
 		Money payment,
 		Money change,
 		Order order )
-	{ sellRegularItems( duplicate, payment, change, order ); }
+	{ sellRegularItems( vm, duplicate, payment, change, order ); }
 	
 			
 	
@@ -57,6 +57,7 @@ public class SellingOperator
      * @param order			the order object, contains the user's order
 	 */
 	private void sellRegularItems(
+		VM_Regular vm,
 		Money duplicate,
 		Money payment,
 		Money change,
@@ -93,7 +94,7 @@ public class SellingOperator
 
 	
 		/* Asks user for their order */
-		promptOrder(order);
+		promptOrder(vm, order);
 
 		/* Asks user for their payment */
 		promptPayment(payment.getDenominations());
@@ -148,7 +149,7 @@ public class SellingOperator
 		changeIsPossible = deductChange(changeDue, duplicate.getDenominations());
 		
 		/* transaction validation */
-        if( !hasEnoughStock(order) ) {
+        if( !hasEnoughStock(vm, order) ) {
 			transactionIsValid = false;
 			System.out.println("\033[1;38;5;202mm-ERROR: INSUFFICIENT STOCK\033[0m"); }
 		if( paymentTotal < orderTotal ) {
@@ -165,7 +166,7 @@ public class SellingOperator
 		
 		/* decides whether to proceed with transaction or not */
 		if( transactionIsValid && orderConfirmed )
-			displayTransactionProceed(duplicate.getDenominations(), payment.getDenominations(), change.getDenominations(), order);
+			displayTransactionProceed(vm, duplicate.getDenominations(), payment.getDenominations(), change.getDenominations(), order);
 		else
             displayFailedOrDiscontinue(orderConfirmed, transactionIsValid, payment.getDenominations(), change.getDenominations());
 		
@@ -199,7 +200,7 @@ public class SellingOperator
 					including how many of each should be released
 	 * @return true if VM's stock contains all required items, false otherwise
 	 */
-	protected boolean hasEnoughStock(Order order) {
+	protected boolean hasEnoughStock(VM_Regular vm, Order order) {
 		int i;
 		VM_Slot[] slots = vm.getSlots();
 		LinkedHashMap<String, Integer> orders;
@@ -310,7 +311,7 @@ public class SellingOperator
 	 * 
 	 * @param order the ordered items
 	 */
-	private void promptOrder(Order order)
+	private void promptOrder(VM_Regular vm, Order order)
 	{	
 		String input;
 		String inputQty;
@@ -343,7 +344,7 @@ public class SellingOperator
 				else
 				{
 					order.getPendingOrder().remove(slots[slotNum-1].getSlotItemName());
-					System.out.println("\033[1;38;5;202m-ERROR: ORDERED ITEM NOT IN SUFFICENT STOCK/ITEM NAME DOES NOT MATCH. ENTER A DIFF. ITEM/QUANTITY\033[0m");
+					System.out.println("\033[1;38;5;202m-ERROR: INSUFFICENT STOCK OR NO SLOT HOLDS THIS ITEM. ENTER A DIFF. SLOT NUM/QUANTITY.\033[0m");
 				}
 			else
 				System.out.println("\033[1;38;5;202m-ERROR: SLOT NUM OUT OF BOUNDS\033[0m");
@@ -433,10 +434,12 @@ public class SellingOperator
 	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      * @param order			the order object, contains the user's order
      */
-    protected void displayTransactionProceed( LinkedHashMap<String, Integer> duplicate,
-                                            LinkedHashMap<String, Integer> payment,
-                                            LinkedHashMap<String, Integer> change,
-                                            Order order)
+    protected void displayTransactionProceed(
+		VM_Regular vm,
+		LinkedHashMap<String, Integer> duplicate,
+        LinkedHashMap<String, Integer> payment,
+        LinkedHashMap<String, Integer> change,
+        Order order)
     {
 
         VM_Slot[] slots;
@@ -455,10 +458,16 @@ public class SellingOperator
 
                     // Check max amount should be dispensed if order was greater than 10
                     if(currAmt > slots[i].getMAX())
+					{
                         System.out.println("Dispensing: " +  slots[i].getMAX() + " \033[1;33m" + slots[i].getSlotItemName() + "\033[0m");
+						slots[i].releaseStock( currAmt );
+					}
                     // Dispenses the item amount wished
                     else
+					{
                         System.out.println("Dispensing: " +  currAmt + " \033[1;33m" + slots[i].getSlotItemName() + "\033[0m");
+						slots[i].releaseStock( currAmt );
+					}
                 }
                     
         vm.releaseStock(order);
@@ -488,6 +497,4 @@ public class SellingOperator
 
     /** Format constant that would help format labels of each item prices or computations*/
 	private static final DecimalFormat FORMAT = new DecimalFormat("0.00");
-    /** The Vending machine that will be targeted by the changes and occurences of this selling operator */
-    private VM_Regular vm;
 }
