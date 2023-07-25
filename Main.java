@@ -104,10 +104,10 @@ public class Main
 						vmDraw.drawAndSetVM();
 					}
 					if( vm instanceof VM_Special )
-						sellingOperator = new SpecialSellingOperator(vm);
+						sellingOperator = new SpecialSellingOperator();
 					else if( vm instanceof VM_Regular )
-						sellingOperator = new SellingOperator(vm);
-					sellingOperator.sellingOperation(duplicate, payment, change, order);
+						sellingOperator = new SellingOperator();
+					sellingOperator.sellingOperation( vm, duplicate, payment, change, order);
 				}
 				/* Maintenance Features */
 				else if(input.equalsIgnoreCase("M"))
