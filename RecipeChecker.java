@@ -46,11 +46,13 @@ public class RecipeChecker
 		/* lists down how much stock is available for each absolute base ingredient */
 		absoluteBaseIngredientStock = new LinkedHashMap<Integer, Integer>();
 		for(i = 0; i < slots.length; i++)
-			if( reversedAbsoluteBaseIngredients.get( slots[i].getSlotItemName() ) != null )
-				absoluteBaseIngredientStock.put( reversedAbsoluteBaseIngredients.get( slots[i].getSlotItemName() ), slots[i].getSlotItemStock() );
+			if( slots[i].getSlotItemName() != null &&
+				reversedAbsoluteBaseIngredients.get( slots[i].getSlotItemName().toUpperCase() ) != null )
+				absoluteBaseIngredientStock.put( reversedAbsoluteBaseIngredients.get( slots[i].getSlotItemName().toUpperCase() ), slots[i].getSlotItemStock() );
 		for(i = 0; i < specialSlots.length; i++)
-			if( reversedAbsoluteBaseIngredients.get( specialSlots[i].getSlotItemName() ) != null )
-				absoluteBaseIngredientStock.put( reversedAbsoluteBaseIngredients.get( specialSlots[i].getSlotItemName() ), specialSlots[i].getSlotItemStock() );
+			if( slots[i].getSlotItemName() != null &&
+				reversedAbsoluteBaseIngredients.get( specialSlots[i].getSlotItemName().toUpperCase() ) != null )
+				absoluteBaseIngredientStock.put( reversedAbsoluteBaseIngredients.get( specialSlots[i].getSlotItemName().toUpperCase() ), specialSlots[i].getSlotItemStock() );
 		
 		
 		
@@ -71,11 +73,13 @@ public class RecipeChecker
 			flavorStock.put( k, 0 );
 		flavorStock.put( 1, 99999999 ); // sets "stock" of Plain flavor (no flavor!)
 		for(i = 0; i < slots.length; i++)
-			if( reversedFlavors.get( slots[i].getSlotItemName() ) != null )
-				flavorStock.put( reversedFlavors.get( slots[i].getSlotItemName() ), slots[i].getSlotItemStock() );
+			if( slots[i].getSlotItemName() != null &&
+				reversedFlavors.get( slots[i].getSlotItemName().toUpperCase() ) != null )
+				flavorStock.put( reversedFlavors.get( slots[i].getSlotItemName().toUpperCase() ), slots[i].getSlotItemStock() );
 		for(i = 0; i < specialSlots.length; i++)
-			if( reversedFlavors.get( specialSlots[i].getSlotItemName() ) != null )
-				flavorStock.put( reversedFlavors.get( specialSlots[i].getSlotItemName() ), specialSlots[i].getSlotItemStock() );
+			if( slots[i].getSlotItemName() != null &&
+				reversedFlavors.get( specialSlots[i].getSlotItemName().toUpperCase() ) != null )
+				flavorStock.put( reversedFlavors.get( specialSlots[i].getSlotItemName().toUpperCase() ), specialSlots[i].getSlotItemStock() );
 	}
 	
 	
@@ -103,6 +107,7 @@ public class RecipeChecker
 	public LinkedHashMap<Integer, String> getFlavors() { return flavors; }
 	public LinkedHashMap<String, Integer> getReversedFlavors() { return reversedFlavors; }
 	public LinkedHashMap<Integer, Integer> getFlavorStock() { return flavorStock; }
+	public LinkedHashMap<Integer, String> getAbsoluteBaseIngredients() { return absoluteBaseIngredients; }
 	public LinkedHashMap<Integer, Integer> getAbsoluteBaseIngredientStock() { return absoluteBaseIngredientStock; }
 	
 	private LinkedHashMap<Integer, String> absoluteBaseIngredients;
