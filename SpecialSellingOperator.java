@@ -22,11 +22,9 @@ public class SpecialSellingOperator extends SellingOperator
 	 * 
 	 * @param vm the target vending machine for results and effects of this class
 	 */
-    public SpecialSellingOperator(VM_Regular vm)
-    {
-        super(vm);
+    public SpecialSellingOperator()
+    {		
 		
-		recipeChecker = new RecipeChecker(vm);
     }
 
     
@@ -39,20 +37,22 @@ public class SpecialSellingOperator extends SellingOperator
      * @param order			the order object, contains the user's order
 	 */
 	public void sellingOperation(
+		VM_Regular vm,
 		Money duplicate,
 		Money payment,
 		Money change,
 		Order order )
 	{
+		recipeChecker = new RecipeChecker(vm);
 		Scanner sc = new Scanner(System.in);
 		String input;
 		
 		System.out.print("Choose:\n [R] Regular Vending Feautures\n [S] Special Vending Features\n >> ");
 		input = sc.next();
 		if(input.equalsIgnoreCase("R"))
-			super.sellingOperation( duplicate, payment, change, order );
+			super.sellingOperation( vm, duplicate, payment, change, order );
 		else if(input.equalsIgnoreCase("S"))
-			sellSpecialItems( duplicate, payment, change, order );
+			sellSpecialItems( vm, duplicate, payment, change, order );
 	}
 	
 	/**
@@ -64,35 +64,133 @@ public class SpecialSellingOperator extends SellingOperator
      * @param order			the order object, contains the user's order
 	 */
 	public void sellSpecialItems(
+		VM_Regular vm,
 		Money duplicate,
 		Money payment,
 		Money change,
 		Order order )
-	{
-		int chosenFlavor;
-		
+	{	
+		recipeChecker = new RecipeChecker(vm);
+		/* Choosing a kankong chips flavor */
 		if( recipeChecker.allAbsoluteBaseIngredientsAreInStock() )
 		{
-			chosenFlavor = promptFlavor();
-		}
+			promptFlavor(vm, order);
+			promptIngredients( vm, order );
+		}	
 		else
 			System.out.println("\033[1;38;5;202m-NOT ALL ABSOLUTE BASE INGREDIENTS ARE IN STOCK!\033[0m");
 	}
 	
-	
+	private void promptIngredients(VM_Regular vm, Order order)
+	{
+		String ingredient;
+		String inputQty;
+		int slotNum;
+		int qty;
+		int i;
+		VM_Slot[] slots = null;
+		Scanner sc;
+		boolean ingredientExists = true; // assumed true
+		boolean ingredientIsAnotherFlavor = false; // assumed false
+		boolean ingredientHasSlot = false; // assumed false
+		boolean ingredientHasEnoughStock = false; // assumed false
+		
+		sc = new Scanner(System.in);
+
+		/* order request while loop prompting*/
+		while(true)
+		try
+		{
+			System.out.print("What would you like to add to the Special Item? (\033[1;33mEnter 'Y' to confirm/finish\033[0m)? \033[1;32m<item name> <qty>\033[0m\n>> ");
+			ingredient = sc.next();
+			if( ingredient.equalsIgnoreCase("Y") )
+				break;
+			inputQty = sc.next();
+			
+			
+		
+			/* INPUT VALIDATION */
+			
+			if( Main.getPossibleItems().get( ingredient.toUpperCase() ) == null )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: ITEM DOES NOT EXIST IN UNIVERSE\033[0m");
+				ingredientExists = false;
+			}
+			
+			
+			if( ingredientExists &&
+				order.getPendingOrder().get( ingredient.toUpperCase() ) == null &&
+				recipeChecker.getReversedFlavors().get( ingredient.toUpperCase() ) != null )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: CANNOT ADD OTHER FLAVORS\033[0m");
+				ingredientIsAnotherFlavor = true;
+			}
+			
+			
+			qty = Integer.parseInt(inputQty);
+			
+			/* Checks whether a slot holds enough of this item. */
+			if( ingredientExists )
+			{
+				if( Main.getPossibleItems().get( ingredient.toUpperCase() ) == 1 )
+					slots = vm.getSlots();
+				else
+					slots = ((VM_Special)vm).getSpecialSlots();
+				for(i = 0; i < slots.length; i++)
+					if( slots[i].getSlotItemName() != null &&
+						slots[i].getSlotItemName().equalsIgnoreCase( ingredient ) )
+					{
+						ingredientHasSlot = true;
+						if( qty <= slots[i].getSlotItemStock() )
+							ingredientHasEnoughStock = true;
+					}
+			}
+			
+			/* display messages */
+			if( ingredientExists && !ingredientHasSlot )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: NO SLOT ACCOMODATES THIS INGREDIENT\033[0m");
+			}
+			if( ingredientExists && ingredientHasSlot && !ingredientHasEnoughStock )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: INSUFFICIENT STOCK\033[0m");
+			}
+			
+			
+			/* Decision */
+			if( ingredientExists && !ingredientIsAnotherFlavor && ingredientHasSlot && ingredientHasEnoughStock )
+			{
+				for(i = 0; i < slots.length; i++)
+					if( slots[i].getSlotItemName() != null &&
+						slots[i].getSlotItemName().equalsIgnoreCase( ingredient ) )
+						order.addOrder(slots[i], qty);
+				System.out.println("\033[1;32m-ADDED TO ORDER\033[0m");
+			}
+		}
+		catch(NumberFormatException e)
+		{
+			System.out.println("\033[1;38;5;202m-ERROR: NOT PARSABLE TO INT, Please enter slot number\033[0m");
+		}
+		
+		
+		
+		
+
+		sc = null;
+	}
 	
 	
 	/**
 	 * Ensures that user picks a flavor with a stock of at least 1
 	 *
 	 */
-	private int promptFlavor()
+	private void promptFlavor(VM_Regular vm, Order order)
 	{
 		String input;
 		int chosenFlavor = 0;
 		int i;
 		int totalOfAllFlavorStock = 0;
-
+		VM_Slot[] slots;
 		Scanner sc;
 		
 		sc = new Scanner(System.in);
@@ -111,7 +209,7 @@ public class SpecialSellingOperator extends SellingOperator
 				/* displaying AVAILABLE flavors */
 				for( int k : flavors.keySet() )
 					if( flavorStock.get(k) > 0 )
-						System.out.print( " [" + k + "] " + flavors.get(k) );
+						System.out.print( " [" + k + "] " + flavors.get(k) + "\n" );
 					
 				System.out.print(" >> ");
 				
@@ -133,8 +231,20 @@ public class SpecialSellingOperator extends SellingOperator
 		else
 			System.out.println("\033[1;38;5;202m-NO FLAVOR AVAILABLE! PLAIN FLAVOR CHOSEN\033[0m");
 		
+		/* adds flavor to Order */
+		if( !flavors.get(chosenFlavor).equalsIgnoreCase("PLAIN") )
+		{
+			if( Main.getPossibleItems().get( flavors.get(chosenFlavor) ) == 1 )
+				slots = vm.getSlots();
+			else
+				slots = ((VM_Special)vm).getSpecialSlots();
+			for(i = 0; i < slots.length; i++)
+				if( slots[i].getSlotItemName() != null &&
+					slots[i].getSlotItemName().equalsIgnoreCase( flavors.get(chosenFlavor) ) )
+					order.addOrder( slots[i], 1 );
+		}
+		
 		sc = null;
-		return chosenFlavor;
 	}
 	
 	
