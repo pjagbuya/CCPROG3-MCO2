@@ -20,13 +20,11 @@ public class VM_Special extends VM_Regular
 		
 		specialSlots = new VM_Slot[7]; // 7 different food items cannot be sold on their own
 		
+		if(item_max < 10)
+			item_max = super.getMaxITEMS();
+			
 		for (int i = 0; i < 7; i++)
-		{
-			if(item_max >= 10)
-				specialSlots[i] = new VM_Slot(item_max);
-			else
-				specialSlots[i] = new VM_Slot( super.getMaxITEMS() );
-		}
+			specialSlots[i] = new VM_SpecialSlot(item_max);
 	}
 	
 	
