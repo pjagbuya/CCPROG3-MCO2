@@ -24,15 +24,57 @@ public class Maintenance
     {
         ITEM_OPTIONS = possibleItems;
     }
-
+	
+	
+	public void restockItems(VM_Regular vm)
+	{
+		int i;
+		String input;
+		Scanner sc = new Scanner(System.in);
+		boolean anItemIsRestocked = false; // assumed false
+		
+		if( vm instanceof VM_Special )
+			while(true)
+			{
+				for(i = 0; i < ((VM_Special)vm).getSpecialSlots().length; i++)
+						System.out.print(
+							((VM_Special)vm).getSpecialSlots()[i].getSlotItemName() + " : " +
+							((VM_Special)vm).getSpecialSlots()[i].getSlotItemStock() + "\n");
+				System.out.print("Restock\n [R] Regular\n [S] Special\n [E] Exit\n >> ");
+				input = sc.next();
+				
+				if( input.equalsIgnoreCase("R") )
+				{
+					anItemIsRestocked = restockItems( vm.getSlots() );
+					break;
+				}
+				else if ( input.equalsIgnoreCase("S") )
+				{
+					anItemIsRestocked = restockItems( ((VM_Special)vm).getSpecialSlots() );
+					break;
+				}
+				else if( input.equalsIgnoreCase("E") )
+					break;
+				else
+					System.out.println("\033[1;38;5;202m-ERROR: NOT IN OPTIONS!\033[0m");
+			}
+		else
+			anItemIsRestocked = restockItems( vm.getSlots() );
+		
+		if( anItemIsRestocked )
+			updateStockedInfos(vm);
+			
+		sc = null;
+	}
 
     /**
 	 * Provides for manual restocking of the VM's sellable items. Keeps looping
      * and prompting the user of which item slot and how much of such would be restocked
 	 * 
 	 * @param vm the VM to restock
+	 * @return true when a restocking occurred, false otherwise
 	 */
-    public void restockItems(VM_Regular vm)
+    private boolean restockItems(VM_Slot[] slots)
     {
         int qty;
 		Scanner sc = new Scanner(System.in);
@@ -42,8 +84,6 @@ public class Maintenance
 		
         boolean anItemIsRestocked = false; // initially false
 		boolean slotNumOutOfBounds = false; // intially false
-
-        VM_Slot[] slots = vm.getSlots();
 
 
 		while(true)
@@ -70,7 +110,7 @@ public class Maintenance
 			{
 				if ( !anItemIsRestocked )
 				{
-					updateStockedInfos(vm); /* creates a new inventory record */
+					//updateStockedInfos(vm); /* creates a new inventory record */
 					anItemIsRestocked = true;
 				}
 				slots[slotNum-1].addItemStock(qty);
@@ -80,28 +120,68 @@ public class Maintenance
 		}
 		catch (NumberFormatException e)
 		{
-			System.out.println("\033[1;38;5;202m-ERROR: SLOT HAS NO ASSIGNED ITEM. ENTER A DIFF. SLOT NUM\033[0m");		
+			System.out.println("\033[1;38;5;202m-ERROR: NOT PARSABLE TO INT\033[0m");		
 		}
 		
 		sc = null;
-
+		return anItemIsRestocked;
     }
+
+
+	public void repriceItems(VM_Regular vm)
+	{
+		int i;
+		String input;
+		Scanner sc = new Scanner(System.in);
+		
+		if( vm instanceof VM_Special )
+			while(true)
+			{
+				for(i = 0; i < ((VM_Special)vm).getSpecialSlots().length; i++)
+						System.out.print(
+							((VM_Special)vm).getSpecialSlots()[i].getSlotItemName() + " : " +
+							((VM_Special)vm).getSpecialSlots()[i].computePartialCost(1) + "\n");
+				System.out.print("Reprice\n [R] Regular\n [S] Special\n [E] Exit\n >> ");
+				input = sc.next();
+				
+				if( input.equalsIgnoreCase("R") )
+				{
+					repriceItems( vm.getSlots() );
+					break;
+				}
+				else if ( input.equalsIgnoreCase("S") )
+				{
+					repriceItems( ((VM_Special)vm).getSpecialSlots() );
+					break;
+				}
+				else if( input.equalsIgnoreCase("E") )
+					break;
+				else
+					System.out.println("\033[1;38;5;202m-ERROR: NOT IN OPTIONS!\033[0m");
+			}
+		else
+			repriceItems( vm.getSlots() );
+			
+		sc = null;
+	}
+
 
     /**
 	 * Provides for repricing of the VM's items, via console prompting
 	 *
 	 * @param vm the VM whose items are to be replaced
 	 */
-	public void repriceItems(VM_Regular vm) 
+	private void repriceItems(VM_Slot[] slots) 
 	{
 		double amt;
+		int slotNum;
 		Scanner sc = new Scanner(System.in);
 		String input;
 		String inputAmt;
-
-		int slotNum;
-
-        VM_Slot[] slots = vm.getSlots();
+		boolean slotNumOutOfBounds = false; // assumed false
+		boolean slotHasName = true; // assumed true
+		boolean slotIsEmpty = false; // assumed false
+		
 
 		System.out.println("Our minimum price for an item is \033[1;33m50 cents (0.5)\033[0m");
 		while(true)
@@ -117,22 +197,34 @@ public class Maintenance
 			slotNum = Integer.parseInt(input);
 			amt = Double.parseDouble(inputAmt);
 			
-			// Ensure slot num given is positive
-			if(slotNum >= 1 && slotNum <= slots.length)
-				if( slots[slotNum-1].getSlotItemName() != null ) {
-
-					slots[slotNum-1].repriceItem(amt);
-				}
-				else
-					System.out.println("\033[1;38;5;202m-ERROR: SLOT DOES NOT HOLD THIS ITEM. ENTER A DIFF. SLOT NUM\033[0m");		
-			else
+			/* INPUT VALIDATION */
+			
+			/* Ensures that entered slot number is within bounds. */
+			if(slotNum < 1 || slotNum > slots.length)
+			{
 				System.out.println("\033[1;38;5;202m-ERROR: SLOT NUM OUT OF BOUNDS\033[0m");
+				slotNumOutOfBounds = true;
+			}
+			
+			/* Checks whether the slot is already associated with an item. */
+			if( !slotNumOutOfBounds && slots[slotNum-1].getSlotItemName() == null )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: SLOT HAS NO NAME. ENTER A DIFF. SLOT NUM\033[0m");
+				slotHasName = false;
+			}
+			
+			/* Checks whether slot is empty */
+			if( !slotNumOutOfBounds && slots[slotNum-1].getSlotItemStock() == 0 )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: SLOT IS EMPTY. NO ITEM TO REPRICE.\033[0m");
+				slotIsEmpty = true;
+			}
+			
+			/* Decision */
+			if( !slotNumOutOfBounds && slotHasName && !slotIsEmpty )
+				slots[slotNum-1].repriceItem(amt);
 		}	
 		catch (NumberFormatException e)
-		{
-			System.out.println("\033[1;38;5;202m-ERROR: SLOT DOES NOT HOLD THIS ITEM. ENTER A DIFF INPUT\033[0m");	
-		}
-		catch (InputMismatchException e)
 		{
 			System.out.println("\033[1;38;5;202m-ERROR: SLOT DOES NOT HOLD THIS ITEM. ENTER A DIFF INPUT\033[0m");	
 		}
@@ -209,13 +301,58 @@ public class Maintenance
 		
 		sc = null;
 	}
-
+	
+	
+	public void replaceItemStock(VM_Regular vm)
+	{
+		int i;
+		String input;
+		Scanner sc = new Scanner(System.in);
+		boolean stockIsReplaced = false; // assumed false
+		
+		if( vm instanceof VM_Special )
+			while(true)
+			{
+				for(i = 0; i < ((VM_Special)vm).getSpecialSlots().length; i++)
+						System.out.print(
+							((VM_Special)vm).getSpecialSlots()[i].getSlotItemName() + " : " +
+							((VM_Special)vm).getSpecialSlots()[i].getSlotItemStock() + "\n");
+				System.out.print("Replace/Fill In Stock\n [R] Regular\n [S] Special\n [E] Exit\n >> ");
+				input = sc.next();
+				
+				if( input.equalsIgnoreCase("R") )
+				{
+					stockIsReplaced = replaceItemStock( vm, vm.getSlots() );
+					break;
+				}
+				else if ( input.equalsIgnoreCase("S") )
+				{
+					stockIsReplaced = replaceItemStock( vm, ((VM_Special)vm).getSpecialSlots() );
+					break;
+				}
+				else if( input.equalsIgnoreCase("E") )
+					break;
+				else
+					System.out.println("\033[1;38;5;202m-ERROR: NOT IN OPTIONS!\033[0m");
+			}
+		else
+			stockIsReplaced = replaceItemStock( vm, vm.getSlots() );
+		
+		if( stockIsReplaced )
+			updateStockedInfos(vm);
+			
+		sc = null;
+	}
+	
+	
+	
     /**
 	 * Provides console based prompting replacing the items in a slot, or for filling up a slot with a null name
 	 *
      * @param vm the VM whose slots are to be replaced/filled in
+	 * @return true if a replacing/filling-in occurred, false otherwise
 	 */
-	public void replaceItemStock(VM_Regular vm)
+	private boolean replaceItemStock(VM_Regular vm, VM_Slot[] slots)
 	{
 		int i;
 		int qty;
@@ -226,8 +363,11 @@ public class Maintenance
 		String inputSlotNum;
 		boolean stockIsReplaced = false; // initially false
 		boolean sameNameExists = false; // initially false
-        VM_Slot[] slots = vm.getSlots();
-
+		boolean itemExists = true; // assumed true
+		boolean itemMatchesSlotType = false; // assumed false
+		boolean qtyIsPositive = true; // assumed true
+		boolean slotNumOutOfBounds = false; // assumed false
+		
 		while(true)
 		try
 		{
@@ -247,44 +387,80 @@ public class Maintenance
 			qty = Integer.parseInt(inputQty);
 			slotNum = Integer.parseInt(inputSlotNum);
 			
+			/* START OF INPUT VALIDATION */
+			
+			/* Ensures that each slot has a unique item. */
 			for(i = 0; i < slots.length; i++)
 				if(	slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase(input) &&
 					slots[i].getSlotItemStock() != 0)
 				{
-					System.out.println("-ERROR: SLOT WITH SAME NAME EXISTS");
+					System.out.println("-ERROR: SLOT WITH SAME ITEM EXISTS. RESTOCK INSTEAD.");
 					sameNameExists = true;
 				}
 			
+			/* Slot Number is Out Of Bounds. */
+			if( slotNum < 1 || slotNum > slots.length )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: SLOT NUM OUT OF BOUNDS\033[0m");
+				slotNumOutOfBounds = true;
+			}
 			
-			if(	Main.getPossibleItems().get(input.toUpperCase()) != null 	// If indicated item name corresponds to one of the item classes
-				&& qty > 0							
-				&& !sameNameExists)
+			/* Item is Not in the Universe of the Program. */
+			if( Main.getPossibleItems().get(input.toUpperCase()) == null )
+			{
+				System.out.println("-ERROR: ITEM DOES NOT EXIST IN THE UNIVERSE OF THE PROGRAM");
+				itemExists = false;
+			}
+			
+			/* Prevents user from adding Special Item to Regular Slot, and vice versa, */
+			if(	itemExists &&
+			  ( slots[0] instanceof VM_RegularSlot &&
+				Main.getPossibleItems().get(input.toUpperCase()) == 1	||
+				slots[0] instanceof VM_SpecialSlot &&
+				 Main.getPossibleItems().get(input.toUpperCase()) == 0	)	)
+			{
+				itemMatchesSlotType = true;
+			}
+			else if( itemExists )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: ATTEMPTING TO ADD SPECIAL ITEM TO REGULAR SLOT, OR VICE VERSA\033[0m");
+			}
+				
+			
+			/* Adding a zero or negative quantity of the item is not allowed. */
+			if( qty <= 0 )
+			{
+				System.out.println("\033[1;38;5;202m-ERROR: NON-POSITIVE QUANTITY\033[0m");
+				qtyIsPositive = false;
+			}
+			
+			/* Decision of whether to continue with stock replacement/filling-in */
+			if(	qtyIsPositive && !sameNameExists && itemExists && itemMatchesSlotType && !slotNumOutOfBounds )
 			{
 				stockIsReplaced = true;
-				vm.addItemStock(input, slotNum-1, qty);
-			}
-			else
-				System.out.println("\033[1;38;5;202m-ERROR: NON-EXISTENT CLASS/NON-POSITIVE QUANTITY\033[0m");
-				
+				vm.addItemStock(input, slotNum-1, qty);	
+			}	
 		}
 		catch(NumberFormatException e)
 		{
 			System.out.println("\033[1;38;5;202m-ERROR: INPUT MUST BE <DOUBLE> <INTEGER>\033[0m");
 		}
 		
-		if(stockIsReplaced)
-			updateStockedInfos(vm);
-		
 		sc = null;
+		
+		return stockIsReplaced;
 	}
+	
+	
 	/**
 	 * This method updates the stocked infos by instantiating a new Stocked info
      * It will also reset all slot stored Profit and Items sold
 	 *
 	 * @param vm the VM that will save a copy of its current inventory (as a VM_StockedInfo object)
 	 */
-	public void updateStockedInfos(VM_Regular vm) {
+	public void updateStockedInfos(VM_Regular vm)
+	{
 		int i;
 		VM_Slot[] slots;
 		vm.addStockInd();
@@ -372,6 +548,8 @@ public class Maintenance
 		
 		sc = null;
 	}
+	
+	
 	
 	/** the list of items that exist in the universe of the program */
 	private final LinkedHashMap<String, Integer> ITEM_OPTIONS;	
