@@ -83,6 +83,7 @@ public class Main
 			
 			if(vm == null)
 				break;
+	
 			
 			vmDraw = new VM_Draw(vm);
 			vmDraw.drawAndSetVM();
@@ -121,7 +122,7 @@ public class Main
 											"\t\033[1;36m[5]\033[0m Collect Money\n" +
 											"\t\033[1;36m[6]\033[0m Order History\n" +
 											"\t\033[1;36m[7]\033[0m Stocked Information\n" +
-											"\t\033[1;36m[8]\033[0m Exit to Test A Vending Machine\n" +
+											"\t\033[1;36m[8]\033[0m Exit\n" +
 											">> ");
 						input = sc.next();
 						if(input.equalsIgnoreCase("1"))
