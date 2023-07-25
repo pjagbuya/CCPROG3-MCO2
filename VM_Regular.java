@@ -33,9 +33,9 @@ public class VM_Regular {
 		for (int i = 0; i < nOfSlots; i++)
 		{
 			if(item_max >= 10)
-				slots[i] = new VM_Slot(item_max);
+				slots[i] = new VM_RegularSlot(item_max);
 			else
-				slots[i] = new VM_Slot(MAX_ITEMS);
+				slots[i] = new VM_RegularSlot(MAX_ITEMS);
 		}
 		currentMoney = new Money();
 		
@@ -229,7 +229,7 @@ public class VM_Regular {
 		VM_Slot[] slotsCopy = new VM_Slot[slots.length];
 		for (int i = 0; i < slots.length; i++) {
 			if(slots[i] != null && slots[i].getItem() != null)
-				slotsCopy[i] = new VM_Slot(slots[i]);  // using the copy constructor C
+				slotsCopy[i] = new VM_RegularSlot(slots[i]);  // using the copy constructor C
 		}
 		return slotsCopy;
 	}
