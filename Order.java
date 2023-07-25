@@ -41,7 +41,7 @@ public class Order
             return false;
         else
         {
-            pendingOrder.put(slot.getSlotItemName(), itemQty);
+            pendingOrder.put(slot.getSlotItemName().toUpperCase(), itemQty);
             totalCostOfOrder += slot.getItem().getItemPrice() * itemQty;
             totalCalories += slot.getItem().getItemCalories() * itemQty;
 
