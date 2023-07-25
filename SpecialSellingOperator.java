@@ -117,7 +117,7 @@ public class SpecialSellingOperator extends SellingOperator
 				ingredientExists = false;
 			}
 			
-			
+			/* Prevents user from adding other flavors */
 			if( ingredientExists &&
 				order.getPendingOrder().get( ingredient.toUpperCase() ) == null &&
 				recipeChecker.getReversedFlavors().get( ingredient.toUpperCase() ) != null )
