@@ -1,6 +1,7 @@
 
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.Scanner;
 
 /** This class represents a Special Selling Operator
@@ -70,15 +71,125 @@ public class SpecialSellingOperator extends SellingOperator
 		Money change,
 		Order order )
 	{	
+		Scanner sc = new Scanner(System.in);
+		String input;
+		boolean transactionIsValid = true; // initially true
+		boolean orderConfirmed = true; // intially true
+        double paymentTotal = 0;
+		double orderTotal = 0;
+		double cashReservesTotal = 0;
+		double changeDue = 0;
+		int calorieTotal = 0;
+		int i;
+		
 		recipeChecker = new RecipeChecker(vm);
-		/* Choosing a kankong chips flavor */
+		/* Choosing a Sepcial Item flavor */
+		/* All absolute base ingredients must
+		   be present in the minimum required amounts,
+		   otherwise the Special Item can never be created. */
 		if( recipeChecker.allAbsoluteBaseIngredientsAreInStock() )
 		{
-			promptFlavor(vm, order);
+			order = new Order();
+			
+			/* Adds absolute base ingredients to order. */
+			addAbsoluteBaseIngredients( vm, order );
+			
+			/* Customize the Special Item. */
+			promptFlavor( vm, order );
 			promptIngredients( vm, order );
+			
+			/* Payment */
+			promptPayment( payment.getDenominations() );
+			
+			/* creates a copy of the set of denominations currently in the VM */
+			duplicateDenominations( vm, duplicate, change );
+			
+			/* calculates the total amount of cash reserves currently in the VM */
+			cashReservesTotal = vm.getCurrentMoney().getTotalMoney();
+			
+			/* calculates payment total */
+			for(String s : payment.getDenominations().keySet())
+				paymentTotal += payment.getDenominations().get(s)*Money.getStrToVal().get(s);
+			
+			/* calculates order total */
+			orderTotal = order.getTotalCost();
+			
+			/* calculates calorie total */
+			calorieTotal = order.getTotalCalories();
+			
+			/* calculates change due */
+			changeDue = paymentTotal - orderTotal;
+			
+			
+			/* display all transaction information */
+			System.out.println();
+			System.out.println("\nCash Reserves Total: " + FORMAT.format(cashReservesTotal) + " PHP");
+			System.out.println("Order Total: " + orderTotal + " PHP");
+			System.out.println("Payment Received: " + paymentTotal + " PHP");
+			System.out.println("Change Due: " + changeDue + " PHP");
+			System.out.println("Calorie Total: " + calorieTotal + " kCal\n");
+			
+			
+			/* asks user to confirm or cancel order */
+			System.out.print("Continue with order (\033[1;33mEnter Y to confirm, any other key to discontinue order\033[0m)? : ");
+			input = sc.next();
+			if( input.equalsIgnoreCase("Y") && orderTotal != 0 )
+				orderConfirmed = true;
+			else
+				orderConfirmed = false;
+			System.out.print("\n");
+			
+			
+			/* TRANSACTION VALIDATION */
+			transactionIsValid = validateTransaction( vm, order, duplicate, paymentTotal, orderTotal, cashReservesTotal, changeDue );
+			
+			
+			/* decides whether to proceed with transaction or not */
+			if( transactionIsValid && orderConfirmed )
+				displayTransactionProceed(vm, duplicate.getDenominations(), payment.getDenominations(), change.getDenominations(), order);
+			else
+				displayFailedOrDiscontinue(orderConfirmed, transactionIsValid, payment.getDenominations(), change.getDenominations());
+			
+			
+			vm.displayAllItems();
+			System.out.println();
+			
+			
+			/* clearing payment tray */
+			for( String s : payment.getDenominations().keySet() )
+				payment.getDenominations().put(s, 0);
+			
+			
+			/* display change */
+			System.out.println("\nCHANGE RETURNED:");
+			for(Map.Entry<String, Integer> m : change.getDenominations().entrySet() )
+			System.out.println(" " + m.getValue() + " " + m.getKey());
+			System.out.print("\n\n");
+			
+			sc = null;
 		}	
 		else
 			System.out.println("\033[1;38;5;202m-NOT ALL ABSOLUTE BASE INGREDIENTS ARE IN STOCK!\033[0m");
+	}
+	
+	
+	private void addAbsoluteBaseIngredients(VM_Regular vm, Order order)
+	{
+		VM_Slot[] slots;
+		int i;
+		
+		/* Add absolute base ingredients to order. */
+		for( int k : recipeChecker.getAbsoluteBaseIngredients().keySet() )
+		{
+			if( Main.getPossibleItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
+				slots = vm.getSlots();
+			else
+				slots = ((VM_Special)vm).getSpecialSlots();
+			for(i = 0; i < slots.length; i++)
+				if( slots[i].getSlotItemName() != null &&
+					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) )
+					order.addOrder( slots[i], recipeChecker.getRequiredStock().get(k) );
+		}
 	}
 	
 	private void promptIngredients(VM_Regular vm, Order order)
@@ -90,10 +201,11 @@ public class SpecialSellingOperator extends SellingOperator
 		int i;
 		VM_Slot[] slots = null;
 		Scanner sc;
-		boolean ingredientExists = true; // assumed true
-		boolean ingredientIsAnotherFlavor = false; // assumed false
-		boolean ingredientHasSlot = false; // assumed false
-		boolean ingredientHasEnoughStock = false; // assumed false
+		boolean ingredientExists;
+		boolean ingredientIsAnotherFlavor;
+		boolean ingredientHasSlot;
+		boolean ingredientHasEnoughStock;
+		
 		
 		sc = new Scanner(System.in);
 
@@ -101,6 +213,11 @@ public class SpecialSellingOperator extends SellingOperator
 		while(true)
 		try
 		{
+			ingredientExists = true; // assumed true
+			ingredientIsAnotherFlavor = false; // assumed false
+			ingredientHasSlot = false; // assumed false
+			ingredientHasEnoughStock = false; // assumed false
+			
 			System.out.print("What would you like to add to the Special Item? (\033[1;33mEnter 'Y' to confirm/finish\033[0m)? \033[1;32m<item name> <qty>\033[0m\n>> ");
 			ingredient = sc.next();
 			if( ingredient.equalsIgnoreCase("Y") )
@@ -158,13 +275,18 @@ public class SpecialSellingOperator extends SellingOperator
 			
 			
 			/* Decision */
-			if( ingredientExists && !ingredientIsAnotherFlavor && ingredientHasSlot && ingredientHasEnoughStock )
+			if( ingredientExists &&
+				!ingredientIsAnotherFlavor &&
+				ingredientHasSlot &&
+				ingredientHasEnoughStock )
 			{
 				for(i = 0; i < slots.length; i++)
 					if( slots[i].getSlotItemName() != null &&
 						slots[i].getSlotItemName().equalsIgnoreCase( ingredient ) )
-						order.addOrder(slots[i], qty);
-				System.out.println("\033[1;32m-ADDED TO ORDER\033[0m");
+						if( order.addOrder(slots[i], qty) )
+							System.out.println("\033[1;32m-ADDED TO ORDER\033[0m");
+						else
+							System.out.println("\033[1;38;5;202m-ERROR: NOT ADDED TO ORDER\033[0m");
 			}
 		}
 		catch(NumberFormatException e)
@@ -231,7 +353,7 @@ public class SpecialSellingOperator extends SellingOperator
 		else
 			System.out.println("\033[1;38;5;202m-NO FLAVOR AVAILABLE! PLAIN FLAVOR CHOSEN\033[0m");
 		
-		/* adds flavor to Order */
+		/* adds flavor to Order, if it is not PLAIN */
 		if( !flavors.get(chosenFlavor).equalsIgnoreCase("PLAIN") )
 		{
 			if( Main.getPossibleItems().get( flavors.get(chosenFlavor) ) == 1 )
