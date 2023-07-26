@@ -18,7 +18,13 @@ public class RecipeChecker
 		absoluteBaseIngredients.put(1, "KANGKONG");
 		absoluteBaseIngredients.put(2, "FLOUR");
 		absoluteBaseIngredients.put(3, "CORNSTARCH");
-		absoluteBaseIngredients.put(3, "SALT");
+		absoluteBaseIngredients.put(4, "SALT");
+		
+		
+		/* Lists the required stock for each absolute base ingredient. */
+		requiredStock = new LinkedHashMap<Integer, Integer>();
+		for( int k : absoluteBaseIngredients.keySet() )
+			requiredStock.put( k , 1 );
 		
 		/* lists all kangkong chips flavors, whether they are available or not */
 		flavors = new LinkedHashMap<Integer, String>();
@@ -43,14 +49,17 @@ public class RecipeChecker
 			reversedAbsoluteBaseIngredients.put( absoluteBaseIngredients.get(k), k );
 		
 		
-		/* lists down how much stock is available for each absolute base ingredient */
+		/* Lists down how much stock is available for each absolute base ingredient. */
 		absoluteBaseIngredientStock = new LinkedHashMap<Integer, Integer>();
+		/* First sets all records of absolute base ingredients to 0. */
+		for( int k : absoluteBaseIngredients.keySet() )
+			absoluteBaseIngredientStock.put( k , 0 );
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
 				reversedAbsoluteBaseIngredients.get( slots[i].getSlotItemName().toUpperCase() ) != null )
 				absoluteBaseIngredientStock.put( reversedAbsoluteBaseIngredients.get( slots[i].getSlotItemName().toUpperCase() ), slots[i].getSlotItemStock() );
 		for(i = 0; i < specialSlots.length; i++)
-			if( slots[i].getSlotItemName() != null &&
+			if( specialSlots[i].getSlotItemName() != null &&
 				reversedAbsoluteBaseIngredients.get( specialSlots[i].getSlotItemName().toUpperCase() ) != null )
 				absoluteBaseIngredientStock.put( reversedAbsoluteBaseIngredients.get( specialSlots[i].getSlotItemName().toUpperCase() ), specialSlots[i].getSlotItemStock() );
 		
@@ -77,7 +86,7 @@ public class RecipeChecker
 				reversedFlavors.get( slots[i].getSlotItemName().toUpperCase() ) != null )
 				flavorStock.put( reversedFlavors.get( slots[i].getSlotItemName().toUpperCase() ), slots[i].getSlotItemStock() );
 		for(i = 0; i < specialSlots.length; i++)
-			if( slots[i].getSlotItemName() != null &&
+			if( specialSlots[i].getSlotItemName() != null &&
 				reversedFlavors.get( specialSlots[i].getSlotItemName().toUpperCase() ) != null )
 				flavorStock.put( reversedFlavors.get( specialSlots[i].getSlotItemName().toUpperCase() ), specialSlots[i].getSlotItemStock() );
 	}
@@ -95,7 +104,11 @@ public class RecipeChecker
 		boolean allAreInStock = true; // initially true
 		
 		for( int k : absoluteBaseIngredientStock.keySet() )
-			if( absoluteBaseIngredientStock.get(k) < 1 )
+		System.out.print( k + " : " + absoluteBaseIngredientStock.get(k) + "\n");
+
+
+		for( int k : absoluteBaseIngredientStock.keySet() )
+			if( absoluteBaseIngredientStock.get(k) < requiredStock.get(k) )
 				allAreInStock = false;
 			
 	
@@ -109,10 +122,13 @@ public class RecipeChecker
 	public LinkedHashMap<Integer, Integer> getFlavorStock() { return flavorStock; }
 	public LinkedHashMap<Integer, String> getAbsoluteBaseIngredients() { return absoluteBaseIngredients; }
 	public LinkedHashMap<Integer, Integer> getAbsoluteBaseIngredientStock() { return absoluteBaseIngredientStock; }
+	public LinkedHashMap<String, Integer> getReversedAbsoluteBaseIngredients() { return reversedAbsoluteBaseIngredients; }
+	public LinkedHashMap<Integer, Integer> getRequiredStock() { return requiredStock; }
 	
 	private LinkedHashMap<Integer, String> absoluteBaseIngredients;
 	private LinkedHashMap<String, Integer> reversedAbsoluteBaseIngredients;
 	private LinkedHashMap<Integer, Integer> absoluteBaseIngredientStock;
+	private LinkedHashMap<Integer, Integer> requiredStock;
 	
 	private LinkedHashMap<Integer, String> flavors;
 	private LinkedHashMap<String, Integer> reversedFlavors;
