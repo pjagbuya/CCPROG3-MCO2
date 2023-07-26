@@ -25,9 +25,7 @@ public class VM_Item {
     {
         itemName = name;
         itemPrice = price;
-        itemCalories = calories;
-        
-        
+        itemCalories = calories;   
     }
 
     
@@ -70,6 +68,8 @@ public class VM_Item {
 	public void setPrice(double amt) {
 		itemPrice = amt;	
 	}
+	
+	
 
 
     /**
@@ -87,7 +87,7 @@ public class VM_Item {
                
     }
 
-
+	
 	
 
     /** name of the item */
@@ -95,7 +95,7 @@ public class VM_Item {
 	/** price of the item, per piece */
     private double itemPrice;
     /** the amount of calories in this item */
-    private int itemCalories;
+    protected int itemCalories;
     /** Decimal format instance that prices will follow */
     private static final DecimalFormat FORMAT = new DecimalFormat("0.00");
 
