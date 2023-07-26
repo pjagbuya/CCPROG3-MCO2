@@ -77,6 +77,7 @@ public class Maintenance
     private boolean restockItems(VM_Slot[] slots)
     {
         int qty;
+		int i;
 		Scanner sc = new Scanner(System.in);
 		String input;
 		String inputQty;
@@ -113,7 +114,8 @@ public class Maintenance
 					//updateStockedInfos(vm); /* creates a new inventory record */
 					anItemIsRestocked = true;
 				}
-				slots[slotNum-1].addItemStock(qty);
+				for( i = 0; i < qty; i++ )
+					slots[slotNum-1].addItemStock( generateItem( slots[slotNum-1].getSlotItemName() ) );
 			}
 			else
 				System.out.println("\033[1;38;5;202m-ERROR: SLOT HAS NO ASSIGNED ITEM. ENTER A DIFF. SLOT NUM\033[0m");		
@@ -322,12 +324,12 @@ public class Maintenance
 				
 				if( input.equalsIgnoreCase("R") )
 				{
-					stockIsReplaced = replaceItemStock( vm, vm.getSlots() );
+					stockIsReplaced = replaceItemStock( vm.getSlots() );
 					break;
 				}
 				else if ( input.equalsIgnoreCase("S") )
 				{
-					stockIsReplaced = replaceItemStock( vm, ((VM_Special)vm).getSpecialSlots() );
+					stockIsReplaced = replaceItemStock( ((VM_Special)vm).getSpecialSlots() );
 					break;
 				}
 				else if( input.equalsIgnoreCase("E") )
@@ -336,7 +338,7 @@ public class Maintenance
 					System.out.println("\033[1;38;5;202m-ERROR: NOT IN OPTIONS!\033[0m");
 			}
 		else
-			stockIsReplaced = replaceItemStock( vm, vm.getSlots() );
+			stockIsReplaced = replaceItemStock( vm.getSlots() );
 		
 		if( stockIsReplaced )
 			updateStockedInfos(vm);
@@ -352,7 +354,7 @@ public class Maintenance
      * @param vm the VM whose slots are to be replaced/filled in
 	 * @return true if a replacing/filling-in occurred, false otherwise
 	 */
-	private boolean replaceItemStock(VM_Regular vm, VM_Slot[] slots)
+	private boolean replaceItemStock(VM_Slot[] slots)
 	{
 		int i;
 		int qty;
@@ -439,7 +441,8 @@ public class Maintenance
 			if(	qtyIsPositive && !sameNameExists && itemExists && itemMatchesSlotType && !slotNumOutOfBounds )
 			{
 				stockIsReplaced = true;
-				vm.addItemStock(input, slotNum-1, qty);	
+				for(i = 0; i < qty; i++)
+					slots[slotNum-1].addItemStock( generateItem( input ) );	
 			}	
 		}
 		catch(NumberFormatException e)
@@ -548,6 +551,59 @@ public class Maintenance
 		
 		sc = null;
 	}
+	
+	
+	/**
+	 * Generate more of a specified item
+	 *
+	 * @param s the name of the item to be added
+	 */
+	public VM_Item generateItem( String s )
+	{
+		VM_Item item = null;
+		
+		if( s.equalsIgnoreCase("Cheese") )
+			item = new Cheese("Cheese", 40.00, 15);
+							
+		else if( s.equalsIgnoreCase("Cocoa") )
+			item = new Cocoa("Cocoa", 20.00, 4);
+		
+		else if( s.equalsIgnoreCase("Cream") )
+			item = new Cream("Cream", 18.00, 5);
+							
+		else if( s.equalsIgnoreCase("Egg") )
+			item = new Egg("Egg", 12.00, 35);
+							
+		else if( s.equalsIgnoreCase("Kangkong") )
+			item = new Kangkong("Kangkong", 10.00, 2);
+							
+		else if( s.equalsIgnoreCase("Cornstarch") ) 
+			item = new Cornstarch("Cornstarch", 13.00, 2);
+							
+		else if( s.equalsIgnoreCase("Milk") )
+			item = new Milk("Milk", 99.00, 20);
+							
+		else if( s.equalsIgnoreCase("Tofu") )
+			item = new Tofu("Tofu", 5.00, 3);
+							
+		else if( s.equalsIgnoreCase("Salt") )
+			item = new Salt("Salt", 5.00, 1);
+							
+		else if( s.equalsIgnoreCase("Sugar") )
+			item = new Sugar("Sugar", 5.00, 30);
+							
+		else if( s.equalsIgnoreCase("Chicken") )
+			item = new Chicken("Chicken", 150.00, 42);
+							
+		else if( s.equalsIgnoreCase("BBQ") )
+			item = new BBQ("BBQ", 5.00, 1);
+							
+		else if( s.equalsIgnoreCase("Flour") )
+			item = new Flour("Flour", 5.00, 1);
+		
+		return item;
+	}
+	
 	
 	
 	
