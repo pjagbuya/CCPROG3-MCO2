@@ -24,13 +24,16 @@ public class KangkongChips extends VM_Item
 	 * Adds one ingredient to the list of ingredients comprising these kangkong chips.
 	 *
 	 */
-	public void acceptIngredients(VM_Item ingredient) { ingredients.add(ingredient); }
+	public void acceptIngredient(VM_Item ingredient) { ingredients.add(ingredient); }
+	
 	
 	/**
 	 * Returns the ingredients used in the making of these kangkong chips.
 	 *
 	 */
 	public ArrayList<VM_Item> getIngredients() { return ingredients; }
+	
+	
 	
 	
 	/** all ingredients used to make this */
