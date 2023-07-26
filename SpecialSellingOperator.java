@@ -1,4 +1,5 @@
 
+import java.util.ArrayList;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -37,23 +38,73 @@ public class SpecialSellingOperator extends SellingOperator
 	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      * @param order			the order object, contains the user's order
 	 */
-	public void sellingOperation(
+	public ArrayList<VM_Item> sellingOperation(
 		VM_Regular vm,
 		Money duplicate,
 		Money payment,
 		Money change,
 		Order order )
 	{
+		ArrayList<VM_Item> soldItems = null;
+		VM_Item tempItemHolder = null;
+		VM_Item specialItem = null;
+		VM_Slot[] slots;
+		int i;
+		int j;
+		
 		recipeChecker = new RecipeChecker(vm);
 		Scanner sc = new Scanner(System.in);
 		String input;
 		
-		System.out.print("Choose:\n [R] Regular Vending Feautures\n [S] Special Vending Features\n >> ");
-		input = sc.next();
-		if(input.equalsIgnoreCase("R"))
-			super.sellingOperation( vm, duplicate, payment, change, order );
-		else if(input.equalsIgnoreCase("S"))
-			sellSpecialItems( vm, duplicate, payment, change, order );
+		while(true)
+		{
+			System.out.print("Choose:\n [R] Regular Vending Feautures\n [S] Special Vending Features\n >> ");
+			input = sc.next();
+			if(input.equalsIgnoreCase("R"))
+			{
+				soldItems = super.sellingOperation( vm, duplicate, payment, change, order );
+				return soldItems;
+			}
+			else if(input.equalsIgnoreCase("S"))
+				sellSpecialItems( vm, duplicate, payment, change, order );
+			else
+				System.out.println("\033[1;38;5;202m-ERROR: NOT IN OPTIONS\033[0m");
+			
+			
+			if( input.equalsIgnoreCase("S") && order.getPendingOrder().size() > 0 )
+			{
+				soldItems = new ArrayList<VM_Item>();
+					
+				/* Instantiates the items themselves, and updates their prices. */
+				for( String k : order.getPendingOrder().keySet() )
+				{	
+					if( Main.getPossibleItems().get( k.toUpperCase() ) == 1 )
+						slots = vm.getSlots();
+					else
+						slots = ((VM_Special)vm).getSpecialSlots();
+					for(i = 0; i < slots.length; i++)
+						if( slots[i].getSlotItemName().equalsIgnoreCase( k ) )
+							for(j = 0; j < order.getPendingOrder().get(k); j++)
+							{
+								tempItemHolder = generateItem( k );
+								tempItemHolder.setPrice( slots[i].getPrice() );
+								soldItems.add( tempItemHolder );
+							}
+				}
+			
+				specialItem = new KangkongChips( "Kangkong Chips", order.getTotalCost(), order.getTotalCalories() );
+					
+				for(i = 0; i < soldItems.size(); i++)
+					((KangkongChips)specialItem).acceptIngredient( soldItems.get(i) );
+					
+				soldItems.clear();
+				soldItems.add( specialItem );
+					
+				break;
+			}
+		}
+		
+		return soldItems;
 	}
 	
 	/**
@@ -82,6 +133,8 @@ public class SpecialSellingOperator extends SellingOperator
 		int calorieTotal = 0;
 		int i;
 		
+		
+		order = new Order();
 		recipeChecker = new RecipeChecker(vm);
 		/* Choosing a Sepcial Item flavor */
 		/* All absolute base ingredients must
@@ -89,7 +142,6 @@ public class SpecialSellingOperator extends SellingOperator
 		   otherwise the Special Item can never be created. */
 		if( recipeChecker.allAbsoluteBaseIngredientsAreInStock() )
 		{
-			order = new Order();
 			
 			/* Adds absolute base ingredients to order. */
 			addAbsoluteBaseIngredients( vm, order );
