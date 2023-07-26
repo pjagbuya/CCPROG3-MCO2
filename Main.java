@@ -79,7 +79,7 @@ public class Main
 		
 		while(true)
 		{
-			vm = vmFactory.createVM();
+			vm = vmFactory.createVM(maintenance);
 			
 			if(vm == null)
 				break;
