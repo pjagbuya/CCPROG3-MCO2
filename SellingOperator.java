@@ -1,4 +1,4 @@
-
+import java.util.ArrayList;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -27,20 +27,50 @@ public class SellingOperator
 
     
 	/**
-	 * Activates regular selling method immediately.
+	 * Activates regular selling method immediately, and dispenses sold items.
 	 *
 	 * @param duplicate		a duplicate set of the VM's current denominations	 
 	 * @param payment		the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
 	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      * @param order			the order object, contains the user's order
 	 */
-	public void sellingOperation(
+	public ArrayList<VM_Item> sellingOperation(
 		VM_Regular vm,
 		Money duplicate,
 		Money payment,
 		Money change,
 		Order order )
-	{ sellRegularItems( vm, duplicate, payment, change, order ); }
+	{
+		ArrayList<VM_Item> soldItems = null;
+		VM_Item tempItemHolder;
+		VM_Slot[] slots;
+		int i;
+		int j;
+		
+		slots = vm.getSlots();
+		
+		
+		sellRegularItems( vm, duplicate, payment, change, order ); 
+		
+		
+		if( order.getPendingOrder().size() > 0 )
+		{
+			soldItems = new ArrayList<VM_Item>();
+			
+			/* Instantiates the items themselves, and updates their prices. */
+			for( String k : order.getPendingOrder().keySet() )
+				for(i = 0; i < slots.length; i++)
+					if( slots[i].getSlotItemName().equalsIgnoreCase( k ) )
+						for(j = 0; j < order.getPendingOrder().get(k); j++)
+						{
+							tempItemHolder = generateItem( k );
+							tempItemHolder.setPrice( slots[i].getPrice() );
+							soldItems.add( tempItemHolder );
+						}
+		}
+		
+		return soldItems;
+	}
 	
 			
 	
@@ -505,6 +535,58 @@ public class SellingOperator
             payment.put( s, 0 );
         vm.getOrderHistory().add(order);
     }
+	
+	
+	/**
+	 * Generate more of a specified item
+	 *
+	 * @param s the name of the item to be added
+	 */
+	protected VM_Item generateItem( String s )
+	{
+		VM_Item item = null;
+		
+		if( s.equalsIgnoreCase("Cheese") )
+			item = new Cheese("Cheese", 40.00, 15);
+							
+		else if( s.equalsIgnoreCase("Cocoa") )
+			item = new Cocoa("Cocoa", 20.00, 4);
+							
+		else if( s.equalsIgnoreCase("Cream") )
+			item = new Cream("Cream", 18.00, 5);
+							
+		else if( s.equalsIgnoreCase("Egg") )
+			item = new Egg("Egg", 12.00, 35);
+							
+		else if( s.equalsIgnoreCase("Kangkong") )
+			item = new Kangkong("Kangkong", 10.00, 2);
+							
+		else if( s.equalsIgnoreCase("Cornstarch") ) 
+			item = new Cornstarch("Cornstarch", 13.00, 2);
+							
+		else if( s.equalsIgnoreCase("Milk") )
+			item = new Milk("Milk", 99.00, 20);
+							
+		else if( s.equalsIgnoreCase("Tofu") )
+			item = new Tofu("Tofu", 5.00, 3);
+							
+		else if( s.equalsIgnoreCase("Salt") )
+			item = new Salt("Salt", 5.00, 1);
+							
+		else if( s.equalsIgnoreCase("Sugar") )
+			item = new Sugar("Sugar", 5.00, 30);
+							
+		else if( s.equalsIgnoreCase("Chicken") )
+			item = new Chicken("Chicken", 150.00, 42);
+							
+		else if( s.equalsIgnoreCase("BBQ") )
+			item = new BBQ("BBQ", 5.00, 1);
+							
+		else if( s.equalsIgnoreCase("Flour") )
+			item = new Flour("Flour", 5.00, 1);
+		
+		return item;
+	}
 
  
 
