@@ -38,14 +38,12 @@ public class VM_Special extends VM_Regular
 	 * @param i the index of the specified slot in the slots array
 	 */
 	@Override
-	public void addItemStock(VM_Item givenItem, 
-							 int qty, 
-							 int i)
+	public void addItemStock(VM_Item givenItem, int i)
 	{
 		if( Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) != null &&  Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) == 1 )
-			super.addItemStock(givenItem, qty, i);
+			super.addItemStock(givenItem, i);
 		else if( Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) != null )
-			specialSlots[i].addItemStock(givenItem, qty);
+			specialSlots[i].addItemStock( givenItem );
 	}
 	
 	
