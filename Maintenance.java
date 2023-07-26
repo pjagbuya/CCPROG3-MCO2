@@ -418,7 +418,7 @@ public class Maintenance
 			  ( slots[0] instanceof VM_RegularSlot &&
 				Main.getPossibleItems().get(input.toUpperCase()) == 1	||
 				slots[0] instanceof VM_SpecialSlot &&
-				 Main.getPossibleItems().get(input.toUpperCase()) == 0	)	)
+				Main.getPossibleItems().get(input.toUpperCase()) == 0	)	)
 			{
 				itemMatchesSlotType = true;
 			}
