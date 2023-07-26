@@ -50,26 +50,30 @@ public class VM_Regular {
 	 * Adds more of a certain item to slot specified by index
 	 *
 	 * @param givenItem the item to be added to the specified slot
-	 * @param qty the number indicating how many pieces
-				  of the specified item should be added to the specified slot
 	 * @param i the index of the specified slot in the slots array
 	 */
+	/*
 	public void addItemStock(VM_Item givenItem, 
 							 int qty, 
 							 int i)
 	{
 		slots[i].addItemStock(givenItem, qty);
 	}
+	*/
 	
-
 	
 	/**
-	 * Adds more of a specified item to the specified slot
+	 * Adds more of a certain item to slot specified by index
 	 *
-	 * @param s the name of the item to be added
-	 * @param i the index of the slot that will receive the additional items
-	 * @param qty the number indicating how many pieces of the specified item should be added
+	 * @param givenItem the item to be added to the specified slot
+	 * @param i the index of the specified slot in the slots array
 	 */
+	public void addItemStock(VM_Item givenItem, int i)
+	{
+		slots[i].addItemStock( givenItem );
+	}
+
+	/*
 	public void addItemStock(String s, 
 							 int i, 
 							 int qty)
@@ -113,6 +117,7 @@ public class VM_Regular {
 		else if( s.equalsIgnoreCase("Flour") )
 			addItemStock(new Flour("Flour", 20.00, 42), qty, i); // add		
 	}
+	*/
 	
 	
 
@@ -144,7 +149,7 @@ public class VM_Regular {
 
 		isThereItem = false;
 		for(i = 0; i < slots.length; i++)
-			if(slots[i] != null && slots[i].getItem() != null)
+			if(slots[i] != null && slots[i].getItems() != null)
 			{
 				slots[i].displayAllItems();
 				isThereItem = true;
@@ -228,7 +233,7 @@ public class VM_Regular {
 	{
 		VM_Slot[] slotsCopy = new VM_Slot[slots.length];
 		for (int i = 0; i < slots.length; i++) {
-			if(slots[i] != null && slots[i].getItem() != null)
+			if(slots[i] != null && slots[i].getItems() != null)
 				slotsCopy[i] = new VM_RegularSlot(slots[i]);  // using the copy constructor C
 		}
 		return slotsCopy;
@@ -328,7 +333,7 @@ public class VM_Regular {
 			{
 				tempSlot = findSlot(tempEntry.getKey().getSlotItemName());
 				if( tempSlot != null &&																	// Checks if there is no slot
-					tempSlot.getItem() != null &&  														// Checks if the slot is empty
+					tempSlot.getItems() != null &&  														// Checks if the slot is empty
 					tempEntry.getKey().getSlotItemName()	!= null &&									// Check if slot has a name
 				   	tempEntry.getKey().getSlotItemName().equalsIgnoreCase(tempSlot.getSlotItemName()))		//Compares if the original item is equal to the new item
 				{
