@@ -4,7 +4,7 @@ import java.util.InputMismatchException;
 
 public class VM_Factory
 {
-	public VM_Regular createVM()
+	public VM_Regular createVM(Maintenance maintenance)
 	{
 	Scanner sc = new Scanner(System.in);
 	String input;
@@ -19,6 +19,7 @@ public class VM_Factory
 	double amt;
 	int i;
 	int j;
+	int z;
 
 	/* inventory of VM straight out of the factory */ 
 	LinkedHashMap<String, Integer> initialStock = null;
@@ -164,13 +165,15 @@ public class VM_Factory
 				{	
 					if( Main.getPossibleItems().get(s) == 1 )
 					{
-						vm.addItemStock(s, i, initialStock.get(s));
+						for(z = 0; z < initialStock.get(s); z++)
+							vm.addItemStock( maintenance.generateItem( s ) , i );
 						i++;
 					}
 					else
 						if( vm instanceof VM_Special )
 						{
-							vm.addItemStock(s, j, initialStock.get(s));
+							for(z = 0; z < initialStock.get(s); z++)
+								vm.addItemStock( maintenance.generateItem( s ) , j );
 							j++;
 						}
 						else
