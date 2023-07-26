@@ -43,13 +43,13 @@ public class Order
         {
 			if( pendingOrder.get( slot.getSlotItemName().toUpperCase() ) != null )
 			{
-				totalCostOfOrder -= slot.getItem().getItemPrice() * pendingOrder.get( slot.getSlotItemName().toUpperCase() );
-				totalCalories -= slot.getItem().getItemCalories() * pendingOrder.get( slot.getSlotItemName().toUpperCase() );
+				totalCostOfOrder -= slot.getPrice() * pendingOrder.get( slot.getSlotItemName().toUpperCase() );
+				totalCalories -= slot.getItems().get(0).getItemCalories() * pendingOrder.get( slot.getSlotItemName().toUpperCase() );
 			}
 			
 			pendingOrder.put( slot.getSlotItemName().toUpperCase() , itemQty );
-			totalCostOfOrder += slot.getItem().getItemPrice() * itemQty;
-			totalCalories += slot.getItem().getItemCalories() * itemQty;
+			totalCostOfOrder += slot.getPrice() * itemQty;
+			totalCalories += slot.getItems().get(0).getItemCalories() * itemQty;
 
             return true;
         }
