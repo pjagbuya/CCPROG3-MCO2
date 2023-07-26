@@ -63,52 +63,36 @@ public class SellingOperator
 		Money change,
 		Order order )
 	{
-
-		String input;
-
-		boolean transactionIsValid; // initially true
-		boolean changeIsPossible;
-		boolean orderConfirmed;
 		Scanner sc = new Scanner(System.in);
-		
+		String input;
+		boolean transactionIsValid = true; // initially true
+		boolean orderConfirmed = true; // intially true
         double paymentTotal = 0;
 		double orderTotal = 0;
 		double cashReservesTotal = 0;
 		double changeDue = 0;
-		
 		int calorieTotal = 0;
 		
-
-		orderConfirmed = true; // intially true
-		transactionIsValid = true; // initially true
-
-
+		
 		/* order is made blank */
 		order = new Order();
 		
 		/* display VM's initial stock */
 		vm.displayAllItems();
-		
 	
 		System.out.print("\n\n");
 
-	
 		/* Asks user for their order */
 		promptOrder(vm, order);
 
 		/* Asks user for their payment */
 		promptPayment(payment.getDenominations());
 		
-		
-		/* duplicating cash reserves of VM, while setting change to zero */
-		for(String s : vm.getCurrentMoney().getDenominations().keySet()) {
-			duplicate.getDenominations().put(s, vm.getCurrentMoney().getDenominations().get(s));
-			change.getDenominations().put(s, 0);
-		}
+		/* creates a copy of the set of denominations currently in the VM */
+		duplicateDenominations( vm, duplicate, change );
 		
 		/* calculates the total amount of cash reserves currently in the VM */
 		cashReservesTotal = vm.getCurrentMoney().getTotalMoney();
-		System.out.println("\nCash Reserves Total: " + FORMAT.format(cashReservesTotal) + " PHP");
 		
 		/* calculates payment total */
 		for(String s : payment.getDenominations().keySet())
@@ -123,14 +107,14 @@ public class SellingOperator
 		/* calculates change due */
 		changeDue = paymentTotal - orderTotal;
 		
-
+		
 		/* display all transaction information */
 		System.out.println();
+		System.out.println("\nCash Reserves Total: " + FORMAT.format(cashReservesTotal) + " PHP");
 		System.out.println("Order Total: " + orderTotal + " PHP");
 		System.out.println("Payment Received: " + paymentTotal + " PHP");
 		System.out.println("Change Due: " + changeDue + " PHP");
 		System.out.println("Calorie Total: " + calorieTotal + " kCal\n");
-		
 		
 		
 		/* asks user to confirm or cancel order */
@@ -140,29 +124,11 @@ public class SellingOperator
 			orderConfirmed = true;
 		else
 			orderConfirmed = false;
-		
-		
 		System.out.print("\n");
-
-
-		/*checks whether a set of denominations can be released to meet a certain change amount */
-		changeIsPossible = deductChange(changeDue, duplicate.getDenominations());
 		
-		/* transaction validation */
-        if( !hasEnoughStock(vm, order) ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202mm-ERROR: INSUFFICIENT STOCK\033[0m"); }
-		if( paymentTotal < orderTotal ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: INSUFFICIENT PAYMENT\033[0m"); }
-		if ( cashReservesTotal < orderTotal && !changeIsPossible ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: NOT ENOUGH MONEY RESERVES\033[0m"); }
-		if( changeDue >= 0 && !changeIsPossible ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: CANNOT RETURN CHANGE, INSERT EXACT AMOUNT\033[0m"); }
-		if(orderTotal == 0)
-			transactionIsValid = true;
+		
+		/* TRANSACTION VALIDATION */
+		transactionIsValid = validateTransaction( vm, order, duplicate, paymentTotal, orderTotal, cashReservesTotal, changeDue );
 		
 		/* decides whether to proceed with transaction or not */
 		if( transactionIsValid && orderConfirmed )
@@ -179,7 +145,7 @@ public class SellingOperator
 		for( String s : payment.getDenominations().keySet() )
 			payment.getDenominations().put(s, 0);
 		
-
+		
 		/* display change */
 		System.out.println("\nCHANGE RETURNED:");
 		for(Map.Entry<String, Integer> m : change.getDenominations().entrySet() )
@@ -189,7 +155,54 @@ public class SellingOperator
 		sc = null;
 	}
 	
+	protected boolean validateTransaction(
+		VM_Regular vm,
+		Order order,
+		Money duplicate,
+		double paymentTotal,
+		double orderTotal,
+		double cashReservesTotal,
+		double changeDue )
+	{
+		boolean transactionIsValid = true; // assumed true
+		boolean changeIsPossible;
+		
+		changeIsPossible = deductChange(changeDue, duplicate.getDenominations());
+		
+		if( !hasEnoughStock(vm, order) ) {
+			transactionIsValid = false;
+			System.out.println("\033[1;38;5;202mm-ERROR: INSUFFICIENT STOCK\033[0m");
+		}
+		if( paymentTotal < orderTotal ) {
+			transactionIsValid = false;
+			System.out.println("\033[1;38;5;202m-ERROR: INSUFFICIENT PAYMENT\033[0m");
+		}
+		if ( cashReservesTotal < orderTotal && !changeIsPossible ) {
+			transactionIsValid = false;
+			System.out.println("\033[1;38;5;202m-ERROR: NOT ENOUGH MONEY RESERVES\033[0m");
+		}
+		if( changeDue >= 0 && !changeIsPossible ) {
+			transactionIsValid = false;
+			System.out.println("\033[1;38;5;202m-ERROR: CANNOT RETURN CHANGE, INSERT EXACT AMOUNT\033[0m");
+		}
+		if(orderTotal == 0)
+			transactionIsValid = true;
+		
+		return transactionIsValid;
+	}
 	
+	
+	protected void duplicateDenominations(
+		VM_Regular vm,
+		Money duplicate,
+		Money change )
+	{
+		/* duplicating cash reserves of VM, while setting change to zero */
+		for(String s : vm.getCurrentMoney().getDenominations().keySet()) {
+			duplicate.getDenominations().put(s, vm.getCurrentMoney().getDenominations().get(s));
+			change.getDenominations().put(s, 0);
+		}
+	}
 	
 
 	/**
@@ -496,5 +509,5 @@ public class SellingOperator
  
 
     /** Format constant that would help format labels of each item prices or computations*/
-	private static final DecimalFormat FORMAT = new DecimalFormat("0.00");
+	protected static final DecimalFormat FORMAT = new DecimalFormat("0.00");
 }
