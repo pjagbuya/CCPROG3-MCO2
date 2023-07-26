@@ -51,7 +51,7 @@ public class VM_Draw {
 
                 
                 // Get the price and turn it to string
-                price = slots[i].getItem().getItemPrice();
+                price = slots[i].getPrice();
                 priceLabels.add(i, price + "");
                 setupPriceLabels(i);
                 
@@ -110,7 +110,7 @@ public class VM_Draw {
         // Checks downwards of all items
         for (i = 0; i < slots.length; i++)
         {
-            if(slots[i] != null && slots[i].getItem() != null)
+            if(slots[i] != null && slots[i].getItems() != null)
             {
                 // Checks for the substring of three letters of the slot's item name, two letters if not possible
                 if(slots[i].getSlotItemName().length() >= 3)
@@ -120,7 +120,7 @@ public class VM_Draw {
                 
 
                 // If slot is empty or no stock, indicate red text
-                if((slots[i].getSlotItemStock() == 0 || slots[i].getItem() == null) && 
+                if((slots[i].getSlotItemStock() == 0 || slots[i].getItems() == null) && 
                     stringLabels.get(i).equalsIgnoreCase(subName))
                 {
 
@@ -133,18 +133,18 @@ public class VM_Draw {
   
                     
                 // If slot is replaced and has stock, indicate new green text
-                else if(!stringLabels.get(i).equalsIgnoreCase(subName) && slots[i].getSlotItemStock() > 0 && slots[i].getItem() != null)
+                else if(!stringLabels.get(i).equalsIgnoreCase(subName) && slots[i].getSlotItemStock() > 0 && slots[i].getItems() != null)
                 {
                     // Changes the item
                     stringLabels.set(i, "\033[1;32m" + subName + "\033[0m");
-                    priceLabels.set(i, slots[i].getItem().getItemPrice() + "");
+                    priceLabels.set(i, slots[i].getPrice() + "");
                     setupPriceLabels(i);
                     
 
 
                 }
             }
-            if(slots[i] == null || slots[i].getItem() == null || slots[i].getSlotItemStock() == 0)
+            if(slots[i] == null || slots[i].getItems() == null || slots[i].getSlotItemStock() == 0)
             {
                 if(stringLabels.get(i) != null)
                     stringLabels.set(i, stringLabels.get(i).replace("\033[1;32m", "\033[1;31m"));
