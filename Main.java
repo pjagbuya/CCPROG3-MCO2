@@ -1,5 +1,6 @@
 import java.util.Scanner;
 import java.util.LinkedHashMap;
+import java.util.ArrayList;
 
 import java.util.InputMismatchException;
 
@@ -49,6 +50,8 @@ public class Main
 		
 		Main mainHelp = new Main();
 		Maintenance maintenance = new Maintenance(Main.getPossibleItems());
+		ArrayList<VM_Item> soldItems = new ArrayList<VM_Item>();
+		ArrayList<VM_Item> itemStack = new ArrayList<VM_Item>();
 		SellingOperator sellingOperator = null;
 		Scanner sc = new Scanner(System.in);
 		String input;
@@ -63,6 +66,7 @@ public class Main
 		int qty;
 		double amt;
 		int i;
+		int j;
 		
 		/* Money objects for the SellingOperator */
 		Money duplicate = new Money();
@@ -78,7 +82,7 @@ public class Main
 		
 		
 		while(true)
-		{
+		{	
 			vm = vmFactory.createVM(maintenance);
 			
 			if(vm == null)
@@ -105,13 +109,24 @@ public class Main
 					}
 					if( vm instanceof VM_Special ) {
 						sellingOperator = new SpecialSellingOperator();
-						((SpecialSellingOperator)sellingOperator).sellingOperation( vm, duplicate, payment, change, order);
+						soldItems = ((SpecialSellingOperator)sellingOperator).sellingOperation(
+																					vm,
+																					duplicate,
+																					payment,
+																					change,
+																					order);
 					}
 					else if( vm instanceof VM_Regular ) {
 						sellingOperator = new SellingOperator();
-						sellingOperator.sellingOperation( vm, duplicate, payment, change, order);
+						soldItems = sellingOperator.sellingOperation( vm, duplicate, payment, change, order);
 					}
 					
+					if( soldItems != null )
+					{
+						for(i = 0; i < soldItems.size(); i++)
+							itemStack.add( soldItems.get(i) );
+						soldItems.clear();
+					}
 				}
 				/* Maintenance Features */
 				else if(input.equalsIgnoreCase("M"))
@@ -178,6 +193,16 @@ public class Main
 					else
 						System.out.println("\033[1;38;5;202mNOT IN OPTIONS!\033[0m");
 			}
+			
+			for(i = 0; i < itemStack.size(); i++)
+				if( itemStack.get(i) instanceof KangkongChips )
+				{
+					System.out.println("\nKangkongChips : ");
+					for(j = 0; j < ((KangkongChips)itemStack.get(i)).getIngredients().size(); j++)
+						System.out.println( ((KangkongChips)itemStack.get(i)).getIngredients().get(j) );
+				}
+				else
+					System.out.println( itemStack.get(i) );
 		}
 		
 		sc.close();
