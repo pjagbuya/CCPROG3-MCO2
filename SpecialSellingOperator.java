@@ -58,7 +58,9 @@ public class SpecialSellingOperator extends SellingOperator
 		
 		while(true)
 		{
-			System.out.print("Choose:\n [R] Regular Vending Feautures\n [S] Special Vending Features\n >> ");
+			order = new Order();
+			
+			System.out.print("Choose:\n [R] Regular Vending Feautures\n [S] Special Vending Features\n [E] Exit\n >> ");
 			input = sc.next();
 			if(input.equalsIgnoreCase("R"))
 			{
@@ -67,6 +69,8 @@ public class SpecialSellingOperator extends SellingOperator
 			}
 			else if(input.equalsIgnoreCase("S"))
 				sellSpecialItems( vm, duplicate, payment, change, order );
+			else if(input.equalsIgnoreCase("E"))
+				break;
 			else
 				System.out.println("\033[1;38;5;202m-ERROR: NOT IN OPTIONS\033[0m");
 			
@@ -83,7 +87,7 @@ public class SpecialSellingOperator extends SellingOperator
 					else
 						slots = ((VM_Special)vm).getSpecialSlots();
 					for(i = 0; i < slots.length; i++)
-						if( slots[i].getSlotItemName().equalsIgnoreCase( k ) )
+						if( slots[i].getSlotItemName() != null && slots[i].getSlotItemName().equalsIgnoreCase( k ) )
 							for(j = 0; j < order.getPendingOrder().get(k); j++)
 							{
 								tempItemHolder = generateItem( k );
@@ -93,6 +97,8 @@ public class SpecialSellingOperator extends SellingOperator
 				}
 			
 				specialItem = new KangkongChips( "Kangkong Chips", order.getTotalCost(), order.getTotalCalories() );
+				
+				System.out.println( "SPECIAL ITEM: -----\n" + specialItem );
 					
 				for(i = 0; i < soldItems.size(); i++)
 					((KangkongChips)specialItem).acceptIngredient( soldItems.get(i) );
@@ -134,7 +140,6 @@ public class SpecialSellingOperator extends SellingOperator
 		int i;
 		
 		
-		order = new Order();
 		recipeChecker = new RecipeChecker(vm);
 		/* Choosing a Sepcial Item flavor */
 		/* All absolute base ingredients must
@@ -198,9 +203,36 @@ public class SpecialSellingOperator extends SellingOperator
 			
 			/* decides whether to proceed with transaction or not */
 			if( transactionIsValid && orderConfirmed )
-				displayTransactionProceed(vm, duplicate.getDenominations(), payment.getDenominations(), change.getDenominations(), order);
+			{
+				dispense(
+					vm.getSlots(),
+					duplicate,
+					payment,
+					change,
+					order );
+				dispense(
+					((VM_Special)vm).getSpecialSlots(),
+					duplicate,
+					payment,
+					change,
+					order );
+				updateCashTrays(
+					vm.getCurrentMoney(),
+					duplicate,
+					payment,
+					change,
+					order );
+				vm.getOrderHistory().add(order);
+			}
 			else
-				displayFailedOrDiscontinue(orderConfirmed, transactionIsValid, payment.getDenominations(), change.getDenominations());
+			{
+				displayFailedOrDiscontinue(
+					orderConfirmed,
+					transactionIsValid,
+					payment,
+					change );
+				order.getPendingOrder().clear();
+			}
 			
 			
 			vm.displayAllItems();
