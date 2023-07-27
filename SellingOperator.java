@@ -49,6 +49,9 @@ public class SellingOperator
 		
 		slots = vm.getSlots();
 		
+		/* order is made blank */
+		order = new Order();
+		
 		
 		sellRegularItems( vm, duplicate, payment, change, order ); 
 		
@@ -60,7 +63,7 @@ public class SellingOperator
 			/* Instantiates the items themselves, and updates their prices. */
 			for( String k : order.getPendingOrder().keySet() )
 				for(i = 0; i < slots.length; i++)
-					if( slots[i].getSlotItemName().equalsIgnoreCase( k ) )
+					if( slots[i].getSlotItemName() != null && slots[i].getSlotItemName().equalsIgnoreCase( k ) )
 						for(j = 0; j < order.getPendingOrder().get(k); j++)
 						{
 							tempItemHolder = generateItem( k );
@@ -104,8 +107,7 @@ public class SellingOperator
 		int calorieTotal = 0;
 		
 		
-		/* order is made blank */
-		order = new Order();
+		
 		
 		/* display VM's initial stock */
 		vm.displayAllItems();
@@ -162,9 +164,30 @@ public class SellingOperator
 		
 		/* decides whether to proceed with transaction or not */
 		if( transactionIsValid && orderConfirmed )
-			displayTransactionProceed(vm, duplicate.getDenominations(), payment.getDenominations(), change.getDenominations(), order);
+		{
+			dispense(
+				vm.getSlots(),
+				duplicate,
+				payment,
+				change,
+				order );
+			updateCashTrays(
+				vm.getCurrentMoney(),
+				duplicate,
+				payment,
+				change,
+				order );
+			vm.getOrderHistory().add(order);
+		}
 		else
-            displayFailedOrDiscontinue(orderConfirmed, transactionIsValid, payment.getDenominations(), change.getDenominations());
+		{
+            displayFailedOrDiscontinue(
+				orderConfirmed,
+				transactionIsValid,
+				payment,
+				change );
+			order.getPendingOrder().clear();
+		}
 		
 		
 		vm.displayAllItems();
@@ -184,6 +207,10 @@ public class SellingOperator
 		
 		sc = null;
 	}
+	
+	
+	
+	
 	
 	protected boolean validateTransaction(
 		VM_Regular vm,
@@ -451,11 +478,15 @@ public class SellingOperator
      * @param payment the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
      * @param change the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      */
-    protected void displayFailedOrDiscontinue(boolean orderConfirmed, 
-                                            boolean transactionIsValid, 
-                                            LinkedHashMap<String, Integer> payment,
-		                                    LinkedHashMap<String, Integer> change)
+    protected void displayFailedOrDiscontinue(
+		boolean orderConfirmed, 
+        boolean transactionIsValid, 
+        Money paymentBag,
+		Money changeBag )
     {
+		LinkedHashMap<String, Integer> payment = paymentBag.getDenominations();
+		LinkedHashMap<String, Integer> change = changeBag.getDenominations();
+		
         if( !orderConfirmed )
             System.out.println("\nTRANSACTION DISCONTINUED------------------------");
         else if( !transactionIsValid )
@@ -477,20 +508,20 @@ public class SellingOperator
 	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
      * @param order			the order object, contains the user's order
      */
-    protected void displayTransactionProceed(
-		VM_Regular vm,
-		LinkedHashMap<String, Integer> duplicate,
-        LinkedHashMap<String, Integer> payment,
-        LinkedHashMap<String, Integer> change,
+    protected void dispense(
+		VM_Slot[] slots,
+		Money duplicateBag,
+        Money paymentBag,
+        Money changeBag,
         Order order)
-    {
-
-        VM_Slot[] slots;
+	{
         int currAmt;
         int i;
+		
+		LinkedHashMap<String, Integer> duplicate = duplicateBag.getDenominations();
+		LinkedHashMap<String, Integer> payment = paymentBag.getDenominations();
+		LinkedHashMap<String, Integer> change = changeBag.getDenominations();
 
-
-        slots = vm.getSlots();
         System.out.println("\n\033[1;32mTRANSACTION PROCEEDS--------------------------\033[0m");
 
         for(String itemName : order.getPendingOrder().keySet())
@@ -512,30 +543,38 @@ public class SellingOperator
 						slots[i].releaseStock( currAmt );
 					}
                 }
-                    
-        vm.releaseStock(order);
-
-
-        /* computes for the change tray values based on the original cash reserves and the subtracted cash reserve duplicate */
+    }
+	
+	
+	protected void updateCashTrays(
+		Money cashReserves,
+		Money duplicateBag,
+		Money paymentBag,
+		Money changeBag,
+		Order order )
+	{
+		LinkedHashMap<String, Integer> duplicate = duplicateBag.getDenominations();
+		LinkedHashMap<String, Integer> payment = paymentBag.getDenominations();
+		LinkedHashMap<String, Integer> change = changeBag.getDenominations();
+		
+		/* computes for the change tray values based on the original cash reserves and the subtracted cash reserve duplicate */
         for( String s : change.keySet() )
         {
-			if(order.getTotalCost() == 0 || vm.getCurrentMoney().getDenominations().get(s) - duplicate.get(s) < 0)
+			if(order.getTotalCost() == 0 || cashReserves.getDenominations().get(s) - duplicate.get(s) < 0)
 				change.put( s, duplicate.get(s) );
 			else
-				change.put( s, vm.getCurrentMoney().getDenominations().get(s) - duplicate.get(s) );
+				change.put( s, cashReserves.getDenominations().get(s) - duplicate.get(s) );
 		}    
         
 		
         /* updates the cash reserves */
-        vm.getCurrentMoney().setDenominations(duplicate);
-        vm.getCurrentMoney().acceptDenominations(payment);
+        cashReserves.setDenominations(duplicate);
+        cashReserves.acceptDenominations(payment);
         
         /* sets payment tray back to zero */
         for( String s : payment.keySet() )
             payment.put( s, 0 );
-        vm.getOrderHistory().add(order);
-    }
-	
+	}
 	
 	/**
 	 * Generate more of a specified item
