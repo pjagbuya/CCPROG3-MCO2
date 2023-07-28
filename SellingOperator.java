@@ -1,8 +1,6 @@
 import java.util.ArrayList;
-import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Scanner;
 
 /** This class represents a Selling Operator
   * which provides for selling of regular items only
@@ -20,115 +18,31 @@ public class SellingOperator
 	 * by such prompts
 	 * 
 	 */
-    public SellingOperator()
+    public SellingOperator(VM_Slot[] slots, Money vmCashReserves, ArrayList<Order> orderHistory, Money change)
     {
-		
+		soldItems = new ArrayList<VM_Item>();
+		duplicate =  new LinkedHashMap<String, Integer>();
+		this.orderHistory;
+		this.slots;
+		this.vmCashReserves = vmCashReserves;
+		payment = new Money();
+		this.change = change;
     }
 
-    
-	/**
-	 * Activates regular selling method immediately, and dispenses sold items.
-	 *
-	 * @param duplicate		a duplicate set of the VM's current denominations	 
-	 * @param payment		the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
-	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
-     * @param order			the order object, contains the user's order
-	 */
-	public ArrayList<VM_Item> sellingOperation(
-		VM_Regular vm,
-		Money duplicate,
-		Money payment,
-		Money change,
-		Order order )
-	{
-		ArrayList<VM_Item> soldItems = null;
-		VM_Item tempItemHolder;
-		VM_Slot[] slots;
-		int i;
-		int j;
-		
-		slots = vm.getSlots();
-		
-		/* order is made blank */
-		order = new Order();
-		
-		
-		sellRegularItems( vm, duplicate, payment, change, order ); 
-		
-		
-		if( order.getPendingOrder().size() > 0 )
-		{
-			soldItems = new ArrayList<VM_Item>();
-			
-			/* Instantiates the items themselves, and updates their prices. */
-			for( String k : order.getPendingOrder().keySet() )
-				for(i = 0; i < slots.length; i++)
-					if( slots[i].getSlotItemName() != null && slots[i].getSlotItemName().equalsIgnoreCase( k ) )
-						for(j = 0; j < order.getPendingOrder().get(k); j++)
-						{
-							tempItemHolder = generateItem( k );
-							tempItemHolder.setPrice( slots[i].getPrice() );
-							soldItems.add( tempItemHolder );
-						}
-		}
-		
-		return soldItems;
-	}
-	
-			
-	
-	/**
-	 * This method takes user's order and accepts their payment,
-	 * validates inputs,
-	 * and decides whether to proceed with transaction or not.
-	 * 
-	 * Uses text-based interface.
-	 * 
-	 * @param duplicate		a duplicate set of the VM's current denominations	 
-	 * @param payment		the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
-	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
-     * @param order			the order object, contains the user's order
-	 */
-	private void sellRegularItems(
-		VM_Regular vm,
-		Money duplicate,
-		Money payment,
-		Money change,
-		Order order )
-	{
-		Scanner sc = new Scanner(System.in);
-		String input;
-		boolean transactionIsValid = true; // initially true
-		boolean orderConfirmed = true; // intially true
-        double paymentTotal = 0;
-		double orderTotal = 0;
-		double cashReservesTotal = 0;
-		double changeDue = 0;
-		int calorieTotal = 0;
-		
-		
-		
-		
-		/* display VM's initial stock */
-		vm.displayAllItems();
-	
-		System.out.print("\n\n");
 
-		/* Asks user for their order */
-		promptOrder(vm, order);
-
-		/* Asks user for their payment */
-		promptPayment(payment.getDenominations());
-		
+	
+	
+	public void calculateBasicInformation()
+	{
 		/* creates a copy of the set of denominations currently in the VM */
-		duplicateDenominations( vm, duplicate, change );
+		duplicateDenominations();
 		
 		/* calculates the total amount of cash reserves currently in the VM */
-		cashReservesTotal = vm.getCurrentMoney().getTotalMoney();
+		cashReservesTotal = vmCashReserves.getTotalMoney();
 		
 		/* calculates payment total */
 		for(String s : payment.getDenominations().keySet())
-			paymentTotal += payment.getDenominations().get(s)*Money.getStrToVal().get(s);
+			paymentTotal += payment.getDenominations().get(s).size() * Money.getStrToVal().get(s);
 		
 		/* calculates order total */
         orderTotal = order.getTotalCost();
@@ -138,170 +52,244 @@ public class SellingOperator
 		
 		/* calculates change due */
 		changeDue = paymentTotal - orderTotal;
+	}
+	
+	
+	
+	
+	
+    
+
+	public String addToOrder(int slotNum, int qty)
+	{	
+		String msg = null;
+		boolean orderIsValid;
 		
-		
-		/* display all transaction information */
-		System.out.println();
-		System.out.println("\nCash Reserves Total: " + FORMAT.format(cashReservesTotal) + " PHP");
-		System.out.println("Order Total: " + orderTotal + " PHP");
-		System.out.println("Payment Received: " + paymentTotal + " PHP");
-		System.out.println("Change Due: " + changeDue + " PHP");
-		System.out.println("Calorie Total: " + calorieTotal + " kCal\n");
-		
-		
-		/* asks user to confirm or cancel order */
-		System.out.print("Continue with order (\033[1;33mEnter Y to confirm, any other key to discontinue order\033[0m)? : ");
-		input = sc.next();
-		if( input.equalsIgnoreCase("Y") && orderTotal != 0 )
-			orderConfirmed = true;
-		else
-			orderConfirmed = false;
-		System.out.print("\n");
-		
-		
-		/* TRANSACTION VALIDATION */
-		transactionIsValid = validateTransaction( vm, order, duplicate, paymentTotal, orderTotal, cashReservesTotal, changeDue );
-		
-		/* decides whether to proceed with transaction or not */
-		if( transactionIsValid && orderConfirmed )
-		{
-			dispense(
-				vm.getSlots(),
-				duplicate,
-				payment,
-				change,
-				order );
-			updateCashTrays(
-				vm.getCurrentMoney(),
-				duplicate,
-				payment,
-				change,
-				order );
-			vm.getOrderHistory().add(order);
+		// only when selected slot num is within range, this will trigger to add that order
+		if( slotNum >= 1 && slotNum <= slots.length ) {	
+			if(slot == null) {
+				msg = new String("ERROR: SLOT IS NULL.\n");
+				orderIsValid = false;
+			}
+			else if( slots[slotNum-1].getSlotItemStock() == 0 ||
+					 qty > slots[slotNum-1].getSlotItemStock() ||
+					 qty <= 0 ) {
+				msg = new String("ERROR: INSUFFICIENT STOCK.\n");
+				orderIsValid = false;
+			}
+			
+			if( orderIsValid ) {
+				addToPendingMap( order.getPendingOrder(), slots[slotNum-1], qty);
+				msg = null;
+			}
 		}
 		else
-		{
-            displayFailedOrDiscontinue(
-				orderConfirmed,
-				transactionIsValid,
-				payment,
-				change );
-			order.getPendingOrder().clear();
-		}
+			msg = new String("ERROR: SLOT NUM OUT OF BOUNDS.");
 		
-		
-		vm.displayAllItems();
-		System.out.println();
-		
-		
-		/* clearing payment tray */
-		for( String s : payment.getDenominations().keySet() )
-			payment.getDenominations().put(s, 0);
-		
-		
-		/* display change */
-		System.out.println("\nCHANGE RETURNED:");
-		for(Map.Entry<String, Integer> m : change.getDenominations().entrySet() )
-		System.out.println(" " + m.getValue() + " " + m.getKey());
-		System.out.print("\n\n");
-		
-		sc = null;
+		return msg;
 	}
+
 	
-	
-	
-	
-	
-	protected boolean validateTransaction(
-		VM_Regular vm,
-		Order order,
-		Money duplicate,
-		double paymentTotal,
-		double orderTotal,
-		double cashReservesTotal,
-		double changeDue )
+	protected boolean addToPendingMap(LinkedHashMap <String, Integer> pending, VM_Slot slot, int qty)
 	{
-		boolean transactionIsValid = true; // assumed true
-		boolean changeIsPossible;
+		if( pending.get( slot.getSlotItemName().toUpperCase() ) != null ) {
+			order.setTotalCost(
+				order.getTotalCost() - 
+				slot.getPrice() *
+				pending.get(
+					slot.getSlotItemName().toUpperCase() );
+			orderTotal = order.getTotalCost();
+			order.setTotalCalories(
+				order.getTotalCalories() - 
+				slot.getItems().get(0).getItemCalories() *
+				pending.get(
+					slot.getSlotItemName().toUpperCase() );
+			calorieTotal = order.getTotalCalories();
+		}
 		
-		changeIsPossible = deductChange(changeDue, duplicate.getDenominations());
-		
-		if( !hasEnoughStock(vm, order) ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202mm-ERROR: INSUFFICIENT STOCK\033[0m");
-		}
-		if( paymentTotal < orderTotal ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: INSUFFICIENT PAYMENT\033[0m");
-		}
-		if ( cashReservesTotal < orderTotal && !changeIsPossible ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: NOT ENOUGH MONEY RESERVES\033[0m");
-		}
-		if( changeDue >= 0 && !changeIsPossible ) {
-			transactionIsValid = false;
-			System.out.println("\033[1;38;5;202m-ERROR: CANNOT RETURN CHANGE, INSERT EXACT AMOUNT\033[0m");
-		}
-		if(orderTotal == 0)
-			transactionIsValid = true;
-		
-		return transactionIsValid;
+		pending.put( slot.getSlotItemName().toUpperCase() , qty );
+		totalCostOfOrder += slot.getPrice() * qty;
+		totalCalories += slot.getItems().get(0).getItemCalories() * qty;
 	}
-	
-	
-	protected void duplicateDenominations(
-		VM_Regular vm,
-		Money duplicate,
-		Money change )
-	{
-		/* duplicating cash reserves of VM, while setting change to zero */
-		for(String s : vm.getCurrentMoney().getDenominations().keySet()) {
-			duplicate.getDenominations().put(s, vm.getCurrentMoney().getDenominations().get(s));
-			change.getDenominations().put(s, 0);
-		}
-	}
-	
+
 
 	/**
-	 * Checks whether the VM has sufficient stock
-	 * of all ordered items
-	 *
-	 * @param order the item containing the list of items to be released from the VM,
-					including how many of each should be released
-	 * @return true if VM's stock contains all required items, false otherwise
+	 * This helper method would help prompt the payment the user wishes to give to the machine
+	 * 
+	 * @param payment the payment where the user would store his/her denominations as payment
 	 */
-	protected boolean hasEnoughStock(VM_Regular vm, Order order) {
-		int i;
-		VM_Slot[] slots = vm.getSlots();
-		LinkedHashMap<String, Integer> orders;
-
-		orders = order.getPendingOrder();
-
-		boolean stockHasRequiredQuantities = true; // initially true
-		for( String s :orders.keySet() )
+	public String addToPayment(String denom)
+	{
+		String msg;		
+		if( Money.getValToStr().get(denom.getName()) != null )
 		{
-			for(i = 0; i < slots.length; i++)
-				if( s.equalsIgnoreCase( slots[i].getSlotItemName() ) )
-					/* if the current slot does not hold the required quantity of its item */
-					if( !( slots[i].hasEnoughStock( orders.get(s) ) ) )
-					{
-						stockHasRequiredQuantities = false;
-						break;
-					}
-		}		
-		
-		return stockHasRequiredQuantities;
+			payment.add( createDenomination( denom ) );
+			msg = null;
+		}
+		else
+			msg = new String("ERROR: DENOMINATION DOES NOT EXIST.");
+		return msg;
+	}
+	
+	
+	
+	public String subtractFromPayment(String denom)
+	{
+		String msg;		
+		if( Money.getValToStr().get(denom.getName()) != null )
+		{
+			payment.subtract( denom );
+			msg = null;
+		}
+		else
+		{
+			msg = new String("ERROR: DENOMINATION DOES NOT EXIST.");
+		}
+		return msg;
 	}
     
+	
+	public String validateTransaction()
+	{
+		String msg = new String("");
+		changeIsPossible;
+		
+		changeIsPossible = deductChange(changeDue);
+		
+		if( !hasEnoughStock(this.slots) ) {
+			msg = msg + "ERROR: INSUFFICIENT STOCK.\n";
+		}
+		if( paymentTotal < orderTotal ) {
+			msg = msg + "ERROR: INSUFFICIENT PAYMENT.\n";
+		}
+		if ( cashReservesTotal < orderTotal && !changeIsPossible ) {
+			msg = msg + "ERROR: NOT ENOUGH MONEY RESERVES.\n";
+		}
+		if( changeDue >= 0 && !changeIsPossible ) {
+			msg = msg + "ERROR: CANNOT RETURN CHANGE, INSERT EXACT AMOUNT.\n";
+		}
+		if(orderTotal == 0) {
+			msg = msg + "ERROR: NO ORDER.\n";
+		}
+		
+		if(msg.equals(""))
+			return null;
+		return String;
+	}
+	
+	
+	protected boolean hasEnoughStock(VM_Slot[] slots)
+	{
+		int i;
+		LinkedHashMap<String, Integer> orders;
+		orders = order.getPendingOrder();
+		boolean stockHasRequiredQuantities = true; // initially true
+		
+		for( String s : orders.keySet() )
+			for(i = 0; i < slots.length; i++)
+				if( slots[i].getSlotItemName() != null &&
+					s.equalsIgnoreCase( slots[i].getSlotItemName() ) &&
+					orders.get(s) > slots[i].getSlotItemStock() )
+						stockHasRequiredQuantities = false;
+		return stockHasRequiredQuantities;
+	}
+	
     /**
-	 * Iteratively deducts coins/bills from a duplicate of the current set of coins/bills,
-	 * in order to meet a specified change amount
-	 *
-	 * @param amt the amount of change that must be met by the VM's cash reserves
-	 * @param duplicate a duplicate of the VM's cash reserves
-	 * @return true if deduction leads to zero or extremely close to zero, false otherwise
-	 */
-	protected boolean deductChange(double amt, LinkedHashMap<String, Integer> duplicate)
+     * This helper method shows the outcome of an order request that is potentially discontinued or
+     * failed
+     * 
+     * @param orderConfirmed states if the order is confirmed when the user follows rules and machine follows rules, false otherwise or when there is restriction
+     * @param transactionIsValid boolean that states the cause of a failure is just a transaction side failure
+     * @param payment the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
+     * @param change the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
+     */
+	
+	
+	private void duplicateDenominations()
+	{
+		/* duplicating cash reserves of VM, while setting change to zero */
+		for( String s : vmCashReserves.getDenominations().keySet() )
+		{
+			duplicate.getDenominations().put( s , vmCashReserves.getDenominations().get(s).size() );
+			change.getDenominations().put( s , new ArrayList<Denomination> );
+		}
+	}
+	
+	public void proceedTrasaction()
+	{
+		int i;
+		ArrayList<VM_Item> soldItems = dispenseItems( getSlots );
+		for(i = 0; i < soldItems.size(); i++)
+			this.soldItems.add( soldItems.get(i) );
+		updateCashTrays();
+		orderHistory().add( getOrder() );
+	}
+	
+	public Denomination createDenomination(String denom)
+	{
+		return Denomination( denom , Money.getStrToVal() );
+	}
+	
+	public ArrayList<VM_Item> dispenseItems(VM_Slots[] slots)
+	{
+        int currAmt;
+        int i;
+		int j;
+		ArrayList<VM_Item> soldItems = new ArrayList<VM_Item>();
+		
+		if( getOrder().getPendingOrder().size() > 0 )
+        for(String itemName : getOrder().getPendingOrder().keySet())
+            for(i = 0; i < slots.length; i++)
+                if( slots[i].getSlotItemName() != null && itemName.equalsIgnoreCase( slots[i].getSlotItemName() ) )
+                {
+                    currAmt = getOrder().getPendingOrder().get(itemName);
+                    // Check max amount should be dispensed if order was greater than 10
+                    if( currAmt > slots[i].getMAX() )
+						for(j = 0; j < slots[i].getMAX(); j++)
+							soldItems.add( slots[i].releaseStock( currAmt ) );
+                    // Dispenses the item amount wished
+                    else
+						for(j = 0; j < currAmt; j++)
+							soldItems.add( slots[i].releaseStock( currAmt ) );
+                }
+		return soldItems
+    }
+	
+	
+	
+	/** successful transactions ONLY */
+	private void updateCashTrays()
+	{		
+		int difference; // the difference between the corresponding nos. of denominations in the cash reserve and the duplicate hashmap
+		int additional; // the additional payment pieces that have to be placed into the cash reserves
+		int i;
+		
+        /* Takes change out. Accepts and sorts the payment. This means the payment tray should be empty. */
+		for( String s : vmCashReserves.getDenominations().keySet() )
+		{
+			difference = vmCashReserves.getDenominations().get(s).size() - duplicate.get(s);
+			for(i = 0; i < difference; i++)
+				change.add( vmCashReserves.subtract( s ) );
+			additional = payment.getDenominations().get(s).size();
+			for(i = 0; i < additional; i++)
+				vmCashReserves.add( payment.subtract( s ) );
+			for(i = 0; i < additional; i++)
+				payment.getDenominations().put( s , new ArrayList<Denomination>() );
+		}
+	}
+	
+	
+	public resetDefaults()
+	{
+		paymentTotal = 0;
+		orderTotal = 0;
+		cashReservesTotal = 0;
+		changeDue = 0;
+		calorieTotal = 0;
+	}
+	
+	
+	private boolean deductChange(double amt)
 	{
 
 		amt = Math.round(amt*100)/100.0;
@@ -374,207 +362,7 @@ public class SellingOperator
 		}
 		return true;
 	}
-    
-	/**
-	 * This helper method sets up the console based interaction with the user.
-	 * It would then setup his/her order depending on his/her comments
-	 * 
-	 * @param order the ordered items
-	 */
-	private void promptOrder(VM_Regular vm, Order order)
-	{	
-		String input;
-		String inputQty;
-		int slotNum;
-		int qty;
-
-		VM_Slot[] slots;
-
-		Scanner sc = new Scanner(System.in);
-
-		slots =  vm.getSlots();
-		/* order request while loop prompting*/
-		while(true)
-		try
-		{
-			System.out.print("What would you like to order (\033[1;33mEnter 'Y' to confirm/finish\033[0m)? \033[1;32m<slot num> <qty>\033[0m\n>> ");
-			input = sc.next();
-			if( input.equalsIgnoreCase("Y") )
-				break;
-			inputQty = sc.next();
-					
-				
-			slotNum = Integer.parseInt(input);
-			qty = Integer.parseInt(inputQty);
-			
-			// only when selected slot num is within range, this will trigger to add that order
-			if( slotNum >= 1 && slotNum <= slots.length )
-				if(order.addOrder(slots[slotNum-1], qty))
-					System.out.println("\033[1;32m-ADDED TO ORDER\033[0m");
-				else
-				{
-					order.getPendingOrder().remove(slots[slotNum-1].getSlotItemName());
-					System.out.println("\033[1;38;5;202m-ERROR: INSUFFICENT STOCK OR NO SLOT HOLDS THIS ITEM. ENTER A DIFF. SLOT NUM/QUANTITY.\033[0m");
-				}
-			else
-				System.out.println("\033[1;38;5;202m-ERROR: SLOT NUM OUT OF BOUNDS\033[0m");
-		}
-		catch(NumberFormatException e)
-		{
-			System.out.println("\033[1;38;5;202m-ERROR: NOT PARSABLE TO INT, Please enter slot number\033[0m");
-		}
-
-		sc = null;
-	}
-
-
-	/**
-	 * This helper method would help prompt the payment the user wishes to give to the machine
-	 * 
-	 * @param payment the payment where the user would store his/her denominations as payment
-	 */
-	protected void promptPayment(LinkedHashMap<String, Integer> payment)
-	{
-		String input;
-		String inputQty;
-		double denom;
-		int qty;
-
-		Scanner sc = new Scanner(System.in);
-
-		/* payment while loop prompting */
-		System.out.println();
-		while(true)
-		try
-		{
-			System.out.print("Insert payment (\033[1;33mEnter 'Y' to confirm/finish\033[0m): \033[1;32m<bill/coin num> <qty>\033[0m\n>> ");
-			input = sc.next();
-			if( input.equalsIgnoreCase("Y") )
-				break;
-			inputQty = sc.next();
-			
-			denom = Double.parseDouble(input);
-			qty = Integer.parseInt(inputQty);
-					
-			if( Money.getValToStr().get(denom) != null )
-				payment.put(Money.getValToStr().get(denom), qty);
-			else
-				System.out.println("\033[1;38;5;202m-ERROR: DENOMINATION DOES NOT EXIST\033[0m");	
-		}
-		catch (NumberFormatException e)
-		{
-			System.out.println("\033[1;38;5;202m-ERROR: DENOMINATION DOES NOT EXIST\033[0m");	
-		}
-
-		sc = null;
-	}
-    
-    /**
-     * This helper method shows the outcome of an order request that is potentially discontinued or
-     * failed
-     * 
-     * @param orderConfirmed states if the order is confirmed when the user follows rules and machine follows rules, false otherwise or when there is restriction
-     * @param transactionIsValid boolean that states the cause of a failure is just a transaction side failure
-     * @param payment the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
-     * @param change the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
-     */
-    protected void displayFailedOrDiscontinue(
-		boolean orderConfirmed, 
-        boolean transactionIsValid, 
-        Money paymentBag,
-		Money changeBag )
-    {
-		LinkedHashMap<String, Integer> payment = paymentBag.getDenominations();
-		LinkedHashMap<String, Integer> change = changeBag.getDenominations();
-		
-        if( !orderConfirmed )
-            System.out.println("\nTRANSACTION DISCONTINUED------------------------");
-        else if( !transactionIsValid )
-            System.out.println("\n\033[1;38;5;202mTRANSACTION FAILS------------------------\033[0m");
-        /* returns payment to change tray */
-        for( String s : payment.keySet() )
-            change.put( s, payment.get(s) );
-        /* sets payment tray back to 0 */
-        for( String s : payment.keySet() )
-            payment.put( s, 0 );
-    }
-
-
-    /**
-     * This helper method provides for when the transaction is valid and the user chooses to proceed with it.
-	 * 
-     * @param duplicate		a duplicate set of the VM's current denominations	 
-	 * @param payment		the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
-	 * @param change		the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
-     * @param order			the order object, contains the user's order
-     */
-    protected void dispense(
-		VM_Slot[] slots,
-		Money duplicateBag,
-        Money paymentBag,
-        Money changeBag,
-        Order order)
-	{
-        int currAmt;
-        int i;
-		
-		LinkedHashMap<String, Integer> duplicate = duplicateBag.getDenominations();
-		LinkedHashMap<String, Integer> payment = paymentBag.getDenominations();
-		LinkedHashMap<String, Integer> change = changeBag.getDenominations();
-
-        System.out.println("\n\033[1;32mTRANSACTION PROCEEDS--------------------------\033[0m");
-
-        for(String itemName : order.getPendingOrder().keySet())
-            for(i = 0; i < slots.length; i++)
-                if( itemName.equalsIgnoreCase( slots[i].getSlotItemName() ) )
-                {
-                    currAmt = order.getPendingOrder().get(itemName);
-
-                    // Check max amount should be dispensed if order was greater than 10
-                    if(currAmt > slots[i].getMAX())
-					{
-                        System.out.println("Dispensing: " +  slots[i].getMAX() + " \033[1;33m" + slots[i].getSlotItemName() + "\033[0m");
-						slots[i].releaseStock( currAmt );
-					}
-                    // Dispenses the item amount wished
-                    else
-					{
-                        System.out.println("Dispensing: " +  currAmt + " \033[1;33m" + slots[i].getSlotItemName() + "\033[0m");
-						slots[i].releaseStock( currAmt );
-					}
-                }
-    }
 	
-	
-	protected void updateCashTrays(
-		Money cashReserves,
-		Money duplicateBag,
-		Money paymentBag,
-		Money changeBag,
-		Order order )
-	{
-		LinkedHashMap<String, Integer> duplicate = duplicateBag.getDenominations();
-		LinkedHashMap<String, Integer> payment = paymentBag.getDenominations();
-		LinkedHashMap<String, Integer> change = changeBag.getDenominations();
-		
-		/* computes for the change tray values based on the original cash reserves and the subtracted cash reserve duplicate */
-        for( String s : change.keySet() )
-        {
-			if(order.getTotalCost() == 0 || cashReserves.getDenominations().get(s) - duplicate.get(s) < 0)
-				change.put( s, duplicate.get(s) );
-			else
-				change.put( s, cashReserves.getDenominations().get(s) - duplicate.get(s) );
-		}    
-        
-		
-        /* updates the cash reserves */
-        cashReserves.setDenominations(duplicate);
-        cashReserves.acceptDenominations(payment);
-        
-        /* sets payment tray back to zero */
-        for( String s : payment.keySet() )
-            payment.put( s, 0 );
-	}
 	
 	/**
 	 * Generate more of a specified item
@@ -586,49 +374,87 @@ public class SellingOperator
 		VM_Item item = null;
 		
 		if( s.equalsIgnoreCase("Cheese") )
-			item = new Cheese("Cheese", 40.00, 15);
+			item = new VM_Item("Cheese", 40.00, 15);
 							
 		else if( s.equalsIgnoreCase("Cocoa") )
-			item = new Cocoa("Cocoa", 20.00, 4);
+			item = new VM_Item("Cocoa", 20.00, 4);
 							
 		else if( s.equalsIgnoreCase("Cream") )
-			item = new Cream("Cream", 18.00, 5);
+			item = new VM_Item("Cream", 18.00, 5);
 							
 		else if( s.equalsIgnoreCase("Egg") )
-			item = new Egg("Egg", 12.00, 35);
+			item = new VM_Item("Egg", 12.00, 35);
 							
 		else if( s.equalsIgnoreCase("Kangkong") )
-			item = new Kangkong("Kangkong", 10.00, 2);
+			item = new VM_Item("Kangkong", 10.00, 2);
 							
 		else if( s.equalsIgnoreCase("Cornstarch") ) 
-			item = new Cornstarch("Cornstarch", 13.00, 2);
+			item = new VM_Item("Cornstarch", 13.00, 2);
 							
 		else if( s.equalsIgnoreCase("Milk") )
-			item = new Milk("Milk", 99.00, 20);
+			item = new VM_Item("Milk", 99.00, 20);
 							
 		else if( s.equalsIgnoreCase("Tofu") )
-			item = new Tofu("Tofu", 5.00, 3);
+			item = new VM_Item("Tofu", 5.00, 3);
 							
 		else if( s.equalsIgnoreCase("Salt") )
-			item = new Salt("Salt", 5.00, 1);
+			item = new VM_Item("Salt", 5.00, 1);
 							
 		else if( s.equalsIgnoreCase("Sugar") )
-			item = new Sugar("Sugar", 5.00, 30);
+			item = new VM_Item("Sugar", 5.00, 30);
 							
 		else if( s.equalsIgnoreCase("Chicken") )
-			item = new Chicken("Chicken", 150.00, 42);
+			item = new VM_Item("Chicken", 150.00, 42);
 							
 		else if( s.equalsIgnoreCase("BBQ") )
-			item = new BBQ("BBQ", 5.00, 1);
+			item = new VM_Item("BBQ", 5.00, 1);
 							
 		else if( s.equalsIgnoreCase("Flour") )
-			item = new Flour("Flour", 5.00, 1);
+			item = new VM_Item("Flour", 5.00, 1);
 		
 		return item;
 	}
+	
+	public void createNewOrder()
+	{
+		/* order is made blank */
+		order = new Order();
+	}
+	
+	
+	public double getPaymentTotal() { return paymentTotal; }
+	
+	public double getOrderTotal() { return orderTotal; }
+	
+	public double getCashReservesTotal() { return cashReservesTotal; }
+	
+	public double getChangeDue() { return changeDue; }
+	
+	public int getCalorieTotal() { return calorieTotal; }
+	
+	protected VM_Slot[] getSlots() { return slots; }
+	
+	protected Order getOrder() { return order; }
+	
+	public ArrayList<VM_Item> getSoldItems() { return soldItems; }
+	
+	
+    private double paymentTotal = 0;
+	private double orderTotal = 0;
+	private double cashReservesTotal = 0;
+	private double changeDue = 0;
+	private int calorieTotal = 0;
+	private int slotNum;
+	private int qty;
+	private String inputSlot;
+	private String inputQty;
+	private ArrayList<VM_Item> soldItems = null;
+	private ArrayList<Order> orderHistory;
+	private VM_Slot[] slots;
+	private Money vmCashReserves;
+	private LinkedHashMap<String, Double> duplicate;
+	private Money payment;
+	private Money change;
+	private Order order;
 
- 
-
-    /** Format constant that would help format labels of each item prices or computations*/
-	protected static final DecimalFormat FORMAT = new DecimalFormat("0.00");
 }

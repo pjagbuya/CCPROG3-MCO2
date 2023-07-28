@@ -49,7 +49,7 @@ public class Main
 	{
 		
 		Main mainHelp = new Main();
-		Maintenance maintenance = new Maintenance(Main.getPossibleItems());
+		Maintenance maintenance = new Maintenance();
 		ArrayList<VM_Item> soldItems = new ArrayList<VM_Item>();
 		ArrayList<VM_Item> itemStack = new ArrayList<VM_Item>();
 		SellingOperator sellingOperator = null;

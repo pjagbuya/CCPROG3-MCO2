@@ -7,11 +7,9 @@ import java.util.LinkedHashMap;
  */
 public class RecipeChecker
 {
-	public RecipeChecker(VM_Regular vm)
+	public RecipeChecker(VM_Slot[] slots, VM_Slot[] specialSlots)
 	{
 		int i;
-		VM_Slot[] slots;
-		VM_Slot[] specialSlots;
 		
 		/* lists all base ingredients */
 		absoluteBaseIngredients = new LinkedHashMap<Integer, String>();

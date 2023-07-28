@@ -23,7 +23,9 @@ public class VM_Regular {
 	 */
 	public VM_Regular(String name, 
 					  int nOfSlots, 
-					  int item_max) {
+					  int item_max,
+					  Money change)
+	{
 		this.name = name;
 		if(nOfSlots >= 8)
 			slots = new VM_Slot[nOfSlots];
@@ -41,90 +43,30 @@ public class VM_Regular {
 		
 		orderHistory = new ArrayList<Order>();
 		stockedInfos = new ArrayList<VM_StockedInfo>();
+		this.change = change;
 		recordCurrInd = 0;
-
+		
+		
+		setOperator(
+			new sellingOperator(
+				getSlots(),
+				getCurrentMoney(),
+				getOrderHistory(),
+				getChange() ) );
+				
+		maintenance = new Maintenance( getCurrentMoney(), getSlots(), null );
 	}
-
-
-	/**
-	 * Adds more of a certain item to slot specified by index
-	 *
-	 * @param givenItem the item to be added to the specified slot
-	 * @param i the index of the specified slot in the slots array
-	 */
-	/*
-	public void addItemStock(VM_Item givenItem, 
-							 int qty, 
-							 int i)
+	
+	
+	public Money getChange()
 	{
-		slots[i].addItemStock(givenItem, qty);
+		return change;
 	}
-	*/
 	
-	
-	/**
-	 * Adds more of a certain item to slot specified by index
-	 *
-	 * @param givenItem the item to be added to the specified slot
-	 * @param i the index of the specified slot in the slots array
-	 */
-	public void addItemStock(VM_Item givenItem, int i)
+	public SellingOperator getOperator()
 	{
-		slots[i].addItemStock( givenItem );
+		return operator;
 	}
-
-	/*
-	public void addItemStock(String s, 
-							 int i, 
-							 int qty)
-	{
-		if( s.equalsIgnoreCase("Cheese") )
-			addItemStock(new Cheese("Cheese", 20.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Cocoa") )
-			addItemStock(new Cocoa("Cocoa", 20.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Cream") )
-			addItemStock(new Cream("Cream", 20.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Egg") )
-			addItemStock(new Egg("Egg", 20.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Kangkong") )
-			addItemStock(new Kangkong("Kangkong", 20.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Cornstarch") ) 
-			addItemStock(new Cornstarch("Cornstarch", 20.00, 42), qty, i); // delete
-							
-		else if( s.equalsIgnoreCase("Milk") )
-			addItemStock(new Milk("Milk", 27.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Tofu") )
-			addItemStock(new Tofu("Tofu", 20.00, 42), qty, i); // delete
-							
-		else if( s.equalsIgnoreCase("Salt") )
-			addItemStock(new Salt("Salt", 20.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Sugar") )
-			addItemStock(new Sugar("Sugar", 20.00, 42), qty, i);
-							
-		else if( s.equalsIgnoreCase("Chicken") )
-			addItemStock(new Chicken("Chicken", 20.00, 42), qty, i);// add
-							
-		else if( s.equalsIgnoreCase("BBQ") )
-			addItemStock(new BBQ("BBQ", 20.00, 42), qty, i); // add
-							
-		else if( s.equalsIgnoreCase("Flour") )
-			addItemStock(new Flour("Flour", 20.00, 42), qty, i); // add		
-	}
-	*/
-	
-	
-
-
-
-
-
 	
 	/**
 	 * Replaces the current record of order history with a blank new one
@@ -157,31 +99,6 @@ public class VM_Regular {
 		if(!isThereItem)
 			System.out.println("No item stock/label is available to display");
 				
-	}
-	
-	/**
-	 * Looks for a slot associated with the specified item name,
-	 * and "tells" that slot to "sell" a specified number of its item.
-	 * Repeats for the other items in the order
-	 *
-	 * Has no input validation.
-	 * Use hasEnoughStock(), deductChange(), and other methods to be validated by SellingOperator
-	 *
-	 * @param order item containing the list of items to be released from the VM,
-	 * 				including how many of each should be released
-	 */
-	public void releaseStock(Order order) {
-		int i;
-		LinkedHashMap<String, Integer> orders;
-		
-		orders = order.getPendingOrder();
-
-		for( String s : orders.keySet() )
-			for(i = 0; i < slots.length; i++)
-				if( s.equals( slots[i].getSlotItemName() ) ) {
-					slots[i].releaseStock( orders.get(s) );
-					break;
-				}
 	}
 
 	/**
@@ -449,6 +366,32 @@ public class VM_Regular {
 		return null;
 	}
 	
+	
+
+	public SellingOperator getOperator()
+	{
+		return operator;
+	}
+	
+	public void setOperator(SellingOperator sellingOperator)
+	{
+		operator = sellingOperator;
+	}
+	
+	public Maintenance getMaintenance()
+	{
+		return maintenance;
+	}
+	
+	
+	public void setMaintenance(Maintenance maintenance)
+	{
+		this.maintenance = maintenance;
+	}
+
+	private Maintenance maintenance;
+	private Money change;
+	private SellingOperator operator;
 	/** the array of VM slots */
 	private VM_Slot[] slots;
 	/** the VM's name */

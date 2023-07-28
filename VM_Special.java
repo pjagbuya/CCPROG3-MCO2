@@ -14,9 +14,10 @@ public class VM_Special extends VM_Regular
 {
 	public VM_Special(String name, 
 					  int nOfSlots, 
-					  int item_max)
+					  int item_max,
+					  Money change)
 	{
-		super(name, nOfSlots, item_max);
+		super(name, nOfSlots, item_max, change);
 		
 		specialSlots = new VM_Slot[7]; // 7 different food items cannot be sold on their own
 		
@@ -25,7 +26,32 @@ public class VM_Special extends VM_Regular
 			
 		for (int i = 0; i < 7; i++)
 			specialSlots[i] = new VM_SpecialSlot(item_max);
+		
+		setSpecialOperator(
+			new SpecialSellingOperator(
+				getSlots(),
+				getCurrentMoney(),
+				getOrderHistory(),
+				getChange(),
+				specialSlots));
+				
+		maintenance = new Maintenance( getCurrentMoney(), getSlots(), getSpecialSlots() );
 	}
+	
+	
+	
+	public void setSpecialOperator(SpecialSellingOperator specialSellingOperator)
+	{
+		super.setOperator( specialSellingOperator );
+	}
+	
+	
+	
+	public SpecialSellingOperator getSpecialOperator()
+	{
+		return getOperator();
+	}
+
 	
 	
 	
@@ -40,7 +66,8 @@ public class VM_Special extends VM_Regular
 	@Override
 	public void addItemStock(VM_Item givenItem, int i)
 	{
-		if( Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) != null &&  Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) == 1 )
+		if( Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) != null && 
+			Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) == 1 )
 			super.addItemStock(givenItem, i);
 		else if( Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) != null )
 			specialSlots[i].addItemStock( givenItem );
@@ -48,9 +75,38 @@ public class VM_Special extends VM_Regular
 	
 	
 	
+	public void addAbsoluteBaseIngredients(Order order)
+	{
+		VM_Slot[] slots;
+		int i;
+		
+		/* Add absolute base ingredients to order. */
+		for( int k : recipeChecker.getAbsoluteBaseIngredients().keySet() )
+		{
+			if( Main.getPossibleItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
+				slots = getSlots();
+			else
+				slots = getSpecialSlots();
+			for(i = 0; i < slots.length; i++)
+				if( slots[i].getSlotItemName() != null &&
+					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) )
+					order.addOrder( slots[i], recipeChecker.getRequiredStock().get(k) );
+		}
+	}
+	
 	
 	
 	public VM_Slot[] getSpecialSlots() { return specialSlots; }
+	
+	public RecipeChecker getRecipeChecker() { return recipeChecker; }
+	
+	public void setRecipeChecker(RecipeChecker recipeChecker) { this.recipeChecker = recipeChecker; }
+	
+	
+	private RecipeChecker recipeChecker;
+	
+	
+	
 	
 	/** slots for items that cannot be sold on their own */
 	private VM_Slot[] specialSlots;

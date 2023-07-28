@@ -15,40 +15,41 @@ public class Money {
 	 *
 	 */
 	public Money() {
-		denominations = new LinkedHashMap<String, Integer>();
+		denominations = new LinkedHashMap<String, ArrayList<Denomination>>;
 		
-		denominations.put("One Thousand Bill", 0);
-		denominations.put("Five Hundred Bill", 0);
-		denominations.put("Two Hundred Bill", 0);
-		denominations.put("One Hundred Bill", 0);
-		denominations.put("Fifty Bill", 0);
-		denominations.put("Twenty Bill", 0);
+		denominations.put( "One Thousand Bill" , new ArrayList<Denomination>() );
+		denominations.put( "Five Hundred Bill" , new ArrayList<Denomination>() );
+		denominations.put( "Two Hundred Bill"  , new ArrayList<Denomination>() );
+		denominations.put( "One Hundred Bill"  , new ArrayList<Denomination>() );
+		denominations.put( "Fifty Bill"        , new ArrayList<Denomination>() );
+		denominations.put( "Twenty Bill"       , new ArrayList<Denomination>() );
 		
-		denominations.put("Twenty Coin", 0);
-		denominations.put("Ten Coin", 0);
-		denominations.put("Five Coin", 0);
-		denominations.put("One Coin", 0);
-		denominations.put("Twenty Five Cents", 0);
-		denominations.put("Five Cents", 0);
-		denominations.put("One Cent", 0);
+		denominations.put( "Twenty Coin"       , new ArrayList<Denomination>() );
+		denominations.put( "Ten Coin"          , new ArrayList<Denomination>() );
+		denominations.put( "Five Coin"         , new ArrayList<Denomination>() );
+		denominations.put( "One Coin"          , new ArrayList<Denomination>() );
+		denominations.put( "Twenty Five Cents" , new ArrayList<Denomination>() );
+		denominations.put( "Five Cents"        , new ArrayList<Denomination>() );
+		denominations.put( "One Cent"          , new ArrayList<Denomination>() );
 		
 		
 		strToVal = new LinkedHashMap<String, Double>();
-		strToVal.put("One Thousand Bill", 1000.0);
-		strToVal.put("Five Hundred Bill", 500.0);
-		strToVal.put("Two Hundred Bill", 200.0);
-		strToVal.put("One Hundred Bill", 100.0);
-		strToVal.put("Fifty Bill", 50.0);
-		strToVal.put("Twenty Bill", 20.0);
+		strToVal.put( "One Thousand Bill" , 1000.0 );
+		strToVal.put( "Five Hundred Bill" , 500.0  );
+		strToVal.put( "Two Hundred Bill"  , 200.0  );
+		strToVal.put( "One Hundred Bill"  , 100.0  );
+		strToVal.put( "Fifty Bill"        , 50.0   );
+		strToVal.put( "Twenty Bill"       , 20.0   );
 		
-		strToVal.put("Twenty Coin", 20.0);
-		strToVal.put("Ten Coin", 10.0);
-		strToVal.put("Five Coin", 5.0);
-		strToVal.put("One Coin", 1.0);
-		strToVal.put("Twenty Five Cents", 0.25);
-		strToVal.put("Five Cents", 0.05);
-		strToVal.put("One Cent", 0.01);
-
+		strToVal.put( "Twenty Coin"       , 20.0   );
+		strToVal.put( "Ten Coin"          , 10.0   );
+		strToVal.put( "Five Coin"         , 5.0    );
+		strToVal.put( "One Coin"          , 1.0    );
+		strToVal.put( "Twenty Five Cents" , 0.25   );
+		strToVal.put( "Five Cents"        , 0.05   );
+		strToVal.put( "One Cent"          , 0.01   );
+		
+		/* SHOULD BE REMOVED BECAUSE IT IS NOT A FUNCTION
 		valToStr = new LinkedHashMap<Double, String>();
 		valToStr.put(1000.0, "One Thousand Bill");
 		valToStr.put(500.0, "Five Hundred Bill");
@@ -64,52 +65,25 @@ public class Money {
 		valToStr.put(0.25, "Twenty Five Cents");
 		valToStr.put(0.05, "Five Cents");
 		valToStr.put(0.01, "One Cent");
+		*/
 	}
 	
-	/**
-	 * Adds a specified number of coins/bills to the cash reserves
-	 * 
-	 * @param givenValue the double representation of the denomination
-	 * @param qty the indicator of how many pieces of the specified denomination should be added
-	 */
-	public void addBillsOrCoins(double givenValue, int qty)
+	
+	public void add(Denomination denom)
 	{
-		for(double tempVal : valToStr.keySet())
-			if(	givenValue == tempVal &&
-				qty > 0 )
-			{
-				// valToStr.get(tempVal) - converts value to string word equivalent, thus used as key for denominations
-				//denominations.get(valToStr.get(tempVal)) - gets the amount currently in denominations
-				denominations.put(valToStr.get(tempVal), denominations.get(valToStr.get(tempVal)) + qty);
-			}	
+		if( denom != null && denominations.get( denom.getName() ) != null )
+			denominations.get( denom.getName() ).add( denom );
 	}
 	
-	/**
-	 * Removes a specified number of coins/bills from the cash reserves
-	 * 
-	 * @param givenValue the double representation of the denomination
-	 * @param qty the indicator of how many pieces of the specified denomination
-				  should be removed
-	 * 
-	 * @return true if 1.) the specified denomination is part of the standard set,
-					and 2.) the specified number of pieces of that denomination
-					was removed from the cash reserves,
-					false otherwise
-	 */
-	public boolean subtractBillsOrCoins(double givenValue, int qty)
+	
+	public Denomination subtract(String denom)
 	{
-		for(double tempVal : valToStr.keySet())
-			if(	givenValue == tempVal &&
-				qty > 0 &&
-				(denominations.get(valToStr.get(tempVal)) - qty) >= 0)
-			{
-				// valToStr.get(tempVal) - converts value to string word equivalent, thus used as key for denominations
-				//denominations.get(valToStr.get(tempVal)) - gets the amount currently in denominations
-				denominations.put(valToStr.get(tempVal), denominations.get(valToStr.get(tempVal)) - qty);
-				return true;
-			}
-		return false;
-
+		Denomination dispensedDenom = null;
+		if( denom != null &&
+			denominations.get( denom.getName() ) != null &&
+			denominations.get( denom.getName() ).size() > 0 )
+			dispensedDenom = denominations.get( denom.getName() ).remove(0);
+		return dispensedDenom;
 	}
 	
 	
@@ -119,50 +93,30 @@ public class Money {
 	 * @return the current total of all cash reserves
 	 **/
 	public double getTotalMoney() {
+		int i;
+		int cashTubeSize;
 		double total = 0.0;
+		ArrayList<Denomination> cashTube;
 		for( String s : denominations.keySet() )
-			total += strToVal.get(s)*denominations.get(s);
+		{
+			cashTube = denominations.get(s);
+			cashTubeSize = denominations.get(s).size();
+			for(i = 0; i < cashTubeSize; i++)
+				total += strToVal.get(s) * cashTube.get(i);
+		}
 		return total;
 	}
 	
-
-	/**
-	 * Adds a set of denominations to the object's own set of denominations
-	 * 
-	 * @param denominations the list of bills and coins to add to the cash reserves
-	 **/
-	public void acceptDenominations(LinkedHashMap<String, Integer> denominations) {
-		for(String s : denominations.keySet())
-			this.denominations.put(s, this.denominations.get(s) + denominations.get(s));
-	}
-	
-	/**
-	 * Adds the cash reserves of another Money object to its own cash reserves
-	 * 
-	 * @param money another instance of class Money
-	 **/
-	public void acceptDenominations(Money money) {
-		acceptDenominations(money.getDenominations());
-	}
-	
-	/**
-	 * Overwrite the cash reserves
-	 *
-	 * @param denominations a list of new denominations
-	 **/
-	public void setDenominations(LinkedHashMap<String, Integer> denominations) {
-		for(String s : denominations.keySet())
-			this.denominations.put(s , denominations.get(s));
-	}
 	
 	/**
 	 * Gets cash reserves
 	 *
 	 * @return the current set of cash reserves by denomination
 	 **/
-	public LinkedHashMap<String, Integer> getDenominations() {
+	public LinkedHashMap<String, ArrayList<Denomination>> getDenominations() {
 		return denominations;
 	}
+	
 	
 	/**
 	 * Gets strToVal, for converting from a denomination's
@@ -180,12 +134,14 @@ public class Money {
 	 *
 	 * @return the valToStr hashmap of the Money class
 	 **/
+	/*
 	public static LinkedHashMap<Double, String> getValToStr() {
 		return valToStr;
 	}
+	*/
 	
 	/** represents cash reserves, inluding the currently stored number of pieces of each denomination */
-	private LinkedHashMap<String, Integer> denominations;
+	private LinkedHashMap<String, ArrayList<Denomination>> denominations;
 	/** class hashmap for converting from the String to the double representation of a denomination */
 	private static LinkedHashMap<String, Double> strToVal;
 	/** class hashmap for converting from the double to the String representation of a denomination */
