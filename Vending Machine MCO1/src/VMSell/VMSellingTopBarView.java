@@ -2,6 +2,8 @@ package VMSell;
 
 import CustomSetup.CustomTopBarView;
 import Labels.LabelToField;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
@@ -20,11 +22,12 @@ public class VMSellingTopBarView extends CustomTopBarView{
         
         HBox addedNode = new HBox();
 
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
 
-        addedNode.getChildren().addAll(spacer1, vmName, spacer2);
 
+        addedNode.getChildren().addAll(vmName);
+        addedNode.setAlignment(Pos.CENTER);
+        addedNode.setPadding(new Insets(0,0,0,20));
+        HBox.setMargin(addedNode, new Insets(0,0,0,20));
         this.addToChildren(addedNode);
         this.getFinishBtn().setText("Go To Maintenance");
 

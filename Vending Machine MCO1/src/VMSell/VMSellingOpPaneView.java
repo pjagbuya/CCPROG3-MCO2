@@ -32,7 +32,10 @@ public class VMSellingOpPaneView extends BorderPane
         NumPaneController numPaneController = new NumPaneController(numPaneView);
         
         VMSellingTopBarView vmSellingTopBarView = new VMSellingTopBarView(parentWin, prevScene);
+        VMSellingOpController vmSellingOpController = new VMSellingOpController(vmSellingTopBarView);
 
+
+        
         this.setStyle("-fx-base: " + BG_COLOR+ ";");
         this.setTop(vmSellingTopBarView);
         this.setCenter(vMachineModelPaneView);
@@ -40,6 +43,9 @@ public class VMSellingOpPaneView extends BorderPane
         this.setLeft(denomNumPadView);
 
     }
+
+
+
 
 
     public double getMIN_HEIGHT() {

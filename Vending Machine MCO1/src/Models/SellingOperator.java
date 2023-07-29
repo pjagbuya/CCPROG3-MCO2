@@ -3,7 +3,7 @@ import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
-
+package Models;
 /** This class represents a Selling Operator
   * which provides for selling of regular items only
   * through the use of text based prompt

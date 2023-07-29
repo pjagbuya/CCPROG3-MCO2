@@ -1,6 +1,6 @@
 import java.util.LinkedHashMap;
 
-
+package Models;
 /**
  * Currently only supports KangkongChips
  *

@@ -1,3 +1,5 @@
+package Models;
+
 import java.util.Scanner;
 import java.util.LinkedHashMap;
 

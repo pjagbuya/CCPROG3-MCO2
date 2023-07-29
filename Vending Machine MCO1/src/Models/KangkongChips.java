@@ -1,6 +1,6 @@
 import java.util.ArrayList;
 
-
+package Models;
 /**
  * The class KangkongChips is a subclass of VM_Item. For this project, it is the so-called "special item."
  *

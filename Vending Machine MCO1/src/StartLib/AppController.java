@@ -49,7 +49,8 @@ public class AppController {
     }
 
 
-    public CreateRegMenu getRegMenu() {
+    public CreateRegMenu getRegMenu() 
+    {
         return regMenu;
     }
     private CreateRegMenu regMenu;

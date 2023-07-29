@@ -1,5 +1,5 @@
 import java.util.LinkedHashMap;
-
+package Models;
 /** This class represents a vending machine's cash reserves.
   * Contains methods and attributes for working with the "cash."
   * This program's denomination set is based

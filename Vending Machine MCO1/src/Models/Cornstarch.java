@@ -1,3 +1,5 @@
+package Models;
+
 /**The class Cornstarch represents a sub type of VM_Item
  * that will be an option in the available items that a regular
  * vending machine can have and combinations for the special

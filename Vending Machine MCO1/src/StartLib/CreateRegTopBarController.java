@@ -45,8 +45,8 @@ public class CreateRegTopBarController {
             {
                 setDenomPaneController.resetForm();
                 setItemPaneController.resetForm();
-                this.createRegTopBarView.getParentWin().setScene(this.createRegTopBarView.getTargetScene());
-                this.createRegTopBarView.getParentWin().centerOnScreen();
+                this.createRegTopBarView.changeWindowScene(this.createRegTopBarView.getTargetScene());
+
             }
 
         });
@@ -62,8 +62,8 @@ public class CreateRegTopBarController {
             {
                 Scene scene = new Scene(vmSellingOpPaneView, vmSellingOpPaneView.getMIN_WIDTH(), vmSellingOpPaneView.getMIN_HEIGHT());
 
-                this.createRegTopBarView.getParentWin().setScene(scene);
-                this.createRegTopBarView.getParentWin().centerOnScreen();
+                this.createRegTopBarView.changeWindowScene(scene);
+
             }
 
 

@@ -42,23 +42,8 @@ public class SetupVMTopBarView extends CustomTopBarView
     {
         return nameLabel;
     }
-    public void setStageWidthPropertyListener(ChangeListener<Number> changeListener)
-    {
-        super.getParentWin().widthProperty().addListener(changeListener);
-    }
-    public void setExitBtnListener(EventHandler<ActionEvent> eventHandler)
-    {
 
-        super.getExitBtn().setOnAction(eventHandler);
-
-    }
-
-    public void setFinishBtnListener(EventHandler<ActionEvent> eventHandler)
-    {
-
-        super.getFinishBtn().setOnAction(eventHandler);
-
-    }   
+    
     private TextField nameTextField;
     private Label nameLabel;
     public Object setupVMPopUpView;

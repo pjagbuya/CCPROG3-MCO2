@@ -101,23 +101,28 @@ public abstract class CustomTopBarView extends HBox
 
     public void addToChildren(Node node, Node nodeLabel)
     {
+        HBox cont1 = new HBox();
+
+
+        cont1.getChildren().addAll(node, nodeLabel);
+        cont1.setAlignment(Pos.CENTER);
+        
         this.getChildren().clear();
-        HBox spacer1 = new HBox();
-        HBox spacer2 = new HBox();
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
-        this.getChildren().addAll(buttonStartVBox, spacer1, nodeLabel, node, spacer2, buttonFinishVBox);
+
+        this.getChildren().addAll(buttonStartVBox,  cont1,  buttonFinishVBox);
 
 
     }
     public void addToChildren(Node node)
     {
+        HBox cont1 = new HBox();
+        cont1.getChildren().add(node);
+        cont1.setAlignment(Pos.CENTER);  
+        HBox.setHgrow(cont1, Priority.ALWAYS);
         this.getChildren().clear();
-        HBox spacer1 = new HBox();
-        HBox spacer2 = new HBox();
-        HBox.setHgrow(spacer1, Priority.ALWAYS);
-        HBox.setHgrow(spacer2, Priority.ALWAYS);
-        this.getChildren().addAll(buttonStartVBox, spacer1, node, spacer2, buttonFinishVBox);
+  
+
+        this.getChildren().addAll(buttonStartVBox, cont1, buttonFinishVBox);
 
 
     }
@@ -140,6 +145,33 @@ public abstract class CustomTopBarView extends HBox
     public Scene getTargetScene() {
         return targetScene;
     }
+
+    public void changeWindowScene(Scene newScene)
+    {
+        parentWin.setScene(newScene);
+        parentWin.centerOnScreen();
+
+    }
+
+    public void setStageWidthPropertyListener(ChangeListener<Number> changeListener)
+    {
+        this.parentWin.widthProperty().addListener(changeListener);
+    }
+    public void setExitBtnListener(EventHandler<ActionEvent> eventHandler)
+    {
+
+        this.exitBtn.setOnAction(eventHandler);
+
+    }
+
+    public void setFinishBtnListener(EventHandler<ActionEvent> eventHandler)
+    {
+
+        this.finishBtn.setOnAction(eventHandler);
+
+    }
+    
+
 
 
 
