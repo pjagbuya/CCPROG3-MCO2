@@ -38,7 +38,7 @@ public class VM_Factory
 	public VM_Regular sendOutVM()
 	{
 		VM_Regular sentOutVM;
-		vm.recordCurrentInventory();
+		vm.getMaintenance().recordCurrentInventory();
 		sentOutVM = vm;
 		
 		/* Clears out factory information */

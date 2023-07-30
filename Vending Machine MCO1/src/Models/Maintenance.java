@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import DenomLib.Denomination;
 import ItemSelectLib.PresetItem;
-
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.InputMismatchException;
@@ -26,8 +26,9 @@ public class Maintenance
 	 * @param possibleItems list of names of all item classes in the program, excluding VM_Item
 	
 	 */
-    public Maintenance(Money vmMoney, VM_Slot[] slots, VM_Slot[] specialSlots)
+    public Maintenance(ArrayList<VM_StockedInfo> stockedInfos, Money vmMoney, VM_Slot[] slots, VM_Slot[] specialSlots)
     {
+		this.stockedInfos = stockedInfos;
 		this.vmMoney = vmMoney;
 		this.slots = slots; 
 		this.specialSlots = specialSlots;
