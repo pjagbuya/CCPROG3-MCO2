@@ -6,7 +6,7 @@ import Models.Money;
 import Models.VM_Factory;
 import Models.VM_Regular;
 
-public class AppModel 
+public class AppModel
 {
     public AppModel()
     {
@@ -25,7 +25,7 @@ public class AppModel
         this.currItemCap = nOfItems;
 
     }
-    public VM_Regular getVendingMachine() 
+    public VM_Regular getVendingMachine()
     {
         return vendingMachines.get(currInd);
     }
@@ -41,5 +41,5 @@ public class AppModel
     private int currSlotCap;
     private int currItemCap;
     private int currInd;
-    
+
 }
