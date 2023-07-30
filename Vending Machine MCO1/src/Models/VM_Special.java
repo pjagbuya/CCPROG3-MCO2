@@ -2,6 +2,9 @@ package Models;
 import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.util.Map;
+
+import ItemSelectLib.PresetItem;
+
 import java.text.DecimalFormat;
 
 
@@ -28,6 +31,10 @@ public class VM_Special extends VM_Regular
 		for (int i = 0; i < 7; i++)
 			specialSlots[i] = new VM_SpecialSlot(item_max);
 		
+		for(PresetItem item : PresetItem.values())
+		{
+			possibleItems.put(item.name(), item.getIsIndependent());
+		}
 		setSpecialOperator(
 			new SpecialSellingOperator(
 				getSlots(),
@@ -36,7 +43,7 @@ public class VM_Special extends VM_Regular
 				getChange(),
 				specialSlots));
 				
-		maintenance = new Maintenance( getCurrentMoney(), getSlots(), getSpecialSlots() );
+
 	}
 	
 	
@@ -48,10 +55,7 @@ public class VM_Special extends VM_Regular
 	
 	
 	
-	public SpecialSellingOperator getSpecialOperator()
-	{
-		return getOperator();
-	}
+
 
 	
 	
@@ -64,39 +68,22 @@ public class VM_Special extends VM_Regular
 				  of the specified item should be added to the specified slot
 	 * @param i the index of the specified slot in the slots array
 	 */
-	@Override
+
 	public void addItemStock(VM_Item givenItem, int i)
 	{
-		if( Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) != null && 
-			Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) == 1 )
-			super.addItemStock(givenItem, i);
-		else if( Main.getPossibleItems().get( givenItem.getItemName().toUpperCase() ) != null )
+		if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null && 
+			possibleItems.get( givenItem.getItemName().toUpperCase() ) == 1 )
+			//UNSURE abt this
+		else if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null )
 			specialSlots[i].addItemStock( givenItem );
 	}
 	
 	
 	
-	public void addAbsoluteBaseIngredients(Order order)
-	{
-		VM_Slot[] slots;
-		int i;
-		
-		/* Add absolute base ingredients to order. */
-		for( int k : recipeChecker.getAbsoluteBaseIngredients().keySet() )
-		{
-			if( Main.getPossibleItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
-				slots = getSlots();
-			else
-				slots = getSpecialSlots();
-			for(i = 0; i < slots.length; i++)
-				if( slots[i].getSlotItemName() != null &&
-					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) )
-					order.addOrder( slots[i], recipeChecker.getRequiredStock().get(k) );
-		}
-	}
+
 	
 	
-	
+	private LinkedHashMap<String, Integer> possibleItems;
 	public VM_Slot[] getSpecialSlots() { return specialSlots; }
 	
 	public RecipeChecker getRecipeChecker() { return recipeChecker; }

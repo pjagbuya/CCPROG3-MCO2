@@ -5,8 +5,8 @@ import java.util.Iterator;
 
 import Buttons.DenominationBtn;
 import Buttons.NumButton;
-import DenomLib.Money;
 import Labels.LabelToField;
+import Models.Money;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;

@@ -1,5 +1,9 @@
 package Models;
 import java.util.Scanner;
+
+import DenomLib.Denomination;
+import ItemSelectLib.PresetItem;
+
 import java.util.LinkedHashMap;
 import java.util.InputMismatchException;
 
@@ -7,21 +11,27 @@ public class VM_Factory
 {
 	public VM_Factory()
 	{
-	
+		for(PresetItem item : PresetItem.values())
+		{
+			possibleItems.put(item.name(), item.getIsIndependent());
+		}
 	}
 	
 	
-	public void createVM (String vmType, String name, int nOfSlots, int maxItemsPerSlot)
+	public VM_Regular createVM (String vmType, String name, int nOfSlots, int maxItemsPerSlot)
 	{
+		VM_Regular vm;
 		if( vmType.equalsIgnoreCase("R") )
-			vm = VM_Regular(name, nOfSlots, maxItemsPerSlot);
+			vm = new VM_Regular(name, nOfSlots, maxItemsPerSlot, new Money());
 		else
-			vm = VM_Special(name, nOfSlots, maxItemsPerSlot);
+			vm = new VM_Special(name, nOfSlots, maxItemsPerSlot, new Money());
 		
-		this.vmMoney = vm.getCurrentMoney;
+		this.vmMoney = vm.getCurrentMoney();
 		this.slots = vm.getSlots();
 		if( vm instanceof VM_Special )
 			this.specialSlots = ((VM_Special)vm).getSpecialSlots();
+
+		return vm;
 	}
 	
 	
@@ -31,9 +41,9 @@ public class VM_Factory
 		VM_Slot[] slots;
 		int i;
 		int j;
-		
+		msg = null;
 		/* Switching between special and regular slots. */
-		if( Main.getPossibleItems().get( itemName ) == 1 )
+		if( possibleItems.get( itemName ) == 1 )
 			slots = this.slots;
 		else
 			slots = specialSlots;
@@ -60,24 +70,24 @@ public class VM_Factory
 		String msg;
 		VM_Slot[] slots;
 		int i;
-		
+		msg = null;
 		if(qty >= 0)
 			if( Money.getStrToVal().get(denom) != null )
-				from(i = 0; i < qty; i++)
+				for(i = 0; i < qty; i++)
 					vmMoney.add( createDenomination( denom ) );
 			else
 				msg = new String("ERROR: INVALID DENOMINATION.\n");		
 		else
-			msg = new String("\ERROR: NEGATIVE QUANTITIES NOT ALLOWED.\n");	
+			msg = new String("\nERROR: NEGATIVE QUANTITIES NOT ALLOWED.\n");	
 		
 		return msg;
 	}
 	
 	
 	
-	private Denomination createDenomination(String denom)
+	private DenominationItem createDenomination(String denom)
 	{
-		return Denomination( denom , Money.getStrToVal() );
+		return new DenominationItem( denom , Money.getStrToVal().get(denom) );
 	}	
 	
 	
@@ -127,15 +137,8 @@ public class VM_Factory
 		return item;
 	}
 	
-	
-	
-	public getVM()
-	{
-		return vm;
-	}
 
-	
-	private VM_Regular vm;
+	private LinkedHashMap<String, Integer> possibleItems;
 	private Money vmMoney;
 	private VM_Slot[] slots;
 	private VM_Slot[] specialSlots;

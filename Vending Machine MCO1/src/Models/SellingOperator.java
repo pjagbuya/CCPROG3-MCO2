@@ -215,18 +215,18 @@ public class SellingOperator
 		for( String s : vmCashReserves.getDenominations().keySet() )
 		{
 			duplicate.put( s , vmCashReserves.getDenominations().get(s).size() );
-			change.getDenominations().put( s , new ArrayList<Denomination>() );
+			change.getDenominations().put(s , new ArrayList<DenominationItem>() );
 		}
 	}
 	
 	public void proceedTrasaction()
 	{
 		int i;
-		ArrayList<VM_Item> soldItems = dispenseItems( getSlots );
+		ArrayList<VM_Item> soldItems = dispenseItems( getSlots() );
 		for(i = 0; i < soldItems.size(); i++)
 			this.soldItems.add( soldItems.get(i) );
 		updateCashTrays();
-		orderHistory().add( getOrder() );
+		orderHistory.add( getOrder() );
 	}
 	
 	public DenominationItem createDenomination(String denom)
@@ -234,7 +234,7 @@ public class SellingOperator
 		return new DenominationItem( denom , Money.getStrToVal().get(denom) );
 	}
 	
-	public ArrayList<VM_Item> dispenseItems(VM_Slots[] slots)
+	public ArrayList<VM_Item> dispenseItems(VM_Slot[] slots)
 	{
         int currAmt;
         int i;
@@ -250,19 +250,19 @@ public class SellingOperator
                     // Check max amount should be dispensed if order was greater than 10
                     if( currAmt > slots[i].getMAX() )
 						for(j = 0; j < slots[i].getMAX(); j++)
-							soldItems.add( slots[i].releaseStock( currAmt ) );
+							soldItems.add( slots[i].releaseStock() );
                     // Dispenses the item amount wished
                     else
 						for(j = 0; j < currAmt; j++)
-							soldItems.add( slots[i].releaseStock( currAmt ) );
+							soldItems.add( slots[i].releaseStock() );
                 }
-		return soldItems
+		return soldItems;
     }
 	
 	
 	
 	/** successful transactions ONLY */
-	private void updateCashTrays()
+	public void updateCashTrays()
 	{		
 		int difference; // the difference between the corresponding nos. of denominations in the cash reserve and the duplicate hashmap
 		int additional; // the additional payment pieces that have to be placed into the cash reserves
@@ -278,7 +278,7 @@ public class SellingOperator
 			for(i = 0; i < additional; i++)
 				vmCashReserves.add( payment.subtract( s ) );
 			for(i = 0; i < additional; i++)
-				payment.getDenominations().put( s , new ArrayList<Denomination>() );
+				payment.getDenominations().put( s , new ArrayList<DenominationItem>() );
 		}
 	}
 	
@@ -425,7 +425,9 @@ public class SellingOperator
 		order = new Order();
 	}
 	
-	
+	public void addOrderHistory(Order order) {
+		this.orderHistory.add(order);
+	}
 	public double getPaymentTotal() { return paymentTotal; }
 	
 	public double getOrderTotal() { return orderTotal; }

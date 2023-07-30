@@ -82,7 +82,8 @@ public class SpecialSellingOperator extends SellingOperator
 		dispenseItems( getSlots() );
 		dispenseItems( specialSlots );
 		updateCashTrays();
-		orderHistory().add( getOrder() );
+		addOrderHistory(getOrder());
+
 	}
 	
 	public String addIngredient(String ingredient, int qty)
@@ -95,8 +96,8 @@ public class SpecialSellingOperator extends SellingOperator
 		boolean ingredientHasSlot = false; // assumed false
 		boolean ingredientHasEnoughStock = false; // assumed false
 			
-			
-		if( Main.getPossibleItems().get( ingredient.toUpperCase() ) == null ) {
+		msg = null;
+		if( possibleItems.get( ingredient.toUpperCase() ) == null ) {
 			msg = new String("ERROR: ITEM DOES NOT EXIST IN UNIVERSE.\n");
 			ingredientExists = false;
 		}
@@ -104,7 +105,7 @@ public class SpecialSellingOperator extends SellingOperator
 		/* Prevents user from adding other flavors */
 		if( ingredientExists &&
 			getOrder().getPendingOrder().get( ingredient.toUpperCase() ) == null &&
-			recipeChecker().getReversedFlavors().get( ingredient.toUpperCase() ) != null )
+			recipeChecker.getReversedFlavors().get( ingredient.toUpperCase() ) != null )
 		{
 			msg = new String("ERROR: MULTIPLE FLAVORS NOT ALLOWED.\n");
 			ingredientIsAnotherFlavor = true;
@@ -112,10 +113,10 @@ public class SpecialSellingOperator extends SellingOperator
 			
 			/* Checks whether a slot holds enough of this item. */
 		if( ingredientExists && !ingredientIsAnotherFlavor ) {
-			if( Main.getPossibleItems().get( ingredient.toUpperCase() ) == 1 )
+			if( possibleItems.get( ingredient.toUpperCase() ) == 1 )
 				slots = getSlots();
 			else
-				slots = specialSlots();
+				slots = specialSlots;
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( ingredient ) )
@@ -139,17 +140,35 @@ public class SpecialSellingOperator extends SellingOperator
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( ingredient ) )
-					addToPendingMap( getOrder().getPendingOrder(), slots[i], qty)
+					addToPendingMap( getOrder().getPendingOrder(), slots[i], qty);
 		}
+
+		return msg;
 	}
 	
-	
+	public void addAbsoluteBaseIngredients(Order order)
+	{
+		VM_Slot[] slots;
+		int i;
+		
+		/* Add absolute base ingredients to order. */
+		for( int k : recipeChecker.getAbsoluteBaseIngredients().keySet() )
+		{
+			if( possibleItems.get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
+				slots = getSlots();
+			else
+				slots = getSpecialSlots();
+			for(i = 0; i < slots.length; i++)
+				if( slots[i].getSlotItemName() != null &&
+					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) )
+					order.addOrder( slots[i], recipeChecker.getRequiredStock().get(k) );
+		}
+	}
 	
 	
 	public String chooseFlavor(int chosenFlavor)
 	{
 		String msg = null;
-		int chosenFlavor = 0;
 		int i;
 		VM_Slot[] slots;
 		LinkedHashMap<Integer, String> flavors = recipeChecker.getFlavors();
@@ -165,14 +184,14 @@ public class SpecialSellingOperator extends SellingOperator
 		/* adds flavor to Order, if it is not PLAIN */
 		if( msg == null && !flavors.get(chosenFlavor).equalsIgnoreCase("PLAIN") )
 		{
-			if( Main.getPossibleItems().get( flavors.get(chosenFlavor) ) == 1 )
+			if( possibleItems.get( flavors.get(chosenFlavor) ) == 1 )
 				slots = getSlots();
 			else
 				slots = specialSlots;
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( flavors.get(chosenFlavor) ) )
-					addToPendingMap( getOrder().getPendingOrder() , slots[i] , 1 )
+					addToPendingMap( getOrder().getPendingOrder() , slots[i] , 1 );
 		}
 		return msg;
 	}
@@ -183,7 +202,7 @@ public class SpecialSellingOperator extends SellingOperator
 		recipeChecker = new RecipeChecker( getSlots() , specialSlots );
 	}
 	
-	
+	private LinkedHashMap<String, Integer> possibleItems;
 	ArrayList<VM_Item> ingredients;
 	RecipeChecker recipeChecker;
 	VM_Slot[] specialSlots;
