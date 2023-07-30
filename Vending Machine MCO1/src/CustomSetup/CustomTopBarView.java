@@ -53,33 +53,13 @@ public class CustomTopBarView extends HBox
 
         
         this.getChildren().addAll(buttonStartVBox, buttonFinishVBox);
-        initializeButtonHandlers();
+   
 
     }
         
     // your constructor and methods...
 
-    public void initializeButtonHandlers() {
-        buttonHandlers = new HashMap<>();
-        
-        // Register each button with its event handler
-        buttonHandlers.put(exitBtn, new GeneralEventHandler());
-        buttonHandlers.put(finishBtn, new GeneralEventHandler());
 
-    }
-
-    public void addActionToButton(Button button, EventHandler<ActionEvent> action) {
-        if (!buttonHandlers.containsKey(button)) {
-            buttonHandlers.put(finishBtn, new GeneralEventHandler());
-        }
-        else
-        {
-            buttonHandlers.get(button).addHandler(action);
-            button.setOnAction(buttonHandlers.get(button));
-        }
-        
-
-    }
     public void setDefault()
     {
         Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 16);
@@ -138,8 +118,6 @@ public class CustomTopBarView extends HBox
     public void addToChildren(Node node)
     {
         HBox cont1 = new HBox();
-        EventHandler<ActionEvent> handlerExit;
-        EventHandler<ActionEvent> handlerFinish;
 
         cont1.getChildren().add(node);
         cont1.setAlignment(Pos.CENTER);  
@@ -191,11 +169,11 @@ public class CustomTopBarView extends HBox
         this.parentWin.widthProperty().addListener(changeListener);
     }
     public void setExitBtnListener(EventHandler<ActionEvent> eventHandler) {
-        addActionToButton(exitBtn, eventHandler);
+        this.exitBtn.setOnAction(eventHandler);
     }
     
     public void setFinishBtnListener(EventHandler<ActionEvent> eventHandler) {
-        addActionToButton(finishBtn, eventHandler);
+        this.finishBtn.setOnAction(eventHandler);
     }
     
 

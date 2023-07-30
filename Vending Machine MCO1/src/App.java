@@ -38,8 +38,9 @@ public class App extends Application {
     {
         
         Stage window = primaryStage;
+        AppModel appModel = new AppModel();
         AppView appView = new AppView(window);
-        AppController appController = new AppController(appView);;
+        AppController appController = new AppController(appView, appModel);
 
 
         

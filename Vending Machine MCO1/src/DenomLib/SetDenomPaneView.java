@@ -67,13 +67,19 @@ public class SetDenomPaneView extends ScrollPane
         
         Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 18);
         DenominationBtn tempDenomBtn;
+        labelTextData = new LinkedHashMap<String, Double>();
 
+        for(Denomination denoms : Denomination.values())
+        {
+            labelTextData.put(denoms.getName(), denoms.getValue());
+        }
+        
         
         this.denomSetSections = new DenomSetSection[13];
-        labelTextData = new Money();
         
-        iteratorLabel = labelTextData.getDenominations().keySet().iterator();
-        iteratorValue = labelTextData.getStrToVal().values().iterator();
+        
+        iteratorLabel = labelTextData.keySet().iterator();
+        iteratorValue = labelTextData.values().iterator();
 
 
         leftPaneGrid = new GridPane();
@@ -185,5 +191,5 @@ public class SetDenomPaneView extends ScrollPane
     private GridPane leftPaneGrid;
     private DenomSetSection[] denomSetSections;
 
-    private Money labelTextData;
+    private LinkedHashMap<String, Double> labelTextData;
 }

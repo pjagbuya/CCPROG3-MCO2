@@ -23,38 +23,6 @@ public class Order
         totalCalories = 0;
 
     }
-
-
-	/**
-     * This method Adds a new item to the order and records the required quantity, or
-	 * replaces the original desired quantity with a newer itemQty.
-     * 
-     * @param slot the slot whose item is being bought
-     * @param itemQty the number of items to be bought
-     * @return true if order list was modified in any manner, false otherwise
-     */
-    public boolean addOrder(VM_Slot slot, 
-                            int itemQty)
-    {
-        if(slot == null)
-            return false;
-        else if( slot.getSlotItemStock() == 0 || itemQty > slot.getSlotItemStock() || itemQty <= 0)
-            return false;
-        else
-        {
-			if( pendingOrder.get( slot.getSlotItemName().toUpperCase() ) != null )
-			{
-				totalCostOfOrder -= slot.getPrice() * pendingOrder.get( slot.getSlotItemName().toUpperCase() );
-				totalCalories -= slot.getItems().get(0).getItemCalories() * pendingOrder.get( slot.getSlotItemName().toUpperCase() );
-			}
-			
-			pendingOrder.put( slot.getSlotItemName().toUpperCase() , itemQty );
-			totalCostOfOrder += slot.getPrice() * itemQty;
-			totalCalories += slot.getItems().get(0).getItemCalories() * itemQty;
-
-            return true;
-        }
-    }
 	
 	
 	/**
@@ -77,6 +45,11 @@ public class Order
     {  
         return totalCostOfOrder;
     }
+	
+	public void setTotalCost(double totalCostOfOrder)
+    {  
+        this.totalCostOfOrder = totalCostOfOrder;
+    }
 
     /**
      * This method gets the total calories that this order contains
@@ -85,6 +58,10 @@ public class Order
      */
     public int getTotalCalories() {
         return totalCalories;
+    }
+	
+	public void setTotalCalories(int totalCalories) {
+        this.totalCalories = totalCalories;
     }
 	
 	/**

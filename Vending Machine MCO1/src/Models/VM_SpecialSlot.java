@@ -2,7 +2,6 @@ package Models;
 import java.util.Scanner;
 
 
-
 /** The class VM_Slot represents a special slot of the VM
   *
   * @author Paul Josef P. Agbuya

@@ -1,4 +1,5 @@
 package Models;
+
 import java.util.LinkedHashMap;
 
 
@@ -8,11 +9,9 @@ import java.util.LinkedHashMap;
  */
 public class RecipeChecker
 {
-	public RecipeChecker(VM_Regular vm)
+	public RecipeChecker(VM_Slot[] slots, VM_Slot[] specialSlots)
 	{
 		int i;
-		VM_Slot[] slots;
-		VM_Slot[] specialSlots;
 		
 		/* lists all base ingredients */
 		absoluteBaseIngredients = new LinkedHashMap<Integer, String>();
@@ -35,10 +34,7 @@ public class RecipeChecker
 		flavors.put(4, "COCOA");
 		flavors.put(5, "BBQ");
 	
-		
-		
-		slots =  vm.getSlots();
-		specialSlots = ((VM_Special)vm).getSpecialSlots();
+
 		
 		
 		

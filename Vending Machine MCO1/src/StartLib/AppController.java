@@ -15,11 +15,12 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class AppController {
-    public AppController (AppView appView)
+    public AppController (AppView appView, AppModel appModel)
     {
         
 
         this.appView = appView;
+        this.appModel = appModel;
         this.regMenu = this.appView.getCreateRegMenu();
         this.regMenuTopBar = this.regMenu.getCreateRegTopBarView();
         this.setUpVMPopUpView = this.appView.getSetupVMPopUpView();
@@ -28,7 +29,12 @@ public class AppController {
         
 
         setupShowPopUpCreateBtn();
-
+        this.appView.setBtnToMaintenanceAction(
+            e->
+            {
+                this.appView.changeToMaintenanceSelectScreen();
+            }
+        );
         this.appView.setBtnExitAction(e->
         {
             closeProgram(this.primaryWindow);
@@ -47,10 +53,12 @@ public class AppController {
     private void setupShowPopUpCreateBtn()
     {
 
-
+        ConfirmBox confirmBox = new ConfirmBox();
         VMSellingOpPaneView vmSellingOpPaneView = this.appView.getVmSellingOpPaneView();
         VMSellingTopBarView vmSellingTopBarView = vmSellingOpPaneView.getVmSellingTopBarView();
-        ConfirmBox confirmBox = new ConfirmBox();
+        VMSellingOpController vmSellingOpController = new VMSellingOpController(vmSellingTopBarView, this.appView.getStartMenu(), this.appView.getMaintenanceMenu());
+        
+        
         
         
         SetItemPaneController setItemPaneController = new SetItemPaneController(primaryWindow, regMenu.getRightSetItemPane(), regMenu.getvMachineModelPaneView());
@@ -60,65 +68,49 @@ public class AppController {
         CreateRegTopBarController createRegTopBarController = new CreateRegTopBarController(this.regMenu.getCreateRegTopBarView(), 
                                                                                             setDenomPaneController, setItemPaneController,
                                                                                             this.appView.getStartMenu());
-        DenomNumPaneController denomNumPaneController = new DenomNumPaneController(vmSellingOpPaneView.getDenomNumPadView());
         
+        
+        
+
+        DenomNumPaneController denomNumPaneController = new DenomNumPaneController(vmSellingOpPaneView.getDenomNumPadView());
         NumPaneController numPaneController = new NumPaneController(vmSellingOpPaneView.getNumPaneView());
         
         
+
         MaintenanceController maintenanceController = new MaintenanceController(appView.getMaintSelectView());
-        
-        
-        
         SetupVMPopUpController setupVMPopUpController = new SetupVMPopUpController(this.appView.getSetupVMPopUpView());
                
         // Upon creation of vending machine initiate all necessary controllers depending on certain trigger finish btns
         this.appView.setBtnCreateRegAction(e->
         {
-appView.showPopUpView();
+            appView.showPopUpView();
 
-            // Access topbar of popup and add controllers to components of popupview
-            this.setUpVMPopUpView.setHidTopBarOnFinishBtn(event->{
-                if(!this.appView.getSetupVMPopUpView().getNameField().getText().isEmpty())
-                {
-
-                    setupVMPopUpController.resetForm();
-                    appView.changeToCreateRegScene();
-                }
+        });
 
 
-            });
 
-            this.regMenuTopBar.setFinishBtnListener(event->
+        // Creation Menu
+        this.regMenuTopBar.setFinishBtnListener(event->
+        {
+            boolean isFinish;
+
+            isFinish = this.regMenu.raiseConfirmBox("Proceed To Features", "By finishing we will proceed to be testing to you the features of selling, Do you want to proceed?");
+            if(!isFinish)
+                event.consume();
+            else
             {
-                boolean isFinish;
 
-                isFinish = this.regMenu.raiseConfirmBox("Proceed To Features", "By finishing we will proceed to be testing to you the features of selling, Do you want to proceed?");
-                if(!isFinish)
-                    e.consume();
-                else
-                {
-
-                    appView.changeToSellingScreen();
-        
-                }
-                
-
-
-            });
-
-            vmSellingTopBarView.setFinishBtnListener(event->{
-
-                appView.changeToMaintenanceSelectScreen();
-                
-
-                
-            });
-
-
+                appView.changeToSellingScreen();
+    
+            }
+            
 
 
         });
 
+
+
+        // ON exit
         this.appView.setBtnExitOnMaintSelectView(event ->
         {
             boolean isToSellScreen;
@@ -159,7 +151,7 @@ appView.showPopUpView();
     private CreateRegMenu regMenu;
     private CreateRegTopBarView regMenuTopBar;
     private SetupVMPopUpView setUpVMPopUpView;
-    private Scene mainMenuScene;
     private Stage primaryWindow;
+    private AppModel appModel;
     private AppView appView;
 }

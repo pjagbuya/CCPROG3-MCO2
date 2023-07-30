@@ -16,7 +16,7 @@ public class SetDenomPaneController {
         this.denomSetSections = new DenomSetSection[13];
         this.denomPaneView = denomPaneView;
 
-        this.denomModel = new DenominationModel();
+   
         denomSetSections = this.denomPaneView.getDenomSetSections();
 
         for(int i = 0; i< 13; i++)
@@ -131,7 +131,7 @@ public class SetDenomPaneController {
         this.denomSetSections = new DenomSetSection[13];
         this.denomPaneView = denomPaneView;
 
-        this.denomModel = new DenominationModel();
+
         denomSetSections = this.denomPaneView.getDenomSetSections();
 
         for(int i = 0; i< 13; i++)
@@ -246,6 +246,5 @@ public class SetDenomPaneController {
 
     }
     private DenomSetSection[] denomSetSections;
-    private DenominationModel denomModel;
     private SetDenomPaneView denomPaneView;
 }

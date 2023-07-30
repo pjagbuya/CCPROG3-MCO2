@@ -28,7 +28,7 @@ public class VMSellingOpPaneView extends BorderPane
         // Denominations viewer
         
 
-        
+        this.parentWin = parentWin;
         this.setStyle("-fx-base: " + BG_COLOR+ ";");
         this.setTop(vmSellingTopBarView);
         this.setCenter(vMachineModelPaneView);
@@ -38,7 +38,10 @@ public class VMSellingOpPaneView extends BorderPane
     }
 
 
-
+    public void changeToScene(Scene sceneTarget)
+    {
+        this.parentWin.setScene(sceneTarget);
+    }
 
     public DenomNumPadView getDenomNumPadView() {
         return denomNumPadView;
@@ -59,6 +62,7 @@ public class VMSellingOpPaneView extends BorderPane
         return MIN_WIDTH;
     }
 
+    private Stage parentWin;
     private NumPaneView numPaneView;
     private VMSellingTopBarView vmSellingTopBarView;
     private DenomNumPadView denomNumPadView;

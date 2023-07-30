@@ -19,7 +19,10 @@ public class KangkongChips extends VM_Item
 	public KangkongChips(String name, 
                    double price, 
                    int calories)
-	{ super(name, price, calories); }
+	{ 
+		super(name, price, calories);
+		ingredients = new ArrayList<VM_Item>();
+	}
 	
 	
 	/**

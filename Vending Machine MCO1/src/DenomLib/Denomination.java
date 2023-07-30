@@ -32,13 +32,15 @@ public enum Denomination {
         return value;
     }
 
-    public static Denomination fromName(String denominationName) {
+    public static double fromName(String denominationName) {
         for (Denomination denomination : Denomination.values()) {
-            if (denomination.getName().equals(denominationName)) {
-                return denomination;
+            if (denomination.getName().equals(denominationName)) 
+            {
+                return denomination.getValue();
             }
         }
-        throw new IllegalArgumentException("Invalid denomination name: " + denominationName);
+        
+        return -1;
     }
 
 

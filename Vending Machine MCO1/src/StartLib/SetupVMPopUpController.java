@@ -23,11 +23,11 @@ public class SetupVMPopUpController
 
         this.setupVMPopUpView = setupVMPopUpView;
 
-        setupVMTopBarView = setupVMPopUpView.getSetupVMTopBar();
+
         
 
         // When exit close window
-        setupVMTopBarView.setExitBtnListener(e->
+        mainTopBar.setExitBtnListener(e->
         {
             setupVMPopUpView.close();
         });
@@ -52,23 +52,27 @@ public class SetupVMPopUpController
             setupVMPopUpView.close();
         });
 
-        hiddenTopBar.setExitBtnListener(e->{
+        hiddenTopBar.setExitBtnListener(e->
+        {
             setupVMPopUpView.changePopUpSceneMain();
         });
 
 
         hiddenTopBar.setFinishBtnListener(e->
-        {
+        {     
+
             if(nameField.getText().length() != 0)
             {
-
+                setupVMPopUpView.changeWindowScene();
                 setupVMPopUpView.changePopUpSceneMain();
                 setupVMPopUpView.close();
+                resetForm();
             }
             else
             {
-                e.consume();
+                
                 setupVMPopUpView.raiseAlert("Missing Inputs", "Please add a name to your Vending Machine", 12);
+                e.consume();
             }
                 
         });

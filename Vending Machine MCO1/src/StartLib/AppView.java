@@ -148,7 +148,10 @@ public class AppView extends BorderPane{
     {
         this.maintSelectView.addActionExitBtn(eventHandler);
     }
-
+    public void setBtnToMaintenanceAction(EventHandler<ActionEvent> eventHandler)
+    {
+        this.BTN_TESTF.setOnAction(eventHandler);
+    }
     private Stage parentWin;
 
 

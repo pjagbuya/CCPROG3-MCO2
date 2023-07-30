@@ -8,7 +8,9 @@ import javafx.scene.Scene;
 
 public class VMSellingOpController 
 {
-    public VMSellingOpController(CustomTopBarView vmSellingTopBarView)
+    public VMSellingOpController(VMSellingTopBarView vmSellingTopBarView,
+                                 Scene targetExit,
+                                 Scene targetMaint)
     {
 
 
@@ -16,19 +18,19 @@ public class VMSellingOpController
 
         this.vmSellingTopBarView.setExitBtnListener(e->
         {
-            
+            this.vmSellingTopBarView.changeWindowScene(targetExit);
         });
 
 
         this.vmSellingTopBarView.setFinishBtnListener(e->
         {
 
-
+            this.vmSellingTopBarView.changeWindowScene(targetMaint);
                 
         });
         
     }
 
-    private CustomTopBarView vmSellingTopBarView;
+    private VMSellingTopBarView vmSellingTopBarView;
     
 }

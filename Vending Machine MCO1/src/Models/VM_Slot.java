@@ -1,5 +1,4 @@
 package Models;
-
 import java.util.Scanner;
 import java.util.ArrayList;
 
@@ -128,17 +127,18 @@ public abstract class VM_Slot {
      * 
      * @param qty the number of items to be released from this slot
      */
-    public void releaseStock(int qty)
+    public VM_Item releaseStock()
     {
 		int i;
+		VM_Item releasedItem = null;
 		/* Only release stock if there is enough of it to release */
-        if( items != null && hasEnoughStock(qty) )
+        if( items != null && hasEnoughStock(1) )
         {
-			for(i = 0; i < qty; i++)
-				items.remove(0);
-            storedProfit += getPrice() * qty;
-            slotItemSold += qty;
+			releasedItem = items.remove(0);
+            storedProfit += getPrice();
+            slotItemSold++;
         }
+		return releasedItem;
     }
 	
 	
@@ -236,48 +236,6 @@ public abstract class VM_Slot {
         sc = null;
 
     }
-		
-
-    /**
-     * Adds to the stock count of this slot, if not yet at maximum capacity
-     * 
-     * @param qty the number to add to stock counter attribute
-     * @return true if qty is 1 or greater, false otherwise
-     */
-	 /*
-	public boolean addItemStock(int qty)
-    {
-
-        Scanner sc = new Scanner(System.in);
-
-        // Add item only if this slot contains no item
-        if(item == null)
-		{
-            System.out.println("\033[1;38;5;202mERROR! no stocks/item is detected\033[0m");
-            sc = null;
-			return false;
-		}
-
-        // Set stock to max if there was an excess
-        else if(qty + slotItemStock > MAX)
-		{
-            System.out.println("You have an excess of " + (qty+slotItemStock- MAX) + " " + slotItemName + " while we were stocking. Returning...");
-            System.out.println("\033[1;33m" + "Press and Enter Any Key To Continue..." + "\033[0m");
-            sc.nextLine();
-            slotItemStock = MAX;
-        }
-
-        // Add item
-		else
-			slotItemStock += qty;
-
-        sc = null;
-		return true;
-
-        
-    }
-	*/
-   
 
 	
 	/**
