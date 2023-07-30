@@ -11,7 +11,7 @@ public class Denomination
 		return value;
 	}
 	
-	public double getName()
+	public String getName()
 	{
 		return name;
 	}
