@@ -1,5 +1,6 @@
-import java.util.LinkedHashMap;
 package Models;
+import java.util.LinkedHashMap;
+
 /**
  * The class Order represents an order, which contains a list of items to-be-bought.
  *

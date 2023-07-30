@@ -1,6 +1,7 @@
 package ItemSelectLib;
 
 
+
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
@@ -25,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -58,26 +60,15 @@ public class SetItemPaneView extends ScrollPane{
         createNewBtn.setAlignment(Pos.CENTER);
 
         
-        possibleItems = new LinkedHashMap<String, String>();
+        tempListURL = new ArrayList<String>();
+        tempListItemName = new ArrayList<>();
+        for(PresetItem presetItem : PresetItem.values())
+        {
+            tempListItemName.add(presetItem.name());
+            tempListURL.add(presetItem.getImagePath());
+        }
 
-		possibleItems.put("CHEESE", "/Pics/cheese.png");
-		possibleItems.put("COCOA", "/Pics/cocoa-bean.png");
-		possibleItems.put("CREAM", "/Pics/cream.png");
-		possibleItems.put("EGG", "/Pics/egg.png");
-		possibleItems.put("KANGKONG", "/Pics/kangkong.png");
-		possibleItems.put("MILK", "/Pics/milk.png");
-		possibleItems.put("SALT", "/Pics/salt.png");
-		possibleItems.put("SUGAR", "/Pics/sugar.png");
-		possibleItems.put("CORNSTARCH", "/Pics/cornstarch.png");
-		possibleItems.put("TOFU", "/Pics/tofu.png");
-		possibleItems.put("CHICKEN", "/Pics/chicken-leg.png");
-		possibleItems.put("BBQ", "/Pics/bbq.png");
-		possibleItems.put("FLOUR", "/Pics/flour.png");
-        possibleItems.put("SOY SAUCE", "/Pics/soy-sauce.png");
-        possibleItems.put("CHILI", "/Pics/chili.png");
-
-        tempListURL = new ArrayList<String>(possibleItems.values());
-        tempListItemName = new ArrayList<>(possibleItems.keySet());
+  
 
         maxItems = tempListURL.size();
 
@@ -99,7 +90,7 @@ public class SetItemPaneView extends ScrollPane{
 
         for(int i = 0; i < maxItems; i++)
         {
-            // URL of an image
+
             URL resourceUrl = getClass().getResource(tempListURL.get(i));
             if (resourceUrl != null) {
                     
@@ -127,10 +118,7 @@ public class SetItemPaneView extends ScrollPane{
                     +"-fx-border-color: " + colorLightest + ";"
                     +"-fx-border-width: " + "0 0 0 4" + ";");
 
-        Platform.runLater(() -> {
-            this.applyCss();
-            this.layout();
-        });
+ 
     }
 
 
@@ -147,10 +135,7 @@ public class SetItemPaneView extends ScrollPane{
         else
         
             mainCanvasVBox.getChildren().add(itemSectionGridPanes.get(i));
-        Platform.runLater(() -> {
-            this.applyCss();
-            this.layout();
-        });
+
     }
 
     public void createNewItem(String itemName, String calories)
@@ -182,14 +167,6 @@ public class SetItemPaneView extends ScrollPane{
         return itemSectionGridPanes;
     }
 
-   
- 
-
- 
-    public LinkedHashMap<String, String> getPossibleItems() 
-    {
-        return possibleItems;
-    }
 
 
 
@@ -197,6 +174,12 @@ public class SetItemPaneView extends ScrollPane{
     {
         createNewBtn.setOnAction(eventHandler);
     }
+    public void addEventHandlerOnMouseClick(EventHandler<MouseEvent> eventHandler, int trackedIndex)
+    {
+        this.itemSectionGridPanes.get(trackedIndex).addEventHandler(MouseEvent.MOUSE_CLICKED, eventHandler);
+
+    }
+    
 
 
 
@@ -206,7 +189,6 @@ public class SetItemPaneView extends ScrollPane{
     private VBox hiddenExpandableVBox;
     private Button createNewBtn;
     private ArrayList<ItemSectionPane> itemSectionGridPanes;
-    private LinkedHashMap<String, String> possibleItems;
     private int maxItems;
     private Stage parentWin;
 

@@ -11,7 +11,7 @@ public class VM_Factory
 	public VM_Regular createVM(Maintenance maintenance)
 	{
 
-
+		return null;
 		
 
 

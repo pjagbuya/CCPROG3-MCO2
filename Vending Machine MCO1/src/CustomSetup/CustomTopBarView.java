@@ -28,59 +28,18 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-public abstract class CustomTopBarView extends HBox
-{
-    public CustomTopBarView(Stage parentWin, Scene targetScene)
-    {
-        
-        Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 16);
+import java.util.HashMap;
+import java.util.Map;
+import java.util.function.Consumer;
 
-   
-        
+public class CustomTopBarView extends HBox
+{
+    public CustomTopBarView(Stage parentWin)
+    {
         String colorLightest = "#97FEED";
         String colorBg = "#071952";
-
-
-        
         this.parentWin = parentWin;
-
-
-        buttonStartVBox = new VBox();
-        buttonFinishVBox = new VBox();
-
-        
-
-        this.targetScene = targetScene;
-
-        // Place Holder
-        finishBtn = new Button("Finish");
-        finishBtn.setStyle("-fx-base: " + BG_COLOR+ ";"
-                        +"-fx-border-color: " + colorLightest + ";" +
-                         "-fx-border-width: 1.5px;");
-        finishBtn.setFont(headerBoldLabel);
-
-        finishBtn.setAlignment(Pos.CENTER_RIGHT);
-
-
-
-        exitBtn = new Button("Exit");
-        buttonStartVBox.setAlignment(Pos.CENTER_LEFT);
-        exitBtn.setStyle("-fx-base: " + BG_COLOR+ ";"
-                        +"-fx-border-color: " + colorLightest + ";" +
-                         "-fx-border-width: 1.5px;");
-        exitBtn.setFont(headerBoldLabel);
-   
- 
-        buttonStartVBox.getChildren().add(exitBtn);
-
-
-       
-
-        
-        buttonFinishVBox.getChildren().add(finishBtn);
-        buttonFinishVBox.setAlignment(Pos.CENTER_RIGHT);
-
-
+        setDefault();
         this.prefHeight(MIN_HEIGHT);
         this.prefWidth(MIN_WIDTH);
         this.setStyle(
@@ -94,11 +53,64 @@ public abstract class CustomTopBarView extends HBox
 
         
         this.getChildren().addAll(buttonStartVBox, buttonFinishVBox);
-        
+        initializeButtonHandlers();
 
+    }
+        
+    // your constructor and methods...
+
+    public void initializeButtonHandlers() {
+        buttonHandlers = new HashMap<>();
+        
+        // Register each button with its event handler
+        buttonHandlers.put(exitBtn, new GeneralEventHandler());
+        buttonHandlers.put(finishBtn, new GeneralEventHandler());
 
     }
 
+    public void addActionToButton(Button button, EventHandler<ActionEvent> action) {
+        if (!buttonHandlers.containsKey(button)) {
+            buttonHandlers.put(finishBtn, new GeneralEventHandler());
+        }
+        else
+        {
+            buttonHandlers.get(button).addHandler(action);
+            button.setOnAction(buttonHandlers.get(button));
+        }
+        
+
+    }
+    public void setDefault()
+    {
+        Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 16);
+        String colorLightest = "#97FEED";
+        String colorBg = "#071952";
+        buttonStartVBox = new VBox();
+        buttonFinishVBox = new VBox();
+
+        // Place Holder
+        finishBtn = new Button("Finish");
+        finishBtn.setStyle("-fx-base: " + BG_COLOR+ ";"
+                        +"-fx-border-color: " + colorLightest + ";" +
+                         "-fx-border-width: 1.5px;");
+        finishBtn.setFont(headerBoldLabel);
+
+        finishBtn.setAlignment(Pos.CENTER_RIGHT);
+
+        exitBtn = new Button("Exit");
+        buttonStartVBox.setAlignment(Pos.CENTER_LEFT);
+        exitBtn.setStyle("-fx-base: " + BG_COLOR+ ";"
+                        +"-fx-border-color: " + colorLightest + ";" +
+                         "-fx-border-width: 1.5px;");
+        exitBtn.setFont(headerBoldLabel);
+   
+ 
+        buttonStartVBox.getChildren().add(exitBtn);
+
+        buttonFinishVBox.getChildren().add(finishBtn);
+        buttonFinishVBox.setAlignment(Pos.CENTER_RIGHT);
+  
+    }
     public void addToChildren(Node node, Node nodeLabel)
     {
         HBox cont1 = new HBox();
@@ -107,23 +119,46 @@ public abstract class CustomTopBarView extends HBox
         cont1.getChildren().addAll(node, nodeLabel);
         cont1.setAlignment(Pos.CENTER);
         
-        this.getChildren().clear();
+        
+        if(!this.getChildren().contains(buttonFinishVBox))
+        {
+            this.getChildren().clear();
+            this.getChildren().addAll(buttonStartVBox,  cont1,  buttonFinishVBox);
+        }
+            
+        else
+        {
+            this.getChildren().clear();
+            this.getChildren().addAll(buttonStartVBox,  cont1);
+        }
 
-        this.getChildren().addAll(buttonStartVBox,  cont1,  buttonFinishVBox);
 
 
     }
     public void addToChildren(Node node)
     {
         HBox cont1 = new HBox();
+        EventHandler<ActionEvent> handlerExit;
+        EventHandler<ActionEvent> handlerFinish;
+
         cont1.getChildren().add(node);
         cont1.setAlignment(Pos.CENTER);  
         HBox.setHgrow(cont1, Priority.ALWAYS);
         this.getChildren().clear();
-  
+        
 
-        this.getChildren().addAll(buttonStartVBox, cont1, buttonFinishVBox);
 
+        if(!this.getChildren().contains(buttonFinishVBox))
+        {
+            this.getChildren().clear();
+            this.getChildren().addAll(buttonStartVBox,  cont1,  buttonFinishVBox);
+        }
+            
+        else
+        {
+            this.getChildren().clear();
+            this.getChildren().addAll(buttonStartVBox,  cont1);
+        }
 
     }
     public void removeFinishBtn()
@@ -142,9 +177,7 @@ public abstract class CustomTopBarView extends HBox
     public Stage getParentWin() {
         return parentWin;
     }
-    public Scene getTargetScene() {
-        return targetScene;
-    }
+
 
     public void changeWindowScene(Scene newScene)
     {
@@ -157,18 +190,12 @@ public abstract class CustomTopBarView extends HBox
     {
         this.parentWin.widthProperty().addListener(changeListener);
     }
-    public void setExitBtnListener(EventHandler<ActionEvent> eventHandler)
-    {
-
-        this.exitBtn.setOnAction(eventHandler);
-
+    public void setExitBtnListener(EventHandler<ActionEvent> eventHandler) {
+        addActionToButton(exitBtn, eventHandler);
     }
-
-    public void setFinishBtnListener(EventHandler<ActionEvent> eventHandler)
-    {
-
-        this.finishBtn.setOnAction(eventHandler);
-
+    
+    public void setFinishBtnListener(EventHandler<ActionEvent> eventHandler) {
+        addActionToButton(finishBtn, eventHandler);
     }
     
 
@@ -177,11 +204,12 @@ public abstract class CustomTopBarView extends HBox
 
 
 
-    private Scene targetScene;
-    private Stage parentWin;
-    private Button exitBtn, finishBtn;
-    private VBox buttonStartVBox, buttonFinishVBox;
 
+    private Stage parentWin;
+    private Button exitBtn;
+    private Button finishBtn;
+    private VBox buttonStartVBox, buttonFinishVBox;
+    private Map<Button, GeneralEventHandler> buttonHandlers;
 
     private final double MIN_HEIGHT = 100;
     private final double MIN_WIDTH = 1200;

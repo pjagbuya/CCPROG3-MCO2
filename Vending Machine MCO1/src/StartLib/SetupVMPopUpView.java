@@ -1,6 +1,7 @@
 package StartLib;
 
 
+import Boxes.AlertBox;
 import Buttons.*;
 import Labels.LabelToField;
 import javafx.beans.value.ChangeListener;
@@ -53,6 +54,11 @@ public class SetupVMPopUpView extends Stage
         HBox typeSelectHBox = new HBox(10);           // type of vending machine selection
         HBox spacer = new HBox();
     
+        this.setupVMHidTopBar = new SetupVMTopBarView(parentWin);
+        this.setupVMHidTopBar.setDefault();
+        this.targetScene = targetChangeScene;
+        this.origStage = parentWin;
+        this.alertBox = new AlertBox();
 
 
         slotAddBtn = new AddButton(parentWin, 25, 25);
@@ -63,7 +69,7 @@ public class SetupVMPopUpView extends Stage
 
 
         /* hiddenPane for selecting the type of Vending Machine */
-        setupVMHidTopBar = new SetupVMTopBarView(parentWin, targetChangeScene);
+
         nameField = new TextField();
         nameLabelAndTextHBox.getChildren().addAll(nameLabel, nameField);
         setupVMHidTopBar.addToChildren(spacer);
@@ -95,7 +101,7 @@ public class SetupVMPopUpView extends Stage
 
         VBox.setVgrow(emptyPane, Priority.ALWAYS);
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        setupVMTopBar = new SetupVMTopBarView(parentWin, null);
+        this.setupVMTopBar = new SetupVMTopBarView(parentWin);
         setupVMTopBar.removeFinishBtn();
 
 
@@ -103,9 +109,6 @@ public class SetupVMPopUpView extends Stage
 
 
         vmMadePane.getChildren().add(vmLabel);
-
-
-
         bigAddButton = new AddButton(parentWin,30, 30);
         bigAddButton.setPrefWidth(Double.MAX_VALUE);
         bigAddButton.prefHeightProperty().bind(parentWin.heightProperty().divide(10));
@@ -133,14 +136,11 @@ public class SetupVMPopUpView extends Stage
         hiddenPane.setPadding(new Insets(20));
 
 
-        vmMainScene = new Scene(mainPane, 600, 600);
+        this.vmMainScene = new Scene(mainPane, 600, 600);
 
         
-        vmTypeScene = new Scene(hiddenPane, 600, 600);
+        this.vmTypeScene = new Scene(hiddenPane, 600, 600);
 
-        
-
-        this.prevScene = vmMainScene;
         
         this.initModality(Modality.APPLICATION_MODAL);
         this.setScene(vmMainScene);
@@ -149,9 +149,10 @@ public class SetupVMPopUpView extends Stage
 
     }
 
+    
 
-
-    public Button getItemAddBtn() {
+    public Button getItemAddBtn() 
+    {
         return itemAddBtn;
     }
 
@@ -174,9 +175,6 @@ public class SetupVMPopUpView extends Stage
         return nameField;
     }
 
-    public Scene getPrevScene() {
-        return prevScene;
-    }
     public ToggleGroup getRadButtons() {
         return radButtons;
     }
@@ -196,14 +194,31 @@ public class SetupVMPopUpView extends Stage
     public Scene getVmTypeScene() {
         return vmTypeScene;
     }
-    
+ 
     public SetupVMTopBarView getSetupVMHidTopBar() {
         return setupVMHidTopBar;
     }
     public SetupVMTopBarView getSetupVMTopBar() {
         return setupVMTopBar;
     }
-
+    public void raiseAlert(String title, String message, int fontSize)
+    {
+        alertBox.display(title, message, fontSize);
+    }
+    public void changePopUpSceneMain()
+    {
+        this.setScene(vmMainScene);
+        this.centerOnScreen();
+    }
+    public void changePopUpSceneVMType()
+    {
+        this.setScene(vmTypeScene);
+        this.centerOnScreen();
+    }
+    public void changeWindowScene()
+    {
+        this.origStage.setScene(targetScene);
+    }
     public void setBigAddButtonAction(EventHandler<ActionEvent> eventHandler)
     {
         bigAddButton.setOnAction(eventHandler);
@@ -232,7 +247,10 @@ public class SetupVMPopUpView extends Stage
 
         this.slotSubBtn.setOnAction(eventHandler);
     }
-
+    public void setHidTopBarOnFinishBtn(EventHandler<ActionEvent> eventHandler)
+    {
+        this.setupVMHidTopBar.setFinishBtnListener(eventHandler);
+    }
     public void addTxtFieldsEventFilter(EventType<KeyEvent> eventType, EventHandler<KeyEvent> eventFilter)
     {
         this.itemCapField.addEventFilter(eventType, eventFilter);
@@ -261,11 +279,14 @@ public class SetupVMPopUpView extends Stage
         this.slotCapField.textProperty().addListener(changeListener);
     }
 
+
+
     private SetupVMTopBarView setupVMTopBar;
     private SetupVMTopBarView setupVMHidTopBar;
     private Scene vmMainScene;
     private Scene vmTypeScene;
-    private Scene prevScene;
+    private Scene targetScene;
+    private Stage origStage;
 
     private TextField slotCapField;
     private TextField itemCapField;
@@ -276,7 +297,7 @@ public class SetupVMPopUpView extends Stage
     private Button itemAddBtn;
     private Button slotSubBtn;
     private Button itemSubBtn;
-
+    private AlertBox alertBox;
 
 
     private RadioButton regRadButton;

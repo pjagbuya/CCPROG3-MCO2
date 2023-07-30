@@ -26,9 +26,9 @@ import javafx.stage.Stage;
 
 public class CreateRegTopBarView extends CustomTopBarView
 {
-    public CreateRegTopBarView(Stage parentWin, Scene prevScene)
+    public CreateRegTopBarView(Stage parentWin)
     {
-        super(parentWin, prevScene);
+        super(parentWin);
         
         HBox nameAndTxtFieldPane;
         nameLabel = new Label("Name: ");

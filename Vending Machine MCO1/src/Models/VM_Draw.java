@@ -1,5 +1,6 @@
-import java.util.ArrayList;
 package Models;
+import java.util.ArrayList;
+
 /** The class VM_Draw represents a simple console based output
   * of what it looks to be on screen of the availability of items
   * inside the vending machine

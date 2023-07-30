@@ -31,10 +31,20 @@ public class DenomNumPaneController
                 double inputtedBtnVal;
 
                 String text = numField.getText();
+                String denomNumText = denomBtns[trackedIndex].getText();
+                if(denomNumText.contains(String.valueOf('B')) )
 
-                inputtedBtnVal = Double.parseDouble(denomBtns[trackedIndex].getText());
+                    inputtedBtnVal = Double.parseDouble(denomNumText.substring(0, denomNumText.indexOf('B')));
+                else if (denomNumText.contains(String.valueOf('C')) )
+                    inputtedBtnVal = Double.parseDouble(denomNumText.substring(0, denomNumText.indexOf('C')));
+
+                else
+                    inputtedBtnVal = Double.parseDouble(denomNumText);
+
+
                 try
                 {
+                    
                     num = Double.parseDouble(text);
                 }
                 catch(NumberFormatException err)

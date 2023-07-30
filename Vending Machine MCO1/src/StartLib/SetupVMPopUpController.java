@@ -13,35 +13,70 @@ public class SetupVMPopUpController
     public SetupVMPopUpController(SetupVMPopUpView setupVMPopUpView)
     {
 
+        SetupVMTopBarView mainTopBar = setupVMPopUpView.getSetupVMTopBar();
+        SetupVMTopBarView hiddenTopBar = setupVMPopUpView.getSetupVMHidTopBar();
 
         slotCapField = setupVMPopUpView.getSlotCapField();
         itemCapField = setupVMPopUpView.getItemCapField();
         nameField = setupVMPopUpView.getNameField();
-
-        SetupVMTopBarView mainTopBar = setupVMPopUpView.getSetupVMTopBar();
-        SetupVMTopBarView hiddenTopBar = setupVMPopUpView.getSetupVMHidTopBar();
-
-        AlertBox alertBox = new AlertBox();
-
         
 
         this.setupVMPopUpView = setupVMPopUpView;
 
         setupVMTopBarView = setupVMPopUpView.getSetupVMTopBar();
         
+
+        // When exit close window
         setupVMTopBarView.setExitBtnListener(e->
         {
             setupVMPopUpView.close();
         });
 
+        // When press to add vending machine, change popup scene
         this.setupVMPopUpView.setBigAddButtonAction(e->{
             
             
-            this.setupVMPopUpView.setScene(this.setupVMPopUpView.getVmTypeScene());
-            this.setupVMPopUpView.centerOnScreen();
+            this.setupVMPopUpView.changePopUpSceneVMType();
+
 
         });
 
+        setAddAndSubBtnAction();
+        setTextFieldBehavior();
+
+
+        // Menu bars set action
+        mainTopBar.setExitBtnListener(e->
+        {
+            resetForm();
+            setupVMPopUpView.close();
+        });
+
+        hiddenTopBar.setExitBtnListener(e->{
+            setupVMPopUpView.changePopUpSceneMain();
+        });
+
+
+        hiddenTopBar.setFinishBtnListener(e->
+        {
+            if(nameField.getText().length() != 0)
+            {
+
+                setupVMPopUpView.changePopUpSceneMain();
+                setupVMPopUpView.close();
+            }
+            else
+            {
+                e.consume();
+                setupVMPopUpView.raiseAlert("Missing Inputs", "Please add a name to your Vending Machine", 12);
+            }
+                
+        });
+
+
+    }
+    private void setAddAndSubBtnAction()
+    {
         this.setupVMPopUpView.setItemAddBtnAction(e->
         {
             int numCap;
@@ -88,6 +123,9 @@ public class SetupVMPopUpController
             
         });
 
+    }
+    private void setTextFieldBehavior()
+    {
         this.setupVMPopUpView.addTxtFieldsEventFilter(KeyEvent.KEY_TYPED, event ->{
             if(!event.getCharacter().matches("\\d*"))
             {
@@ -124,11 +162,11 @@ public class SetupVMPopUpController
                     int value = Integer.parseInt(newValue);
                     if (value < 10) {
                         itemCapField.setText("10");
-                        alertBox.display("Invalid Input", "Please use only at minimum 10", 12);
+                        this.setupVMPopUpView.raiseAlert("Invalid Input", "Please use only at minimum 10", 12);
                     }
                 } catch (NumberFormatException e) {
                     itemCapField.setText("10");
-                    alertBox.display("Invalid Input", "Please enter a valid number", 12);
+                    this.setupVMPopUpView.raiseAlert("Invalid Input", "Please enter a valid number", 12);
                 }
             }
         });
@@ -139,53 +177,20 @@ public class SetupVMPopUpController
                     int value = Integer.parseInt(newValue);
                     if (value < 8) {
                         slotCapField.setText("8");
-                        alertBox.display("Invalid Input", "Please use only at minimum 8", 12);
+                        this.setupVMPopUpView.raiseAlert("Invalid Input", "Please use only at minimum 8", 12);
                     }
                 } catch (NumberFormatException e) {
                     slotCapField.setText("8");
-                    alertBox.display("Invalid Input", "Please enter a valid number", 12);
+                    this.setupVMPopUpView.raiseAlert("Invalid Input", "Please enter a valid number", 12);
                 }
             }
         });
-
-
-
-        // Menu bars set action
-        mainTopBar.setExitBtnListener(e->
-        {
-            resetForm();
-            setupVMPopUpView.close();
-        });
-
-        hiddenTopBar.setExitBtnListener(e->{
-            setupVMPopUpView.setScene(setupVMPopUpView.getPrevScene());
-        });
-
-
-        hiddenTopBar.setFinishBtnListener(e->
-        {
-            if(nameField.getText().length() != 0)
-            {
-                resetForm();
-                hiddenTopBar.getParentWin().setScene(hiddenTopBar.getTargetScene());
-                hiddenTopBar.getParentWin().centerOnScreen();
-                setupVMPopUpView.setScene(setupVMPopUpView.getVmMainScene());
-                setupVMPopUpView.close();
-            }
-            else
-            {
-                alertBox.display("Missing Inputs", "Please add a name to your Vending Machine", 12);
-            }
-                
-        });
-
-
     }
-
     public void resetForm() 
     {
         slotCapField.setText("8");
         itemCapField.setText("10");
+        setupVMPopUpView.getRegRadButton().setSelected(true);
         nameField.setText("");
 
     }

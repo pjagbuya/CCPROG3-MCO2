@@ -12,10 +12,10 @@ import javafx.stage.Stage;
 
 public class VMSellingTopBarView extends CustomTopBarView{
 
-    public VMSellingTopBarView(Stage parentWin, Scene targetScene)
+    public VMSellingTopBarView(Stage parentWin)
     {
 
-        super(parentWin, targetScene);
+        super(parentWin);
         HBox spacer1 = new HBox();
         HBox spacer2 = new HBox();
         Label vmName = new LabelToField("Placeholder Name (Selling)", 20);

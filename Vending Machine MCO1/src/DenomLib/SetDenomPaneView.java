@@ -49,41 +49,27 @@ public class SetDenomPaneView extends ScrollPane
     public SetDenomPaneView(Stage parentWin)
     {
  
-        RowConstraints rowConstraints = new RowConstraints();
-
-        
+        RowConstraints rowConstraints = new RowConstraints();  
         
         DecimalFormat df = new DecimalFormat("0.00");
 
         Iterator<String> iteratorLabel;
         Iterator<Double> iteratorValue;
 
-
-
         
         String colorBg = "#071952";
-        String colorLighter = "#35A29F";
         String colorLightest = "#97FEED";
-
         Label titleOfPane;
-        Label numLabel;
-        Label tempLabel;
         String tempString;
         double tempVal;
-        HBox buttonPane;
-        VBox buttonAndTextFieldPane;
-        StackPane textFieldAndLabelStackPane;
-        Region spacer;
+
         int currInd;
-
-
-        Font stringNumLabelFont = Font.font("Courier New", FontWeight.BOLD, 14);
-        Font standardBoldLabel = Font.font("Arial", FontWeight.BOLD, 16);
+        
         Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 18);
-
+        DenominationBtn tempDenomBtn;
 
         
-
+        this.denomSetSections = new DenomSetSection[13];
         labelTextData = new Money();
         
         iteratorLabel = labelTextData.getDenominations().keySet().iterator();
@@ -91,12 +77,7 @@ public class SetDenomPaneView extends ScrollPane
 
 
         leftPaneGrid = new GridPane();
-        labels = new Label[13];
-        denomBtns = new DenominationBtn[13];
-        textFields = new TextField[13];
 
-        addButtons = new Button[13];
-        subButtons = new Button[13];
         titleOfPane = new Label("Set Denominations");
         titleOfPane.setFont(headerBoldLabel);
         titleOfPane.setAlignment(Pos.CENTER);
@@ -109,55 +90,24 @@ public class SetDenomPaneView extends ScrollPane
         for(int i = 0; i < 13; i++)
         {
 
-            spacer = new Region();
-            textFieldAndLabelStackPane = new StackPane();
-
-            numLabel = new Label(0+"");
-
-            
-            
+ 
             tempString = iteratorLabel.next();
             tempVal = iteratorValue.next();
-            tempLabel = new Label(tempString);
-            tempLabel.setFont(stringNumLabelFont);
-            tempLabel.setWrapText(true);
+
+            if(tempVal == 20 && i%2 == 1)
+            {
+                tempDenomBtn = new DenominationBtn(df.format(tempVal) + " Bill");
+            }
+            else if(tempVal == 20 && i%2 == 0)
+                tempDenomBtn = new DenominationBtn(df.format(tempVal) + " Coin");
+            else
+                tempDenomBtn = new DenominationBtn(df.format(tempVal));
+            denomSetSections[i] = new DenomSetSection(parentWin, tempString, tempVal, tempDenomBtn);
 
 
-            buttonAndTextFieldPane = new VBox();
-            buttonPane = new HBox();
-            addButtons[i] = new AddButton(parentWin);
-            subButtons[i] = new SubButton(parentWin);
-            
-
-            HBox.setHgrow(spacer, Priority.ALWAYS);
-            spacer.prefWidthProperty().bind(buttonPane.widthProperty().divide(7));
-            buttonPane.getChildren().addAll(addButtons[i], spacer, subButtons[i]);
-            
-
-            labels[i] = tempLabel;
-            denomBtns[i] = new DenominationBtn(df.format(tempVal));
-            textFields[i] = new TextField();
-            textFields[i].setFont(standardBoldLabel);
-            textFields[i].setText("0");
-
-            textFields[i].setStyle("-fx-background-color: "+colorLighter+";" +
-                                   "-fx-alignment: center;");
-            numLabel.setFont(standardBoldLabel);
-
-
-            
-
-
-            textFieldAndLabelStackPane.getChildren().add(textFields[i]);
-
-            buttonAndTextFieldPane.getChildren().addAll(buttonPane, textFieldAndLabelStackPane);
-            buttonAndTextFieldPane.prefHeight(50);
-            buttonAndTextFieldPane.prefWidth(50);
-
-
-            leftPaneGrid.add(denomBtns[i], 0,currInd+1);
-            leftPaneGrid.add(buttonAndTextFieldPane, 1,currInd+1);
-            leftPaneGrid.add(tempLabel, 0, currInd+2);
+            leftPaneGrid.add(denomSetSections[i].getDenomGraphic(), 0,currInd+1);
+            leftPaneGrid.add(denomSetSections[i].getButtonAndTextFieldPane(), 1,currInd+1);
+            leftPaneGrid.add(denomSetSections[i].getMoneyNameLabel(), 0, currInd+2);
             currInd += 3;
 
         }
@@ -193,7 +143,7 @@ public class SetDenomPaneView extends ScrollPane
     public void setActionEventAddBtn(int ind, EventHandler<ActionEvent> eventHandler) 
     {
 
-        addButtons[ind].setOnAction(eventHandler);
+        denomSetSections[ind].setActionEventAddBtn(eventHandler);
 
     }
 
@@ -201,56 +151,39 @@ public class SetDenomPaneView extends ScrollPane
     {
  
 
-        subButtons[ind].setOnAction(eventHandler);
+        denomSetSections[ind].setActionEventSubBtn(eventHandler);
 
     }
     public void setActionEventTxtField(int ind, EventHandler<ActionEvent> eventHandler)
     {
 
-        textFields[ind].setOnAction(eventHandler);
+        denomSetSections[ind].setActionEventTxtField(eventHandler);
 
     }
 
     public void setTxtFieldFilter(int ind, EventType<KeyEvent> eventType, EventHandler<KeyEvent> eventFilter)
     {
 
-        textFields[ind].addEventFilter(eventType, eventFilter);
+        denomSetSections[ind].setTxtFieldFilter(eventType, eventFilter);
  
     }
 
     public void setTxtFieldFocusListener(int ind, ChangeListener<Boolean> changeListener)
     {
-        textFields[ind].focusedProperty().addListener(changeListener);
+        denomSetSections[ind].setTxtFieldFocusListener(changeListener);
     }
 
 
 
 
 
-    public Label[] getLabels() {
-        return labels;
-    }
-    public GridPane getLeftPaneGrid() {
-        return leftPaneGrid;
-    }
-
-    public TextField[] getTextFields() {
-        return textFields;
-    }
-    public Button[] getAddButtons() {
-        return addButtons;
-    }
-    public Button[] getSubButtons() {
-        return subButtons;
+    public DenomSetSection[] getDenomSetSections() {
+        return denomSetSections;
     }
 
 
     private GridPane leftPaneGrid;
-    private Label[] labels;
-    private Button[] addButtons, subButtons;
-    private DenominationBtn[] denomBtns;
-    private TextField[] textFields;
-
+    private DenomSetSection[] denomSetSections;
 
     private Money labelTextData;
 }

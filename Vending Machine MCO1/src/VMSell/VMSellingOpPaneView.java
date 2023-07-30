@@ -18,22 +18,15 @@ import javafx.stage.Stage;
 
 public class VMSellingOpPaneView extends BorderPane
 {
-    public VMSellingOpPaneView(Stage parentWin, Scene prevScene)
+    public VMSellingOpPaneView(Stage parentWin)
     {
         // Viewer to the Vending Machine model
-        VMachineModelPaneView vMachineModelPaneView = new VMachineModelPaneView(parentWin);
-        
+        vMachineModelPaneView = new VMachineModelPaneView(parentWin);
+        denomNumPadView = new DenomNumPadView();
+        numPaneView = new NumPaneView();
+        vmSellingTopBarView = new VMSellingTopBarView(parentWin);
         // Denominations viewer
-        DenomNumPadView denomNumPadView = new DenomNumPadView();
-        DenomNumPaneController denomNumPaneController = new DenomNumPaneController(denomNumPadView);
-
-        // Selector
-        NumPaneView numPaneView = new NumPaneView();
-        NumPaneController numPaneController = new NumPaneController(numPaneView);
         
-        VMSellingTopBarView vmSellingTopBarView = new VMSellingTopBarView(parentWin, prevScene);
-        VMSellingOpController vmSellingOpController = new VMSellingOpController(vmSellingTopBarView);
-
 
         
         this.setStyle("-fx-base: " + BG_COLOR+ ";");
@@ -47,7 +40,18 @@ public class VMSellingOpPaneView extends BorderPane
 
 
 
-
+    public DenomNumPadView getDenomNumPadView() {
+        return denomNumPadView;
+    }
+    public NumPaneView getNumPaneView() {
+        return numPaneView;
+    }
+    public VMSellingTopBarView getVmSellingTopBarView() {
+        return vmSellingTopBarView;
+    }
+    public VMachineModelPaneView getvMachineModelPaneView() {
+        return vMachineModelPaneView;
+    }
     public double getMIN_HEIGHT() {
         return MIN_HEIGHT;
     }
@@ -55,7 +59,10 @@ public class VMSellingOpPaneView extends BorderPane
         return MIN_WIDTH;
     }
 
-
+    private NumPaneView numPaneView;
+    private VMSellingTopBarView vmSellingTopBarView;
+    private DenomNumPadView denomNumPadView;
+    private VMachineModelPaneView vMachineModelPaneView;
     private final double MIN_HEIGHT = 600;
     private final double MIN_WIDTH = 1200;
     private final String BG_COLOR = "#071952";

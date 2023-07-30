@@ -8,6 +8,7 @@ import Labels.LabelToField;
 import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.SnapshotParameters;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
@@ -18,10 +19,14 @@ import javafx.scene.image.ImageView;
 import javafx.scene.image.WritableImage;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BackgroundFill;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.CornerRadii;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.RowConstraints;
 import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.CycleMethod;
 import javafx.scene.paint.LinearGradient;
@@ -36,43 +41,11 @@ public class VMachineModelPaneView extends ScrollPane{
     {
         
         String colorBg = "#071952";
-        // Code below forms together one gradient color
-        LinearGradient linearGradient1 = new LinearGradient(
-            0, 0, 1, 1,
-            true, 
-            CycleMethod.NO_CYCLE, 
-   
-            new Stop(0.1, Color.rgb(255, 255, 255, 0.15)),
-            new Stop(1.0, Color.rgb(0, 0, 0, 0.25))
-        );
+        ColumnConstraints columnConstr = new ColumnConstraints();
+        RowConstraints rowConstr = new RowConstraints();
 
-        LinearGradient linearGradient2 = new LinearGradient(
-            0, 0, 1, 1,
-            true, 
-            CycleMethod.NO_CYCLE, 
-
-            new Stop(0, Color.rgb(255, 255, 255, 0)),
-            new Stop(0.5, Color.rgb(255, 255, 255, 0.1)),
-            new Stop(0.5, Color.rgb(255, 255, 255, 0)),
-            new Stop(1, Color.rgb(255, 255, 255, 0))
-        );
-
-        bgFill1 = new BackgroundFill(
-            linearGradient1,
-            CornerRadii.EMPTY,
-            Insets.EMPTY
-        );
-
-        bgFill2 = new BackgroundFill(
-            linearGradient2,
-            CornerRadii.EMPTY,
-            Insets.EMPTY
-        );
-        itemCoverBg = new Background(bgFill1, bgFill2);
         itemNameLabels = new Label[MAX_ITEMS];
-        itemContainerStackPane = new StackPane[MAX_ITEMS];
-        currentImageViews = new ImageView[(int)Math.ceil(MAX_ITEMS/3.0)][3];
-        stringNameImageViews = new String[(int)Math.ceil(MAX_ITEMS/3.0)][3];
+        itemContainerStackPane = new ArrayList<StackPane>();
 
         mainCanvasStackPane = new StackPane();
         vendingMachineGridPane = new GridPane();
@@ -105,242 +78,126 @@ public class VMachineModelPaneView extends ScrollPane{
         mainCanvasStackPane.prefWidthProperty().bind(this.widthProperty());
 
 
+        rowConstr.setMaxHeight(300);
+        columnConstr.setMaxWidth(300);
+        
+        vendingMachineGridPane.getColumnConstraints().add(columnConstr);
+        vendingMachineGridPane.getRowConstraints().add(rowConstr);
+
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setPadding(new Insets(5));
-        this.setId("denomPane");
         this.prefWidthProperty().bind(parentWin.widthProperty().multiply(0.6));
         this.setContent(mainCanvasStackPane);
 
         this.setStyle("-fx-background-color: "+colorBg+";");
     }
 
-    public void addItemToView(Image itemImage, String label, int indOfLabel)
+    public void addItemToView(Image itemImage, String label)
     {
 
-
-        boolean isDuplicate;
-        int nextRow = -1;
-        int nextColumn = -1;
         int indPanes;
-        Region itemBox;
-        Region itemCover;
-        Region labelRegion;
-        String itemBoxColor = "#00002F";
-        String colorLightest = "#97FEED";
-        Label slotNumLabel;
-        Label slotItemNameLabel;
-        Font standardBoldLabel = Font.font("Arial", FontWeight.BOLD, 20);
-        
+        StackPane newStackPane;
+        indPanes = itemContainerStackPane.size();
 
         
-
-        indPanes = 0;
-        isDuplicate =false;
-        if(containsLabel(label))
+        if(!containsLabel(label))
         {
 
-            isDuplicate = true;
+            newStackPane = new ItemSlotPaneView(itemImage, label, indPanes, this);   
+            itemContainerStackPane.add(newStackPane);
             
-        }   
-        // Find the next available cell in the GridPane
-        for (int i = 0; i < (int)Math.ceil(MAX_ITEMS/3.0); i++) {
-            
-            for (int j = 0; j < 3; indPanes++,j++) {
-                if (indPanes < MAX_ITEMS && itemContainerStackPane[indPanes] == null) 
-                {
-                    
-                    nextRow = i;
-                    nextColumn = j; 
+            if(itemContainerStackPane.isEmpty())
+            {
+                itemNameLabels[indPanes] = ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
 
-                    break;
-                }
             }
-            if (nextRow != -1 || nextColumn != -1 || isDuplicate) {
-                break;
+            else
+            {
+                itemNameLabels[indPanes] =  ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
             }
-        }
-        if((nextRow != -1 && nextColumn != -1))
-        {
+
             
+            vendingMachineGridPane.add(itemContainerStackPane.get(indPanes), indPanes%3
+                                                                           , indPanes/3);
         }
 
 
-        // If there is an available cell, add the image to it
-        if ((nextRow != -1 && nextColumn != -1) && !isDuplicate) 
+    }
+
+    public void addItemWithComp(String label, Node node, Image itemImage)
+    {
+        int indPanes;
+        StackPane newStackPane;
+        VBox parentPane;
+        indPanes = itemContainerStackPane.size();
+
+        
+        if(!containsLabel(label))
         {
 
-            slotItemNameLabel = new LabelToField(label);
+            newStackPane = new ItemSlotPaneView(itemImage, label, indPanes, this);   
+            itemContainerStackPane.add(newStackPane);
+            parentPane = ((ItemSlotPaneView)newStackPane).addComponentUnder(node);
+
+            if(itemContainerStackPane.isEmpty())
+            {
+                itemNameLabels[indPanes] = ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
+
+            }
+            else
+            {
+                itemNameLabels[indPanes] =  ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
+            }
 
             
-            itemBox = new Region();
-            itemBox.setPrefSize(ITEM_BOX_WIDTH, ITEM_BOX_HEIGHT);
-            itemBox.setStyle("-fx-background-color: "+itemBoxColor+";");
-            
-            // Uses the previosly set Linear gradients above
-            itemCoverBg = new Background(bgFill1, bgFill2);
-            itemCover = new Region();
-            itemCover.setPrefSize(ITEM_BOX_WIDTH-20, ITEM_BOX_HEIGHT-30);
-            itemCover.setBackground(itemCoverBg);
-
-            labelRegion = new Region();
-            labelRegion.setPrefSize(50, 30);
-            labelRegion.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-            labelRegion.setStyle("-fx-background-color: black;"
-                                +"-fx-border-width: 2 2 0 2;"
-                                +"-fx-border-color:"+colorLightest+";");
-
-            slotNumLabel = new Label(indPanes+1 + "");
-            slotNumLabel.setPadding(new Insets(0, 0, 3, 0));
-            slotNumLabel.setFont(standardBoldLabel);
-
-            // Save the mapped label
-            stringNameImageViews[nextRow][nextColumn] = label;
-
-            itemCover.setBackground(itemCoverBg);
-            itemContainerStackPane[indPanes] = new StackPane();
-            currentImageViews[nextRow][nextColumn] = new ImageView(itemImage);
-            currentImageViews[nextRow][nextColumn].setFitHeight(300);
-            currentImageViews[nextRow][nextColumn].setFitWidth(300);
-            currentImageViews[nextRow][nextColumn].setPreserveRatio(true);
-            currentImageViews[nextRow][nextColumn].setSmooth(true);
-            currentImageViews[nextRow][nextColumn].fitHeightProperty().bind(this.heightProperty().multiply(0.3));
-            currentImageViews[nextRow][nextColumn].fitWidthProperty().bind(this.widthProperty().multiply(0.3));
+            vendingMachineGridPane.add(parentPane, indPanes%3
+                                                 , indPanes/3);
 
             
-            itemNameLabels[indPanes] = slotItemNameLabel;
-            itemContainerStackPane[indPanes].getChildren().addAll(itemBox, currentImageViews[nextRow][nextColumn], itemNameLabels[indPanes], itemCover, labelRegion, slotNumLabel);
-            
-            StackPane.setAlignment(itemNameLabels[indPanes], Pos.TOP_CENTER);
-            StackPane.setAlignment(labelRegion, Pos.BOTTOM_CENTER);
-            StackPane.setAlignment(slotNumLabel, Pos.BOTTOM_CENTER);
-            vendingMachineGridPane.add(itemContainerStackPane[indPanes], nextColumn, nextRow);
+
         }
     }
 
     public void removeItemToView(String label)
     {
-        rearrangeItems();
-        for(int i = 0;  i < MAX_ITEMS/3; i++)
+
+        for(StackPane itemContainer : itemContainerStackPane)
         {
-            for(int j = 0; j < 3; j++)
+             if(((ItemSlotPaneView)itemContainer).getNameOfItem().equalsIgnoreCase(label))
             {
-                if(stringNameImageViews[i][j]!= null && stringNameImageViews[i][j].equalsIgnoreCase(label))
-                {
-                    // Name of image on map
-                    stringNameImageViews[i][j] = null;
-
-                    
-                    // Container where all items reside
-                    itemContainerStackPane[i*3+j].getChildren().clear();
-                    itemContainerStackPane[i* 3 + j] = null;
-
-                    // Image associated with the item
-                    currentImageViews[i][j] = null;
-                }
+                vendingMachineGridPane.getChildren().remove(itemContainer);
 
             }
+        }
+        
+        if(getItemContainer(label) != null)
+        {
+            itemContainerStackPane.remove(getItemContainer(label));
 
         }
-
+            
+        rearrangeItems();
 
     }
+
 
 
     public void rearrangeItems() 
     {
 
-
-        String itemBoxColor = "#00002F";
-        String colorLightest = "#97FEED";
-        
-        StackPane newStackPane;
-
-        Region itemBox;
-        Region itemCover;
-        Region labelRegion;
-        
-        Label slotNumLabel;
-        
-        Font standardBoldLabel = Font.font("Arial", FontWeight.BOLD, 20);      
-        
-        
-        // two for loops to select the current position on 2D array
-        for (int i = 0; i < MAX_ITEMS / 3; i++) {
-            for (int j = 0; j < 3; j++) {
-
-                // When the chosen position in 2D array is empty
-                if (currentImageViews[i][j] == null) {
-                    // Get to the next non empty via row major
-                    for (int k = i; k < MAX_ITEMS / 3; k++) {
-                        for (int l = (k == i ? j + 1 : 0); l < 3; l++) {
+        int i = 0;
+        vendingMachineGridPane.getChildren().clear();
+        for(StackPane itemSlot : itemContainerStackPane)
+        {
+            
+            ((ItemSlotPaneView)itemSlot).setSlotNumLabel(i+1);
+            vendingMachineGridPane.add(itemSlot, i%3
+                                               , i/3);
 
 
-                            // Signifies we found a non-empty slot
-                            if (currentImageViews[k][l] != null) {
+            i++;
 
-
-                                itemNameLabels[i * 3 + j] = itemNameLabels[k * 3 + l];
-
-                                // box bacground
-                                itemBox = new Region();
-                                itemBox.setPrefSize(ITEM_BOX_WIDTH, ITEM_BOX_WIDTH);
-                                itemBox.setStyle("-fx-background-color: "+itemBoxColor+";");
-
-                                // Set up graphics of box
-                                itemCover = new Region();
-                                itemCover.setPrefSize(ITEM_BOX_WIDTH-20, ITEM_BOX_HEIGHT-30);
-                                itemCover.setBackground(itemCoverBg);
-
-                                // Set up proper labeling
-                                labelRegion = new Region();
-                                labelRegion.setPrefSize(50, 30);
-                                labelRegion.setMaxSize(Region.USE_PREF_SIZE, Region.USE_PREF_SIZE);
-                                labelRegion.setStyle("-fx-background-color: black;"
-                                                    +"-fx-border-width: 2 2 0 2;"
-                                                    +"-fx-border-color:"+colorLightest+";");
-
-                                slotNumLabel = new Label(i*3+j+1 + "");
-                                slotNumLabel.setPadding(new Insets(0, 0, 3, 0));
-                                slotNumLabel.setFont(standardBoldLabel);
-
-                                StackPane.setAlignment(itemNameLabels[i * 3 + j], Pos.TOP_CENTER);
-                                StackPane.setAlignment(labelRegion, Pos.BOTTOM_CENTER);
-                                StackPane.setAlignment(slotNumLabel, Pos.BOTTOM_CENTER);
-
-
-
-                                // Move the content of the next non-empty slot to the current slot
-                                currentImageViews[i][j] = currentImageViews[k][l];
-                                stringNameImageViews[i][j] = stringNameImageViews[k][l];
-    
-                                // Create a new StackPane for the current slot
-                                newStackPane = new StackPane();
-                                newStackPane.getChildren().addAll(itemBox, currentImageViews[k][l], itemNameLabels[i * 3 + j], itemCover, labelRegion, slotNumLabel);
-                                itemContainerStackPane[i * 3 + j] = newStackPane;
-    
-                                currentImageViews[k][l] = null;
-                                stringNameImageViews[k][l] = null;
-    
-                                // Remove some of the targeted non-empty positions and clear them
-                                if (itemContainerStackPane[k * 3 + l] != null) {
-                                    vendingMachineGridPane.getChildren().remove(itemContainerStackPane[k * 3 + l]);
-                                    itemContainerStackPane[k * 3 + l].getChildren().clear();
-                                    itemContainerStackPane[k * 3 + l] = null;
-                                }
-                                
-                                // Add the items 
-                                vendingMachineGridPane.add(itemContainerStackPane[i * 3 + j], j, i);
-    
-                                // Exit the loop as the next non-empty slot has been found
-                                k = MAX_ITEMS / 3;  // ends 'k' loop
-                                break;              // ends this 'l' loop
-                            }
-                        }
-                    }
-                }
-            }
         }
-
 
 
         
@@ -350,32 +207,24 @@ public class VMachineModelPaneView extends ScrollPane{
     public StackPane getItemContainer(String label)
     {
         rearrangeItems();
-        for(int i = 0;  i < MAX_ITEMS/3; i++)
-        {
-            for(int j = 0; j < 3; j++)
-            {
-                if(stringNameImageViews[i][j]!= null && stringNameImageViews[i][j].equalsIgnoreCase(label))
-                {
-                   return itemContainerStackPane[i * 3 + j];
-                }
 
-            }
+        for(StackPane itemSlot : itemContainerStackPane)
+        {
+            if(((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText().equalsIgnoreCase(label))
+                return itemSlot;
 
         }
 
         return null;
 
     }
+
     private boolean containsLabel(String label)
     {
-        for(int i = 0;  i < MAX_ITEMS/3; i++)
+        for(StackPane itemSlot : itemContainerStackPane)
         {
-            for(int j = 0; j < 3; j++)
-            {
-                if(stringNameImageViews[i][j]!= null && stringNameImageViews[i][j].equalsIgnoreCase(label))
-                    return true;
-
-            }
+            if(((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText().equalsIgnoreCase(label))
+                return true;
 
         }
 
@@ -385,17 +234,13 @@ public class VMachineModelPaneView extends ScrollPane{
 
 
     private LinkedHashMap<String, String> possibleItems;
-    private ImageView[][] currentImageViews;
     private Label[] itemNameLabels;
-    private String[][] stringNameImageViews;
-    private StackPane[] itemContainerStackPane;
+    private ArrayList<StackPane> itemContainerStackPane;
     private GridPane vendingMachineGridPane;
     private StackPane mainCanvasStackPane;
-    private BackgroundFill bgFill1, bgFill2;
-    private Background itemCoverBg;
+
     private static final int MAX_ITEMS = 100;
-    private static final int ITEM_BOX_HEIGHT = 250;
-    private static final int ITEM_BOX_WIDTH = 200;
+
     
 
 }

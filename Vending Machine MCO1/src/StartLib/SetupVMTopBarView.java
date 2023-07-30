@@ -26,14 +26,18 @@ import javafx.stage.Stage;
 
 public class SetupVMTopBarView extends CustomTopBarView
 {
-    public SetupVMTopBarView(Stage parentWin, Scene prevScene)
+    public SetupVMTopBarView(Stage parentWin)
     {
-        super(parentWin, prevScene);
+        super(parentWin);
+
 
 
     }
     
-
+    public Scene getSceneToCreateVM() 
+    {
+        return sceneToCreateVM;
+    }
     public TextField getNameTextField() 
     {
         return nameTextField;
@@ -45,8 +49,9 @@ public class SetupVMTopBarView extends CustomTopBarView
 
     
     private TextField nameTextField;
+    private Scene sceneToCreateVM;
     private Label nameLabel;
-    public Object setupVMPopUpView;
+
 
 
 }

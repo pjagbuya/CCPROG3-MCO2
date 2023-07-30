@@ -36,6 +36,7 @@ import javafx.scene.text.FontWeight;
 // Classes below are used to validate if something contains a number
 import java.util.regex.Pattern;
 
+import Boxes.ConfirmBox;
 import Buttons.DenominationBtn;
 
 import java.util.regex.Matcher;
@@ -47,56 +48,68 @@ import ItemSelectLib.SetItemPaneView;
 import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
 
-public class CreateRegMenu
+public class CreateRegMenu extends BorderPane
 {
    
 
-    public CreateRegMenu(String title, Stage parentWin, Scene prevScene)
+    public CreateRegMenu(Stage parentWin)
     {
 
-
-        // Viewer to the Vending Machine model
-        VMachineModelPaneView vMachineModelPaneView = new VMachineModelPaneView(parentWin);
-        
+        ConfirmBox confirmBox = new ConfirmBox();
+        vMachineModelPaneView = new VMachineModelPaneView(parentWin);
         // Denominations viewer
-        SetDenomPaneView leftDenominationsPane = new SetDenomPaneView(parentWin);
-        SetDenomPaneController setDenomPaneController = new SetDenomPaneController(leftDenominationsPane);
+        leftDenominationsPane = new SetDenomPaneView(parentWin);
 
         // Items to choose from
-        SetItemPaneView rightSetItemPane = new SetItemPaneView(parentWin);
-        SetItemPaneController setItemPaneController = new SetItemPaneController(parentWin, rightSetItemPane, vMachineModelPaneView);
+        rightSetItemPane = new SetItemPaneView(parentWin);
+        createRegTopBarView = new CreateRegTopBarView(parentWin);
 
-        
-        VMachineModelPaneController vMachineModelPaneController = new VMachineModelPaneController(rightSetItemPane, vMachineModelPaneView);
-        
-        CreateRegTopBarView createRegTopBarView = new CreateRegTopBarView(parentWin, prevScene);
-        CreateRegTopBarController createRegTopBarController = new CreateRegTopBarController(createRegTopBarView, setDenomPaneController, setItemPaneController, prevScene);
 
-        mainCanvasBorderPane = new BorderPane();
+        this.setStyle("-fx-base: " + BG_COLOR+ ";");
+        this.setTop(createRegTopBarView);
+        this.setCenter(vMachineModelPaneView);
+        this.setRight(rightSetItemPane);
+        this.setLeft(leftDenominationsPane);
 
-        // mainCanvasBorderPane.getStylesheets().add(getClass().getResource("/style/denomPane.css").toExternalForm());
-        mainCanvasBorderPane.setStyle("-fx-base: " + BG_COLOR+ ";");
-        mainCanvasBorderPane.setTop(createRegTopBarView);
-        mainCanvasBorderPane.setCenter(vMachineModelPaneView);
-        mainCanvasBorderPane.setRight(rightSetItemPane);
-        mainCanvasBorderPane.setLeft(leftDenominationsPane);
-
-        scene = new Scene(mainCanvasBorderPane, MIN_WIDTH, MIN_HEIGHT);
 
     }
+    public boolean raiseConfirmBox(String title, String message)
+    {
+        confirmBox = new ConfirmBox();
+        return confirmBox.display(title, message);
 
-
-
-    public BorderPane getMainCanvasBorderPane() {
-        return mainCanvasBorderPane;
     }
-    public Scene getScene() {
-        return scene;
+    public CreateRegTopBarView getCreateRegTopBarView() 
+    {
+        return createRegTopBarView;
+    }
+    public SetDenomPaneView getLeftDenominationsPane() 
+    {
+        return leftDenominationsPane;
+    }
+    public double getMIN_HEIGHT() 
+    {
+        return MIN_HEIGHT;
+    }
+    public double getMIN_WIDTH() 
+    {
+        return MIN_WIDTH;
+    }
+    public SetItemPaneView getRightSetItemPane() 
+    {
+        return rightSetItemPane;
     }
 
+    public VMachineModelPaneView getvMachineModelPaneView() 
+    {
+        return vMachineModelPaneView;
+    }
+    private SetDenomPaneView leftDenominationsPane;
+    private CreateRegTopBarView createRegTopBarView;
 
-    private Scene scene;
-    private BorderPane mainCanvasBorderPane;
+    private SetItemPaneView rightSetItemPane;
+    private VMachineModelPaneView vMachineModelPaneView;
+    private ConfirmBox confirmBox;
 
     private final double MIN_HEIGHT = 600;
     private final double MIN_WIDTH = 1200;

@@ -48,7 +48,7 @@ public class DenominationBtn extends Button
         String colorLighter = "#35A29F";
         String colorLightest = "#97FEED";
 
-        Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 12);
+        Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 11);
         
         DropShadow shadow = new DropShadow();
 
@@ -67,8 +67,8 @@ public class DenominationBtn extends Button
         shadow.setColor(Color.color(151/255.0, 254/255.0, 237/255.0));
         this.setText(numText);
         this.setFont(headerBoldLabel);
-        this.minWidth(50);
-        this.minHeight(50);
+        this.minWidth(60);
+        this.minHeight(60);
         // Normal style
         this.setStyle(defaultStyle);
         

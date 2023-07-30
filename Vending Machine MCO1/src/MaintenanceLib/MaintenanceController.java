@@ -1,24 +1,77 @@
 package MaintenanceLib;
 
+import Boxes.ConfirmBox;
+import DenomLib.SetDenomPaneController;
+import ItemSelectLib.SetItemPaneController;
+
 public class MaintenanceController {
-    public MaintenanceController(MaintSelectView maintSelectView, MaintenanceTopBarView maintenanceTopBarView)
+    public MaintenanceController(MaintSelectView maintSelectView)
     {
+        ConfirmBox confirmBox = new ConfirmBox();
+        MaintenanceReplenishCollectView maintenanceReplenishCollectView = maintSelectView.getMaintenanceReplenishCollectView();
+        
+        SetDenomPaneController setDenomPaneController = new SetDenomPaneController(maintSelectView.getMaintenanceReplenishCollectView().getRightSetDenomPane(),
+                                                                                   maintenanceReplenishCollectView);
+
         this.maintSelectView = maintSelectView;
+        
 
-        maintSelectView.addActionRestockItemBtn(e->
+        maintSelectView.addActionRestockRepriceItemBtn(e->
         {
-            this.maintSelectView.switchToRestockMenu();
+
+            
+            this.maintSelectView.switchToRestockRepriceMenu();
 
 
         });
 
-        maintenanceTopBarView.setExitBtnListener(e->
+        maintSelectView.addActionReplenishCollectBtn(e->
         {
-            this.maintSelectView.switchDefaultSelectMaintMenu();
+            this.maintSelectView.switchToReplenishCollectDenomMenu();
         });
+
+        maintSelectView.addActionStockedInfoBtn(e->
+        {
+            this.maintSelectView.switchToStockedInfoMenu();
+        });
+
+        
+
+        maintSelectView.addActionReplaceItemBtn(e->
+        {
+            this.maintSelectView.switchToReplaceMenu();
+        }
+        );
+
+        this.maintSelectView.addActionOrderHisBtn(e->
+        {
+            this.maintSelectView.switchToOrderHistoryMenu();
+        });
+
+        this.maintSelectView.addActionStockedInfoBtn(e->
+        {
+            this.maintSelectView.switchToStockedInfoMenu();
+        });
+
+
+        
+        for(int i = 0; i < 5; i++)
+        {
+            this.maintSelectView.addActionTopBarExitBtn(i, e->
+            {
+
+                this.maintSelectView.switchDefaultSelectMaintMenu();
+
+            });
+        }
+
+
+
+
+
 
     }
 
     private MaintSelectView maintSelectView;
-    private MaintenanceTopBarView maintenanceTopBarView;
+
 }

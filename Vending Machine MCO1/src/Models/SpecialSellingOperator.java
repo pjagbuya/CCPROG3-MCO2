@@ -1,10 +1,11 @@
 
+package Models;
 import java.util.ArrayList;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.Scanner;
-package Models;
+
 /** This class represents a Special Selling Operator
   * which provides for selling of both regular and special items
   * through the use of text based prompt

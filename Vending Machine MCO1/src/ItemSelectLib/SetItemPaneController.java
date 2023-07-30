@@ -106,14 +106,14 @@ public class SetItemPaneController {
                     stockField.setText("1");
                     if(priceField.getText().length()==0)
                     priceField.setText(df.format(DEFAULT_PRICE));
-                    this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText(), trackedIndex);
+                    this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText());
                     addedItemLabel.add(itemNameLabel);
                 }
                 else
                 {
                     stockField.setText(Integer.parseInt(stockField.getText())+1+"");
                     addedItemLabel.add(itemNameLabel);
-                    this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText(), trackedIndex);
+                    this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText());
                 }
                 
 
@@ -169,11 +169,13 @@ public class SetItemPaneController {
                     }
     
                     if(doubleNum > 0 && priceField.getText().length() != 0 && 
-                        (stockField.getText().length() != 0))
+                        (stockField.getText().length() != 0) &&
+                        (!priceField.getText().equalsIgnoreCase("0") &&
+                        (!stockField.getText().equalsIgnoreCase("0") ))) 
                     {
                         
 
-                        this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText(), trackedIndex);
+                        this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText());
                         addedItemLabel.add(itemNameLabel);
                     }
                     else if((doubleNum == 0 || priceField.getText().length() == 0) &&
@@ -213,7 +215,7 @@ public class SetItemPaneController {
                     {
                         
                         // priceFields[trackedIndex].setText(df.format(doubleNum));
-                        this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText(), trackedIndex);
+                        this.vMachineModelPaneView.addItemToView(image, itemNameLabel.getText());
                         addedItemLabel.add(itemNameLabel);
                     }
                     else if((doubleNum <= 0 || priceField.getText().length() == 0) &&

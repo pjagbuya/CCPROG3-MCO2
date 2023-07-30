@@ -41,7 +41,7 @@ public class DenomNumPadView extends BorderPane
         Iterator<Double> iteratorValue = moneyDict.getStrToVal().values().iterator();
         int ind;
         int maxSize = moneyDict.getStrToVal().values().size();
-
+        Double tempDouble;
 
         numField = new TextField();
         numButtons = new DenominationBtn[maxSize];
@@ -61,8 +61,16 @@ public class DenomNumPadView extends BorderPane
         ind = 0;
         while(iteratorValue.hasNext())
         {
-            
-            numButtons[ind] = new DenominationBtn(df.format(iteratorValue.next()));
+            tempDouble = iteratorValue.next();
+            if(tempDouble == 20 && ind % 2 == 0)
+            {
+                numButtons[ind] = new DenominationBtn(df.format(tempDouble) + " B");
+            }
+            else if(tempDouble == 20 && ind % 2 == 1)
+                numButtons[ind] = new DenominationBtn(df.format(tempDouble) + " C");
+            else
+                numButtons[ind] = new DenominationBtn(df.format(tempDouble));
+
             ind++;
         }
         

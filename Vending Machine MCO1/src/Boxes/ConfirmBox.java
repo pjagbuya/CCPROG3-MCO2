@@ -41,8 +41,8 @@ public class ConfirmBox {
         Label label = new Label();
 
         // Buttons
-        MinorButton yesButton = new MinorButton("Yes");
-        MinorButton noButton = new MinorButton("No");
+        yesButton = new MinorButton("Yes");
+        noButton = new MinorButton("No");
 
         
         window.initModality(Modality.APPLICATION_MODAL);
@@ -82,5 +82,7 @@ public class ConfirmBox {
         return answer;
 
     }
+    private Button yesButton;
+    private Button noButton;
     private static boolean answer;
 }

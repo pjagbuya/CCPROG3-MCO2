@@ -14,15 +14,15 @@ public class CreateRegTopBarController {
 
     public CreateRegTopBarController(CreateRegTopBarView createRegTopBarView, 
                                      SetDenomPaneController setDenomPaneController, 
-                                     SetItemPaneController setItemPaneController, 
-                                     Scene prevScene)
+                                     SetItemPaneController setItemPaneController,
+                                     Scene targetPrevScene)
     {
 
         ConfirmBox confirmBox = new ConfirmBox();
         VMSellingOpPaneView vmSellingOpPaneView;
 
         this.createRegTopBarView= createRegTopBarView;
-        vmSellingOpPaneView = new VMSellingOpPaneView(this.createRegTopBarView.getParentWin(), prevScene);
+        vmSellingOpPaneView = new VMSellingOpPaneView(this.createRegTopBarView.getParentWin());
         this.createRegTopBarView.setStageWidthPropertyListener((observable, oldValue, newValue) ->
         {
             // Recalculate margin values based on new window width (newValue)
@@ -38,37 +38,20 @@ public class CreateRegTopBarController {
         this.createRegTopBarView.setExitBtnListener(e->{
             boolean isExit;
 
-            isExit = confirmBox.display("Exit Out Of Vending Machine Maker", "Do you wnat to exit this and back to main menu?");
+            isExit = confirmBox.display("Exit Out Of Vending Machine Maker", "Do you want to exit this and back to main menu?");
             if(!isExit)
                 e.consume();
             else
             {
                 setDenomPaneController.resetForm();
                 setItemPaneController.resetForm();
-                this.createRegTopBarView.changeWindowScene(this.createRegTopBarView.getTargetScene());
+                this.createRegTopBarView.changeWindowScene(targetPrevScene);
 
             }
 
         });
 
-        this.createRegTopBarView.setFinishBtnListener(e->
-        {
-            boolean isFinish;
 
-            isFinish = confirmBox.display("Proceed To Features", "By finishing we will proceed to be testing to you the features of selling, Do you want to proceed?");
-            if(!isFinish)
-                e.consume();
-            else
-            {
-                Scene scene = new Scene(vmSellingOpPaneView, vmSellingOpPaneView.getMIN_WIDTH(), vmSellingOpPaneView.getMIN_HEIGHT());
-
-                this.createRegTopBarView.changeWindowScene(scene);
-
-            }
-
-
-
-        });
 
     }
     private SetDenomPaneController setDenomPaneController; 

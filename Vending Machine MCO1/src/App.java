@@ -36,25 +36,14 @@ public class App extends Application {
     @Override
     public void start(Stage primaryStage) 
     {
-        Scene scene1;
+        
         Stage window = primaryStage;
-        AppView parentContainer = new AppView(window);
-        AppController appController;
+        AppView appView = new AppView(window);
+        AppController appController = new AppController(appView);;
 
-        scene1 = new Scene(parentContainer, 1200, 600);
+
         
 
-        appController = new AppController(window, parentContainer, scene1);
-
-        // parentContainer.setBtnCreateRegAction(e->
-        // {
-            
-        //     window.setScene(appController.getRegMenu());
-
-        // });
-        window.setScene(scene1);
-        window.setTitle("Main menu");
-        window.show();
         
     }
 
