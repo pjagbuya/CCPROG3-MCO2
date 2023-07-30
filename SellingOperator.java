@@ -90,7 +90,7 @@ public class SellingOperator
 	}
 
 	
-	protected boolean addToPendingMap(LinkedHashMap <String, Integer> pending, VM_Slot slot, int qty)
+	protected void addToPendingMap(LinkedHashMap <String, Integer> pending, VM_Slot slot, int qty)
 	{
 		if( pending.get( slot.getSlotItemName().toUpperCase() ) != null ) {
 			order.setTotalCost(
@@ -279,7 +279,7 @@ public class SellingOperator
 	}
 	
 	
-	public resetDefaults()
+	public void resetDefaults()
 	{
 		paymentTotal = 0;
 		orderTotal = 0;
@@ -289,7 +289,7 @@ public class SellingOperator
 	}
 	
 	
-	private boolean deductChange(double amt)
+	protected boolean deductChange(double amt)
 	{
 
 		amt = Math.round(amt*100)/100.0;
