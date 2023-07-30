@@ -31,7 +31,7 @@ public class VM_StockedInfo
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null )
 			{
-				itemNames.add( slots[i].getSlotItemName() );
+				itemNames.add( new String( slots[i].getSlotItemName() ) );
 				itemPrices.add( slots[i].getPrice() );
 				itemStocks.add( slots[i].getSlotItemStock() );
 			}
