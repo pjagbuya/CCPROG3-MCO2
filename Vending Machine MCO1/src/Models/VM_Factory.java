@@ -19,7 +19,7 @@ public class VM_Factory
 	}
 	
 	
-	public VM_Regular createVM (String vmType, String name, int nOfSlots, int maxItemsPerSlot)
+	public VM_Regular createBlankVM (String vmType, String name, int nOfSlots, int maxItemsPerSlot)
 	{
 		VM_Regular vm;
 		if( vmType.equalsIgnoreCase("R") )
@@ -35,6 +35,20 @@ public class VM_Factory
 		return vm;
 	}
 	
+	public VM_Regular sendOutVM()
+	{
+		VM_Regular sentOutVM;
+		vm.recordCurrentInventory();
+		sentOutVM = vm;
+		
+		/* Clears out factory information */
+		vmMoney = null;
+		slots = null;
+		specialSlots = null;		
+		vm = null;
+		
+		return sentOutVM;
+	}
 	
 	public String specifyInitialStocks(String itemName, int qty)
 	{
@@ -138,7 +152,8 @@ public class VM_Factory
 		return item;
 	}
 	
-
+	
+	private VM_Regular vm;
 	private LinkedHashMap<String, Integer> possibleItems;
 	private Money vmMoney;
 	private VM_Slot[] slots;

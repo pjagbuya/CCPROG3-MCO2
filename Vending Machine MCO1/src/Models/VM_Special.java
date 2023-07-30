@@ -29,7 +29,7 @@ public class VM_Special extends VM_Regular
 			item_max = super.getMaxITEMS();
 			
 		for (int i = 0; i < 7; i++)
-			specialSlots[i] = new VM_SpecialSlot(item_max);
+			specialSlots[i] = new VM_Slot(item_max);
 		
 		for(PresetItem item : PresetItem.values())
 		{

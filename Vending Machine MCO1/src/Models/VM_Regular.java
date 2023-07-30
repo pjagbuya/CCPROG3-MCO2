@@ -36,16 +36,15 @@ public class VM_Regular {
 		for (int i = 0; i < nOfSlots; i++)
 		{
 			if(item_max >= 10)
-				slots[i] = new VM_RegularSlot(item_max);
+				slots[i] = new VM_Slot(item_max);
 			else
-				slots[i] = new VM_RegularSlot(MAX_ITEMS);
+				slots[i] = new VM_Slot(MAX_ITEMS);
 		}
 		currentMoney = new Money();
 		
 		orderHistory = new ArrayList<Order>();
 		stockedInfos = new ArrayList<VM_StockedInfo>();
 		this.change = change;
-		recordCurrInd = 0;
 		
 		
 		setOperator(
@@ -142,22 +141,6 @@ public class VM_Regular {
 	public ArrayList<Order> getOrderHistory() {
 		return orderHistory;
 	}
-
-	/**
-	 * Generates a copy of the VM's slot array
-	 *
-	 * @return a copy of the VM's slot array
-	 */
-	public VM_Slot[] getSlotsCopy()
-	{
-		VM_Slot[] slotsCopy = new VM_Slot[slots.length];
-		for (int i = 0; i < slots.length; i++) {
-			if(slots[i] != null && slots[i].getItems() != null)
-				slotsCopy[i] = new VM_RegularSlot(slots[i]);  // using the copy constructor C
-		}
-		return slotsCopy;
-	}
-
 
 	
 	/**
@@ -338,35 +321,15 @@ public class VM_Regular {
 			this.name = new String("defaultName");
 	}
 
-	/**
-	 * Method increments the stock ind to be at a new index. Meaning
-	 * The original previous will be overwritten with this current
-	 */
-	public void addStockInd()
-	{
-		stockedInfos.add(new VM_StockedInfo(this));
-		recordCurrInd++;
+	
+	protected void recordCurrentInventory() {
+		stockedInfos.add( new VM_StockedInfo( slots , null , getCurrentMoney() ) );
 	}
 	
-	
-
-	
-	/**
-	 * This helper method returns a VM_Slot based on the parameters given
-	 * 
-	 * @param slotName name of the slot
-	 * @return the VM_Slot object that the name pertains to
-	 */
-	private VM_Slot findSlot(String slotName)
-	{
-		int i;
-		for(i = 0; i < slots.length; i++)
-		{
-			if(slots[i].getSlotItemName().equalsIgnoreCase(slotName))
-				return slots[i];
-		}
-		return null;
+	protected ArrayList<VM_StockedInfo> getStockedInfos() {
+		return stockedInfos;
 	}
+	
 	
 	
 	public void setOperator(SellingOperator sellingOperator)
@@ -400,8 +363,6 @@ public class VM_Regular {
 	private ArrayList<VM_StockedInfo> stockedInfos;
 	/** the list of successful transaction records starting from the last restocking */
 	private ArrayList<Order> orderHistory;
-	/** the index right after the tail of stockedInfos */ 
-	private int recordCurrInd;
 	/** the minimum number of slots a machine must hold */
 	private static final int MIN_SLOTS = 8;
 	/** the maximum number of items a slot can hold */

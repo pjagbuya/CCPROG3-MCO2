@@ -1,7 +1,8 @@
 package Models;
 
+import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.LinkedHashMap;
-import java.util.Map;
 
 
 /**
@@ -13,92 +14,54 @@ import java.util.Map;
  * @author Vince Kenneth D. Rojo
  * @version 1.0
  */
-public class VM_StockedInfo {
-
-    /**
-     * Stores a copy of all slots of VM,
-     * as well as the stock counts of each slot
-     * 
-     * @param vmMachine the VM_Regular whose inventory is to be recorded
-     **/
-    public VM_StockedInfo(VM_Regular vmMachine)
-    {
-        int i;
-        int stock;
-        money = new Money();
-        //money.acceptDenominations(vmMachine.getCurrentMoney());
-        VM_Slot[] slots = vmMachine.getSlotsCopy();
-
-        
-        VM_Slot slot;
-        itemSlotsAndStock = new LinkedHashMap<VM_Slot, Integer>(); 
-
-
-        // Makes the default a negative int
-        stock = -1;
-        // Iterates through all slots of the vmMachine
-        for(i = 0; i < vmMachine.getSlots().length; i++)
-        {
-            // set default that slot is empty
-            slot = null;
-
-            if(slots[i] != null)
-            {
-                // Identify the slot and stock
-                slot = slots[i];
-                stock = slot.getSlotItemStock();
-            }
-
-            // If the slot stored is not empty
-            if(slot != null && stock >= 0)
-                // Stores info of name and stock
-                itemSlotsAndStock.put(slot, stock);
-                
-        }
-
-    }
+public class VM_StockedInfo
+{
+	public VM_StockedInfo(
+		VM_Slot[] slots,
+		VM_Slot[] specialSlots,
+		Money cashReserves )
+	{
+		int i;
+		itemNames = new ArrayList<String>();
+		itemPrices = new LinkedList<Double>();
+		itemStocks = new LinkedList<Integer>();
+		moneyRecord = new LinkedHashMap<String, Integer>();
+		
+		/* Records Regular Slots. */
+		for(i = 0; i < slots.length; i++)
+			if( slots[i].getSlotItemName() != null )
+			{
+				itemNames.add( slots[i].getSlotItemName() );
+				itemPrices.add( slots[i].getPrice() );
+				itemStocks.add( slots[i].getSlotItemStock() );
+			}
+			
+		/* Records Special Slots, if any. */
+		if( specialSlots != null )
+		for(i = 0; i < specialSlots.length; i++)
+			if( specialSlots[i].getSlotItemName() != null )
+			{
+				itemNames.add( specialSlots[i].getSlotItemName() );
+				itemPrices.add( specialSlots[i].getPrice() );
+				itemStocks.add( specialSlots[i].getSlotItemStock() );
+			}
+		
+		/* Records cash reserves. */
+		for( String k : cashReserves.getDenominations().keySet() )
+			moneyRecord.put( k , cashReserves.getDenominations().get(k).size() );
+	}
 	
 	
-	/**
-	 * Checks whether cash reserves and slots are either null or practically empty
-	 *
-	 * @return true if neither of the above conditions are met
-	 */
-    public boolean isEmptyData()
-    {
-        if(money == null || itemSlotsAndStock.isEmpty())
-            return true;
-        for(Map.Entry<VM_Slot, Integer> stockAndSlotEntry : itemSlotsAndStock.entrySet())
-            if(stockAndSlotEntry.getKey() != null && !stockAndSlotEntry.getKey().getSlotItemName().equalsIgnoreCase(""))
-                return false;
-
-        return true;
-    }
+	public ArrayList<String> getNames() { return itemNames; }
+	public LinkedList<Double> getPrices() { return itemPrices; }
+	public LinkedList<Integer> getStocks() { return itemStocks; }
+	public LinkedHashMap<String, Integer> getMoneyRecord() { return moneyRecord; }
 	
 	
-	/**
-     * Gets the money object of this inventory record
-     * 
-     * @return the money tray of this inventory record
-     */
-    public Money getMoney() {
-        return money;
-    }
-	
-	
-	/**
-     * Gets the list containing copies of the slots and their corresponding stock counts at the time of recording
-     * 
-     * 
-     * @return the list of slots and their stock counts
-     */
-    public LinkedHashMap<VM_Slot, Integer> getItemSlotsAndStock() {
-        return itemSlotsAndStock;
-    }
-	
-	
-	/** the list containing copies of the slots and their corresponding stock counts at the time of recording */
-    private LinkedHashMap<VM_Slot, Integer> itemSlotsAndStock;
-    /** the money object, contains a record of the VM's cash reserves at the time of recording */
-    private Money money;
+	/** the lists of item names, their prices, and their corresponding stock counts at the time of recording */
+	private ArrayList<String> itemNames;
+	private LinkedList<Double> itemPrices;
+    private LinkedList<Integer> itemStocks;
+    /** the record of the VM's cash reserves at the time of recording */
+    private LinkedHashMap<String, Integer> moneyRecord;
 }

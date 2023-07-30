@@ -240,33 +240,6 @@ public class Maintenance
 		return msg;
 	}
 	
-	
-	/**
-	 * This method updates the stocked infos by instantiating a new Stocked info
-     * It will also reset all slot stored Profit and Items sold
-	 *
-	 * @param vm the VM that will save a copy of its current inventory (as a VM_StockedInfo object)
-	 */
-	public void updateStockedInfos(VM_Regular vm)
-	{
-		int i;
-		VM_Slot[] slots;
-		vm.addStockInd();
-		slots = this.slots;
-
-		for(i = 0; i < slots.length; i++)
-		{
-			if(slots[i] != null)
-			{
-				// Clear all storedProfit 
-				slots[i].clearStoredProfit();
-
-				// resets no. of sold items per slot back to
-				slots[i].setSlotItemSold(0); 
-			}
-		}
-
-	}
 
 
 	/**
@@ -348,6 +321,7 @@ public class Maintenance
 		
 		return item;
 	}
+	
 	
 	private Money vmMoney;
 	private VM_Slot[] slots;
