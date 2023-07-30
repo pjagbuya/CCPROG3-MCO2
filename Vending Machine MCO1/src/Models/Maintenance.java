@@ -172,7 +172,9 @@ public class Maintenance
 	}
 	
 	
-	
+	public void recordCurrentInventory() {
+		stockedInfos.add( new VM_StockedInfo( slots , specialSlots , vmMoney ) );
+	}
 	
     
 	public String replaceItemStock(String itemName, int qty, int slotNum)
@@ -326,5 +328,6 @@ public class Maintenance
 	private Money vmMoney;
 	private VM_Slot[] slots;
 	private VM_Slot[] specialSlots;
+	private ArrayList<VM_StockedInfo> stockedInfos;
 	private LinkedHashMap<String, Integer> possibleItems;
 }

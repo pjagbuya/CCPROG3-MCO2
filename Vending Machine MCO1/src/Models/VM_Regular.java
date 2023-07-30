@@ -54,7 +54,7 @@ public class VM_Regular {
 				getOrderHistory(),
 				getChange() ) );
 				
-		maintenance = new Maintenance( getCurrentMoney(), getSlots(), null );
+		maintenance = new Maintenance( getStockedInfos(), getCurrentMoney(), getSlots(), null );
 	}
 	
 	
@@ -141,6 +141,7 @@ public class VM_Regular {
 	public ArrayList<Order> getOrderHistory() {
 		return orderHistory;
 	}
+	
 
 	
 	/**
@@ -322,9 +323,7 @@ public class VM_Regular {
 	}
 
 	
-	protected void recordCurrentInventory() {
-		stockedInfos.add( new VM_StockedInfo( slots , null , getCurrentMoney() ) );
-	}
+	
 	
 	protected ArrayList<VM_StockedInfo> getStockedInfos() {
 		return stockedInfos;
