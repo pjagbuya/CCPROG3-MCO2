@@ -73,7 +73,7 @@ public class VM_Special extends VM_Regular
 	{
 		if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null && 
 			possibleItems.get( givenItem.getItemName().toUpperCase() ) == 1 )
-			//UNSURE abt this
+			/* UNSURE abt this */ ;
 		else if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null )
 			specialSlots[i].addItemStock( givenItem );
 	}

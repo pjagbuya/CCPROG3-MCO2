@@ -157,11 +157,14 @@ public class SpecialSellingOperator extends SellingOperator
 			if( possibleItems.get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
 				slots = getSlots();
 			else
-				slots = getSpecialSlots();
+				slots = specialSlots;
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
-					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) )
-					order.addOrder( slots[i], recipeChecker.getRequiredStock().get(k) );
+					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) ) {
+					order.getPendingOrder().put(
+						recipeChecker.getAbsoluteBaseIngredients().get(k) ,
+						recipeChecker.getRequiredStock().get(k) );
+				}
 		}
 	}
 	

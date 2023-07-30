@@ -26,7 +26,7 @@ public class VM_StockedInfo {
         int i;
         int stock;
         money = new Money();
-        money.acceptDenominations(vmMachine.getCurrentMoney());
+        //money.acceptDenominations(vmMachine.getCurrentMoney());
         VM_Slot[] slots = vmMachine.getSlotsCopy();
 
         

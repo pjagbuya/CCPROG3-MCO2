@@ -11,6 +11,7 @@ public class VM_Factory
 {
 	public VM_Factory()
 	{
+		possibleItems = new LinkedHashMap<String, Integer>();
 		for(PresetItem item : PresetItem.values())
 		{
 			possibleItems.put(item.name(), item.getIsIndependent());
