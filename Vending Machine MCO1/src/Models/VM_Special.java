@@ -48,6 +48,7 @@ public class VM_Special extends VM_Regular
 	
 	
 	
+	
 	public void setSpecialOperator(SpecialSellingOperator specialSellingOperator)
 	{
 		super.setOperator( specialSellingOperator );
@@ -68,20 +69,16 @@ public class VM_Special extends VM_Regular
 				  of the specified item should be added to the specified slot
 	 * @param i the index of the specified slot in the slots array
 	 */
-
+	/*
 	public void addItemStock(VM_Item givenItem, int i)
 	{
 		if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null && 
 			possibleItems.get( givenItem.getItemName().toUpperCase() ) == 1 )
-			/* UNSURE abt this */ ;
+			 ;
 		else if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null )
 			specialSlots[i].addItemStock( givenItem );
 	}
-	
-	
-	
-
-	
+	*/
 	
 	private LinkedHashMap<String, Integer> possibleItems;
 	public VM_Slot[] getSpecialSlots() { return specialSlots; }
@@ -90,12 +87,14 @@ public class VM_Special extends VM_Regular
 	
 	public void setRecipeChecker(RecipeChecker recipeChecker) { this.recipeChecker = recipeChecker; }
 	
+	protected void recordCurrentInventory() {
+		getStockedInfos().add( new VM_StockedInfo( getSlots() , specialSlots , getCurrentMoney() ) );
+	}
+	
+	
+	
 	
 	private RecipeChecker recipeChecker;
-	
-	
-	
-	
 	/** slots for items that cannot be sold on their own */
 	private VM_Slot[] specialSlots;
 }
