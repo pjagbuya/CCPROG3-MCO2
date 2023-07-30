@@ -146,7 +146,7 @@ public class SpecialSellingOperator extends SellingOperator
 		return msg;
 	}
 	
-	public void addAbsoluteBaseIngredients(Order order)
+	public void addAbsoluteBaseIngredients()
 	{
 		VM_Slot[] slots;
 		int i;
@@ -157,12 +157,8 @@ public class SpecialSellingOperator extends SellingOperator
 			if( possibleItems.get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
 				slots = getSlots();
 			else
-				slots = getSpecialSlots();
-			for(i = 0; i < slots.length; i++)
-				if( slots[i].getSlotItemName() != null &&
-					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) )
-					order.addOrder( slots[i], recipeChecker.getRequiredStock().get(k) );
-		}
+				slots = specialSlots;
+			}
 	}
 	
 	
