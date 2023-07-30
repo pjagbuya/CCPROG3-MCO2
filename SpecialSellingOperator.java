@@ -184,8 +184,8 @@ public class SpecialSellingOperator extends SellingOperator
 	}
 	
 	
-	ArrayList<VM_Item> ingredients;
-	RecipeChecker recipeChecker;
-	VM_Slot[] specialSlots;
+	private ArrayList<VM_Item> ingredients;
+	private RecipeChecker recipeChecker;
+	private VM_Slot[] specialSlots;
 	
 }

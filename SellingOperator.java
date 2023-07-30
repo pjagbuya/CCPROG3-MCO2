@@ -178,7 +178,7 @@ public class SellingOperator
 	}
 	
 	
-	protected boolean hasEnoughStock(VM_Slot[] slots)
+	public boolean hasEnoughStock(VM_Slot[] slots)
 	{
 		int i;
 		LinkedHashMap<String, Integer> orders;
@@ -205,7 +205,7 @@ public class SellingOperator
      */
 	
 	
-	private void duplicateDenominations()
+	protected void duplicateDenominations()
 	{
 		/* duplicating cash reserves of VM, while setting change to zero */
 		for( String s : vmCashReserves.getDenominations().keySet() )
@@ -258,7 +258,7 @@ public class SellingOperator
 	
 	
 	/** successful transactions ONLY */
-	private void updateCashTrays()
+	protected void updateCashTrays()
 	{		
 		int difference; // the difference between the corresponding nos. of denominations in the cash reserve and the duplicate hashmap
 		int additional; // the additional payment pieces that have to be placed into the cash reserves
@@ -434,7 +434,7 @@ public class SellingOperator
 	
 	protected VM_Slot[] getSlots() { return slots; }
 	
-	protected Order getOrder() { return order; }
+	public Order getOrder() { return order; }
 	
 	public ArrayList<VM_Item> getSoldItems() { return soldItems; }
 	
