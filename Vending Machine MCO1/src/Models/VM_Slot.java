@@ -10,7 +10,7 @@ import java.util.ArrayList;
   * @author Vince Kenneth D. Rojo
   * @version 1.0
   */
-public abstract class VM_Slot {
+public class VM_Slot {
 
 
     /**
@@ -35,40 +35,6 @@ public abstract class VM_Slot {
             MAX = 10;
     }
 	
-	
-	/**
-     * This copy constructor initializes itself with another VM_Slot and inherit
-     * its attributes and data.
-     * 
-     * @param copy another VM_Slot object
-     * 
-     */
-	public VM_Slot(VM_Slot copy)
-    {
-        slotItemSold = copy.getSlotItemSold();
-        storedProfit = copy.getStoredProfit();
-		
-        // Sets the item as a new item copy to be assigned as the attribute of this slot
-		if( copy.getSlotItemStock() > 0 )
-		{
-			slotItemName = new String( copy.getSlotItemName() );
-			price = copy.getPrice();
-		}
-        else
-		{
-            slotItemName = new String( "N/A" );
-			price = 0.0;
-		}
-		
-        copy_stockCount = copy.getSlotItemStock();
-
-        // Slot should have at least 10 capacity for items
-        if(copy.getMAX() >= 10)
-            MAX = copy.getMAX();
-        else
-            MAX = 10;
-    }
-
 	
 	/**
      * Instructs slot to hold a different item, or even another of the same item

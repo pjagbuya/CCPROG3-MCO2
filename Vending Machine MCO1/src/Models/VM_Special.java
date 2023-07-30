@@ -29,7 +29,7 @@ public class VM_Special extends VM_Regular
 			item_max = super.getMaxITEMS();
 			
 		for (int i = 0; i < 7; i++)
-			specialSlots[i] = new VM_SpecialSlot(item_max);
+			specialSlots[i] = new VM_Slot(item_max);
 		
 		for(PresetItem item : PresetItem.values())
 		{
@@ -47,7 +47,6 @@ public class VM_Special extends VM_Regular
 	}
 	
 	
-	
 	public void setSpecialOperator(SpecialSellingOperator specialSellingOperator)
 	{
 		super.setOperator( specialSellingOperator );
@@ -55,35 +54,6 @@ public class VM_Special extends VM_Regular
 	
 	
 	
-
-
-	
-	
-	
-	/**
-	 * Adds more of a certain item to the correct slot specified by index
-	 *
-	 * @param givenItem the item to be added to the specified slot
-	 * @param qty the number indicating how many pieces
-				  of the specified item should be added to the specified slot
-	 * @param i the index of the specified slot in the slots array
-	 */
-
-	public void addItemStock(VM_Item givenItem, int i)
-	{
-		if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null && 
-			possibleItems.get( givenItem.getItemName().toUpperCase() ) == 1 )
-			//UNSURE abt this
-		else if( possibleItems.get( givenItem.getItemName().toUpperCase() ) != null )
-			specialSlots[i].addItemStock( givenItem );
-	}
-	
-	
-	
-
-	
-	
-	private LinkedHashMap<String, Integer> possibleItems;
 	public VM_Slot[] getSpecialSlots() { return specialSlots; }
 	
 	public RecipeChecker getRecipeChecker() { return recipeChecker; }
@@ -91,11 +61,11 @@ public class VM_Special extends VM_Regular
 	public void setRecipeChecker(RecipeChecker recipeChecker) { this.recipeChecker = recipeChecker; }
 	
 	
+	
+	
+	
+	private LinkedHashMap<String, Integer> possibleItems;
 	private RecipeChecker recipeChecker;
-	
-	
-	
-	
 	/** slots for items that cannot be sold on their own */
 	private VM_Slot[] specialSlots;
 }

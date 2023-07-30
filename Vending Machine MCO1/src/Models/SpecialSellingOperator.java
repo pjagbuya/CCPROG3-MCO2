@@ -21,53 +21,53 @@ public class SpecialSellingOperator extends SellingOperator
 	 * by such prompts
 	 *
 	 * Also sets up the ingredient hashmaps, detailing the stocks of each
-	 * 
+	 *
 	 * @param vm the target vending machine for results and effects of this class
 	 */
     public SpecialSellingOperator(VM_Slot[] slots, Money vmCashReserves, ArrayList<Order> orderHistory, Money change, VM_Slot[] specialSlots)
-    {	
+    {
 		super(slots, vmCashReserves, orderHistory, change);
 		this.specialSlots = specialSlots;
 		recipeChecker = new RecipeChecker(getSlots(), specialSlots);
     }
 
-    
+
 
 	public VM_Item createSpecialItem()
 	{
 		VM_Item specialItem;
 		int i;
-			
+
 		specialItem =
 			new KangkongChips(
 			"Kangkong Chips",
 			getOrder().getTotalCost() ,
 			getOrder().getTotalCalories() );
-					
+
 		for(i = 0; i < ingredients.size(); i++)
 			((KangkongChips)specialItem).acceptIngredient( ingredients.get(i) );
-					
+
 		ingredients.clear();
-		
+
 		return specialItem;
 	}
 
-	
-	
-	
+
+
+
 	public String validateTransaction()
 	{
 		String msg = super.validateTransaction();
-		
+
 		if( msg.equals("") )
 			if( !hasEnoughStock(specialSlots) )
 				msg = msg + "ERROR: SPECIAL STOCK INSUFFICIENT.\n";
 		else
 			msg = msg + "ERROR: REGULAR STOCK INSUFFICIENT.\n";
-		
+
 		return msg;
 	}
-	
+
 	public void proceedTrasaction()
 	{
 		int i;
@@ -85,7 +85,7 @@ public class SpecialSellingOperator extends SellingOperator
 		addOrderHistory(getOrder());
 
 	}
-	
+
 	public String addIngredient(String ingredient, int qty)
 	{
 		String msg;
@@ -95,13 +95,13 @@ public class SpecialSellingOperator extends SellingOperator
 		boolean ingredientIsAnotherFlavor = false; // assumed false
 		boolean ingredientHasSlot = false; // assumed false
 		boolean ingredientHasEnoughStock = false; // assumed false
-			
+
 		msg = null;
 		if( possibleItems.get( ingredient.toUpperCase() ) == null ) {
 			msg = new String("ERROR: ITEM DOES NOT EXIST IN UNIVERSE.\n");
 			ingredientExists = false;
 		}
-		
+
 		/* Prevents user from adding other flavors */
 		if( ingredientExists &&
 			getOrder().getPendingOrder().get( ingredient.toUpperCase() ) == null &&
@@ -110,7 +110,7 @@ public class SpecialSellingOperator extends SellingOperator
 			msg = new String("ERROR: MULTIPLE FLAVORS NOT ALLOWED.\n");
 			ingredientIsAnotherFlavor = true;
 		}
-			
+
 			/* Checks whether a slot holds enough of this item. */
 		if( ingredientExists && !ingredientIsAnotherFlavor ) {
 			if( possibleItems.get( ingredient.toUpperCase() ) == 1 )
@@ -126,12 +126,12 @@ public class SpecialSellingOperator extends SellingOperator
 						ingredientHasEnoughStock = true;
 				}
 		}
-		
+
 		if( !ingredientHasSlot )
 			msg = new String("ERROR: NO SLOT HAS THIS .\n");
 		if( ingredientHasSlot && !ingredientHasEnoughStock )
 			msg = new String("ERROR: NOT ENOUGH STOCK OF INGREDIENT.\n");
-		
+
 		/* Decision */
 		if( ingredientExists &&
 			!ingredientIsAnotherFlavor &&
@@ -145,12 +145,12 @@ public class SpecialSellingOperator extends SellingOperator
 
 		return msg;
 	}
-	
+
 	public void addAbsoluteBaseIngredients()
 	{
 		VM_Slot[] slots;
 		int i;
-		
+
 		/* Add absolute base ingredients to order. */
 		for( int k : recipeChecker.getAbsoluteBaseIngredients().keySet() )
 		{
@@ -158,10 +158,17 @@ public class SpecialSellingOperator extends SellingOperator
 				slots = getSlots();
 			else
 				slots = specialSlots;
-			}
+			for(i = 0; i < slots.length; i++)
+				if( slots[i].getSlotItemName() != null &&
+					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) ) {
+					order.getPendingOrder().put(
+						recipeChecker.getAbsoluteBaseIngredients().get(k) ,
+						recipeChecker.getRequiredStock().get(k) );
+				}
+		}
 	}
 	
-	
+
 	public String chooseFlavor(int chosenFlavor)
 	{
 		String msg = null;
@@ -169,14 +176,14 @@ public class SpecialSellingOperator extends SellingOperator
 		VM_Slot[] slots;
 		LinkedHashMap<Integer, String> flavors = recipeChecker.getFlavors();
 		LinkedHashMap<Integer, Integer> flavorStock = recipeChecker.getFlavorStock();
-		
+
 		// only when selected slot num is within range, this will trigger to add that order
 		if( flavors.get(chosenFlavor) != null &&
 			flavorStock.get(chosenFlavor) > 0 )
 			msg = null;
 		else
 			msg = new String("ERROR: FLAVOR NOT AVAILABLE.\n");
-		
+
 		/* adds flavor to Order, if it is not PLAIN */
 		if( msg == null && !flavors.get(chosenFlavor).equalsIgnoreCase("PLAIN") )
 		{
@@ -191,16 +198,16 @@ public class SpecialSellingOperator extends SellingOperator
 		}
 		return msg;
 	}
-	
-	
+
+
 	public void renewRecipeChecker()
 	{
 		recipeChecker = new RecipeChecker( getSlots() , specialSlots );
 	}
-	
+
 	private LinkedHashMap<String, Integer> possibleItems;
 	ArrayList<VM_Item> ingredients;
 	RecipeChecker recipeChecker;
 	VM_Slot[] specialSlots;
-	
+
 }

@@ -4,7 +4,7 @@ import java.util.Scanner;
 
 import DenomLib.Denomination;
 import ItemSelectLib.PresetItem;
-
+import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.InputMismatchException;
@@ -26,8 +26,9 @@ public class Maintenance
 	 * @param possibleItems list of names of all item classes in the program, excluding VM_Item
 	
 	 */
-    public Maintenance(Money vmMoney, VM_Slot[] slots, VM_Slot[] specialSlots)
+    public Maintenance(ArrayList<VM_StockedInfo> stockedInfos, Money vmMoney, VM_Slot[] slots, VM_Slot[] specialSlots)
     {
+		this.stockedInfos = stockedInfos;
 		this.vmMoney = vmMoney;
 		this.slots = slots; 
 		this.specialSlots = specialSlots;
@@ -172,7 +173,9 @@ public class Maintenance
 	}
 	
 	
-	
+	public void recordCurrentInventory() {
+		stockedInfos.add( new VM_StockedInfo( slots , specialSlots , vmMoney ) );
+	}
 	
     
 	public String replaceItemStock(String itemName, int qty, int slotNum)
@@ -240,33 +243,6 @@ public class Maintenance
 		return msg;
 	}
 	
-	
-	/**
-	 * This method updates the stocked infos by instantiating a new Stocked info
-     * It will also reset all slot stored Profit and Items sold
-	 *
-	 * @param vm the VM that will save a copy of its current inventory (as a VM_StockedInfo object)
-	 */
-	public void updateStockedInfos(VM_Regular vm)
-	{
-		int i;
-		VM_Slot[] slots;
-		vm.addStockInd();
-		slots = this.slots;
-
-		for(i = 0; i < slots.length; i++)
-		{
-			if(slots[i] != null)
-			{
-				// Clear all storedProfit 
-				slots[i].clearStoredProfit();
-
-				// resets no. of sold items per slot back to
-				slots[i].setSlotItemSold(0); 
-			}
-		}
-
-	}
 
 
 	/**
@@ -349,8 +325,10 @@ public class Maintenance
 		return item;
 	}
 	
+	
 	private Money vmMoney;
 	private VM_Slot[] slots;
 	private VM_Slot[] specialSlots;
+	private ArrayList<VM_StockedInfo> stockedInfos;
 	private LinkedHashMap<String, Integer> possibleItems;
 }
