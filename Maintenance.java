@@ -282,7 +282,7 @@ public class Maintenance
 	}
 	
 	
-	protected VM_Item generateItem( String s )
+	private VM_Item generateItem( String s )
 	{
 		VM_Item item = null;
 		
