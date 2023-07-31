@@ -62,7 +62,7 @@ public class Maintenance
 		int slotIndex;
         boolean anItemIsRestocked = false; // initially false
 		boolean slotFound = false; // intially false
-		VM_Slot[] slots;
+		VM_Slot[] slots = null;
 		
 		slotIndex = -1;
 
@@ -115,7 +115,7 @@ public class Maintenance
 		boolean slotFound = false; // assumed false
 		boolean slotHasName = true; // assumed true
 		boolean slotIsEmpty = false; // assumed false
-		VM_Slot[] slots;
+		VM_Slot[] slots = null;
 		
 		/* INPUT VALIDATION */
 		slotIndex = -1;
@@ -200,13 +200,13 @@ public class Maintenance
 		boolean itemExists = true; // assumed true
 		boolean qtyIsPositive = true; // assumed true
 		boolean slotNumOutOfBounds = false; // assumed false
-		VM_Slot[] slots;
+		VM_Slot[] slots = null;
 		
 		
 		/* Switching between special and regular slots. */
 		if( presetItems.get( itemName ) == 1 )
 			slots = this.slots;
-		else( presetItems.get( itemName ) == 0 )
+		else if( presetItems.get( itemName ) == 0 )
 			slots = specialSlots;
 		else if( customItems.get( itemName ) != null )
 			slots = slots;
@@ -337,10 +337,10 @@ public class Maintenance
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
 		
-		else if( s.equalsIgnoreCase("Soy_Sauce")
+		else if( s.equalsIgnoreCase("Soy_Sauce") )
 			item = new VM_Item("Soy_Sauce", 4.00, 2);
 		
-		else if( s.equalsIgnoreCase("Chili")
+		else if( s.equalsIgnoreCase("Chili") )
 			item = new VM_Item("Chili", 2.00, 1);
 		
 		
@@ -354,10 +354,10 @@ public class Maintenance
 	{
 		VM_Item item = null;
 		
-		if( getCustomItem().get( s ) != null )
-			item = new VM_Item( new String(s) , 10.00, customItem.get(s) );
+		if( getCustomItems().get( s ) != null )
+			item = new VM_Item( new String(s) , 10.00, getCustomItems().get(s) );
 		
-		return VM_Item;
+		return item;
 	}
 	
 	public String createCustomItem(String name, int calories)
@@ -387,6 +387,8 @@ public class Maintenance
 	public ArrayList<VM_StockedInfo> getStockedInfos() { return stockedInfos; }
 	
 	public ArrayList<Order> getOrderHistory() { return orderHistory; }
+	
+	public LinkedHashMap<String, Integer>  getCustomItems() { return customItems; }
 	
 	private Money vmMoney;
 	private VM_Slot[] slots;

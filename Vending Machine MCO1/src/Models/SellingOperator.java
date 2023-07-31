@@ -2,6 +2,7 @@ package Models;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import ItemSelectLib.PresetItem;
 
 import DenomLib.Denomination;
 
@@ -426,10 +427,10 @@ public class SellingOperator
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
 		
-		else if( s.equalsIgnoreCase("Soy_Sauce")
+		else if( s.equalsIgnoreCase("Soy_Sauce") )
 			item = new VM_Item("Soy_Sauce", 4.00, 2);
 		
-		else if( s.equalsIgnoreCase("Chili")
+		else if( s.equalsIgnoreCase("Chili") )
 			item = new VM_Item("Chili", 2.00, 1);
 		
 		
@@ -443,10 +444,10 @@ public class SellingOperator
 	{
 		VM_Item item = null;
 		
-		if( getCustomItem().get( s ) != null )
-			item = new VM_Item( new String(s) , 10.00, customItem.get(s) );
+		if( getCustomItems().get( s ) != null )
+			item = new VM_Item( new String(s) , 10.00, getCustomItems().get(s) );
 		
-		return VM_Item;
+		return item;
 	}
 	
 	public void createNewOrder()

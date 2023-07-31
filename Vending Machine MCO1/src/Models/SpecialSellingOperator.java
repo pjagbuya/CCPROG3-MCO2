@@ -157,7 +157,7 @@ public class SpecialSellingOperator extends SellingOperator
 	
 	public void addAbsoluteBaseIngredients(Order order)
 	{
-		VM_Slot[] slots;
+		VM_Slot[] slots = null;
 		int i;
 		
 		/* Add absolute base ingredients to order. */
@@ -184,7 +184,7 @@ public class SpecialSellingOperator extends SellingOperator
 	{
 		String msg = null;
 		int i;
-		VM_Slot[] slots;
+		VM_Slot[] slots = null;
 		LinkedHashMap<Integer, String> flavors = recipeChecker.getFlavors();
 		LinkedHashMap<Integer, Integer> flavorStock = recipeChecker.getFlavorStock();
 		

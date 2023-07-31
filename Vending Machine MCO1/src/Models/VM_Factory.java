@@ -53,7 +53,7 @@ public class VM_Factory
 	public String specifyInitialStocks(String itemName, int qty)
 	{
 		String msg;
-		VM_Slot[] slots;
+		VM_Slot[] slots = null;
 		int i;
 		int j;
 		boolean itemExists = true; // assumed true

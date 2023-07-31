@@ -3,7 +3,7 @@ import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.text.DecimalFormat;
-
+import ItemSelectLib.PresetItem;
 
 /** This class represents a Regular Vending Machine
   * and its methods and attributes
