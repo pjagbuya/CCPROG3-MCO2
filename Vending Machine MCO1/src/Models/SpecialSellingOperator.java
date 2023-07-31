@@ -24,9 +24,15 @@ public class SpecialSellingOperator extends SellingOperator
 	 * 
 	 * @param vm the target vending machine for results and effects of this class
 	 */
-    public SpecialSellingOperator(VM_Slot[] slots, Money vmCashReserves, ArrayList<Order> orderHistory, Money change, VM_Slot[] specialSlots)
+    public SpecialSellingOperator(
+		VM_Slot[] slots,
+		Money vmCashReserves,
+		ArrayList<Order> orderHistory,
+		Money change,
+		VM_Slot[] specialSlots,
+		LinkedHashMap<String, Integer> customItems)
     {	
-		super(slots, vmCashReserves, orderHistory, change);
+		super(slots, vmCashReserves, orderHistory, change, customItems);
 		this.specialSlots = specialSlots;
 		recipeChecker = new RecipeChecker(getSlots(), specialSlots);
     }
@@ -97,7 +103,8 @@ public class SpecialSellingOperator extends SellingOperator
 		boolean ingredientHasEnoughStock = false; // assumed false
 			
 		msg = null;
-		if( possibleItems.get( ingredient.toUpperCase() ) == null ) {
+		if( getPresetItems().get( ingredient.toUpperCase() ) == null &&
+			getCustomItems().get( ingredient.toUpperCase() ) == null ) {
 			msg = new String("ERROR: ITEM DOES NOT EXIST IN UNIVERSE.\n");
 			ingredientExists = false;
 		}
@@ -111,12 +118,14 @@ public class SpecialSellingOperator extends SellingOperator
 			ingredientIsAnotherFlavor = true;
 		}
 			
-			/* Checks whether a slot holds enough of this item. */
+		/* Checks whether a slot holds enough of this item. */
 		if( ingredientExists && !ingredientIsAnotherFlavor ) {
-			if( possibleItems.get( ingredient.toUpperCase() ) == 1 )
+			if( getPresetItems().get( ingredient.toUpperCase() ) == 1 )
 				slots = getSlots();
-			else
+			else if( getPresetItems().get( ingredient.toUpperCase() ) == 0 )
 				slots = specialSlots;
+			else if( getCustomItems().get( ingredient.toUpperCase() ) != null )
+				slots = getSlots();
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( ingredient ) )
@@ -154,10 +163,12 @@ public class SpecialSellingOperator extends SellingOperator
 		/* Add absolute base ingredients to order. */
 		for( int k : recipeChecker.getAbsoluteBaseIngredients().keySet() )
 		{
-			if( possibleItems.get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
+			if( getPresetItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
 				slots = getSlots();
-			else
+			else if( getPresetItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 0 )
 				slots = specialSlots;
+			else if( getCustomItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) != null )
+				slots = getSlots();
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) ) {
@@ -187,10 +198,12 @@ public class SpecialSellingOperator extends SellingOperator
 		/* adds flavor to Order, if it is not PLAIN */
 		if( msg == null && !flavors.get(chosenFlavor).equalsIgnoreCase("PLAIN") )
 		{
-			if( possibleItems.get( flavors.get(chosenFlavor) ) == 1 )
+			if( getPresetItems().get( flavors.get(chosenFlavor) ) == 1 )
 				slots = getSlots();
-			else
+			else if( getPresetItems().get( flavors.get(chosenFlavor) ) == 0 )
 				slots = specialSlots;
+			else if( getCustomItems().get( flavors.get(chosenFlavor) ) != null )
+				slots = getSlots();
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( flavors.get(chosenFlavor) ) )
@@ -205,7 +218,7 @@ public class SpecialSellingOperator extends SellingOperator
 		recipeChecker = new RecipeChecker( getSlots() , specialSlots );
 	}
 	
-	private LinkedHashMap<String, Integer> possibleItems;
+	
 	ArrayList<VM_Item> ingredients;
 	RecipeChecker recipeChecker;
 	VM_Slot[] specialSlots;

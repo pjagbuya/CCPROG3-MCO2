@@ -23,20 +23,26 @@ public class Maintenance
 	/**
 	 * Takes note of the list of possible items in the program
 	 *
-	 * @param possibleItems list of names of all item classes in the program, excluding VM_Item
+	 * @param presetItems list of names of all item classes in the program, excluding VM_Item
 	
 	 */
-    public Maintenance(ArrayList<VM_StockedInfo> stockedInfos, Money vmMoney, VM_Slot[] slots, VM_Slot[] specialSlots)
+    public Maintenance(
+		ArrayList<VM_StockedInfo> stockedInfos,
+		Money vmMoney,
+		VM_Slot[] slots,
+		VM_Slot[] specialSlots,
+		LinkedHashMap<String, Integer> customItems )
     {
 		this.stockedInfos = stockedInfos;
 		this.vmMoney = vmMoney;
 		this.slots = slots; 
 		this.specialSlots = specialSlots;
-		this.possibleItems = new LinkedHashMap<String, Integer>();
+		this.presetItems = new LinkedHashMap<String, Integer>();
+		this.customItems = customItems;
 
 		for(PresetItem item : PresetItem.values())
 		{
-			possibleItems.put(item.name(), item.getIsIndependent());
+			presetItems.put(item.name(), item.getIsIndependent());
 		}
     }
 
@@ -59,14 +65,17 @@ public class Maintenance
 		slotIndex = -1;
 
 		/* Switching between special and regular slots. */
-		if( possibleItems.get( itemName ) == 1 )
+		if( presetItems.get( itemName ) == 1 )
 			slots = this.slots;
-		else
+		else if( presetItems.get( itemName ) == 0 )
 			slots = specialSlots;
+		else if( customItems.get( itemName ) != null )
+			slots = this.slots;
 		
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
-				slots[i].getSlotItemName().equalsIgnoreCase(itemName) ) {
+				slots[i].getSlotItemName().equalsIgnoreCase(itemName) )
+			{
 				slotIndex = i;
 				slotFound = true;
 			}
@@ -109,10 +118,12 @@ public class Maintenance
 		/* INPUT VALIDATION */
 		slotIndex = -1;
 		/* Switching between special and regular slots. */
-		if( possibleItems.get( itemName ) == 1 )
+		if( presetItems.get( itemName ) == 1 )
 			slots = this.slots;
-		else
+		else if( presetItems.get( itemName ) == 0 )
 			slots = specialSlots;
+		else if( customItems.get( itemName ) != null )
+			slots = this.slots;
 		
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
@@ -191,10 +202,12 @@ public class Maintenance
 		
 		
 		/* Switching between special and regular slots. */
-		if( possibleItems.get( itemName ) == 1 )
+		if( presetItems.get( itemName ) == 1 )
 			slots = this.slots;
-		else
+		else( presetItems.get( itemName ) == 0 )
 			slots = specialSlots;
+		else if( customItems.get( itemName ) != null )
+			slots = slots;
 		
 		/* START OF INPUT VALIDATION */
 			
@@ -215,10 +228,10 @@ public class Maintenance
 			slotNumOutOfBounds = true;
 		}
 		
-		/* Item is Not in the Universe of the Program. */
-		if( possibleItems.get(itemName) == null )
+		/* Vending Machine Does Not Know This Item. */
+		if( presetItems.get(itemName) == null && customItems.get(itemName) == null )
 		{
-			msg = msg + "ERROR: ITEM DOES NOT EXIST IN THE UNIVERSE OF THE PROGRAM.\n";
+			msg = msg + "ERROR: VENDING MACHINE DOES NOT KNOW THIS ITEM.\n";
 			itemExists = false;
 		}
 			
@@ -322,7 +335,50 @@ public class Maintenance
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
 		
+		else if( s.equalsIgnoreCase("Soy_Sauce")
+			item = new VM_Item("Soy_Sauce", 4.00, 2);
+		
+		else if( s.equalsIgnoreCase("Chili")
+			item = new VM_Item("Chili", 2.00, 1);
+		
+		
+		else
+			generateCustomItem( s );
+		
 		return item;
+	}
+	
+	private VM_Item generateCustomItem( String s )
+	{
+		VM_Item item = null;
+		
+		if( getCustomItem().get( s ) != null )
+			item = new VM_Item( new String(s) , 10.00, customItem.get(s) );
+		
+		return VM_Item;
+	}
+	
+	public String createCustomItem(String name, int calories)
+	{
+		int i;
+		String msg;
+		boolean sameNameExists = false; // assumed false
+		msg = null;
+		
+		/* Checking whether the item already exists in the Maintenance's knowledge. */
+		for( String k : presetItems.keySet() )
+			if( name.equalsIgnoreCase(k) )
+				sameNameExists = true;
+		for( String k : customItems.keySet() )
+			if( name.equalsIgnoreCase(k) )
+				sameNameExists = true;
+			
+		if(!sameNameExists)
+			customItems.put( new String(name) , calories );
+		else
+			msg = new String("ERROR: ITEM WITH SAME NAME ALREADY EXISTS.\n");
+		
+		return msg;
 	}
 	
 	
@@ -330,5 +386,6 @@ public class Maintenance
 	private VM_Slot[] slots;
 	private VM_Slot[] specialSlots;
 	private ArrayList<VM_StockedInfo> stockedInfos;
-	private LinkedHashMap<String, Integer> possibleItems;
+	private LinkedHashMap<String, Integer> presetItems;
+	private LinkedHashMap<String, Integer> customItems;
 }
