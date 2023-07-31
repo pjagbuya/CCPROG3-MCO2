@@ -58,7 +58,7 @@ public class NumPaneController
                 num = Integer.parseInt(numField.getText());
                 this.appModel.addToOrder(num-1, 1);
                 
-                item = this.vMachineModelPaneView.getItemContainer(this.appModel.findSlotNameInVM(num-1));
+                item = this.vMachineModelPaneView.getItemContainerCopy(this.appModel.findSlotNameInVM(num-1));
                 this.dispensedItemView.addItemSelected(item);
             }
         });

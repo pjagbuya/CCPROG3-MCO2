@@ -358,8 +358,9 @@ public class CreateMenuController {
             itemNameLabel = itemSectionPane.getItemNameLabel();
             stockField.setText("");
             priceField.setText("");
-            this.vMachineModelPaneView.removeItemToView(itemNameLabel.getText());
+
         }
+        this.vMachineModelPaneView.setUpVendMachView(null, null);
 
 
     }

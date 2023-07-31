@@ -205,7 +205,7 @@ public class VMachineModelPaneView extends ScrollPane
                                   ArrayList<String> itemNames)
     {
 
-        
+        itemContainerStackPane.clear();
         for(int i = 0; i < maxSlots; i++)
         {
             
@@ -278,7 +278,24 @@ public class VMachineModelPaneView extends ScrollPane
         for(StackPane itemSlot : itemContainerStackPane)
         {
             if(((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText().equalsIgnoreCase(label))
-                return new ItemSlotPaneView(((ItemSlotPaneView)itemSlot).getItemImage(), 
+                return itemSlot;
+
+            i++;
+
+        }
+
+        return null;
+
+    }
+    public StackPane getItemContainerCopy(String label)
+    {
+
+        int i;
+        i = 0;
+        for(StackPane itemSlot : itemContainerStackPane)
+        {
+            if(((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText().equalsIgnoreCase(label))
+                return   new ItemSlotPaneView(((ItemSlotPaneView)itemSlot).getItemImage(), 
                                             ((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText(), 
                                             i+1, this);
 
@@ -289,6 +306,7 @@ public class VMachineModelPaneView extends ScrollPane
         return null;
 
     }
+
 
     private boolean containsLabel(String label)
     {
