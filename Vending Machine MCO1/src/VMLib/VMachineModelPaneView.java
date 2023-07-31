@@ -5,7 +5,7 @@ import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
 import Labels.LabelToField;
-import javafx.embed.swing.SwingFXUtils;
+//import javafx.embed.swing.SwingFXUtils;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
