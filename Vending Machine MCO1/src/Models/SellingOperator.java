@@ -2,6 +2,7 @@ package Models;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import ItemSelectLib.PresetItem;
 
 import DenomLib.Denomination;
 
@@ -22,14 +23,23 @@ public class SellingOperator
 	 * by such prompts
 	 * 
 	 */
-    public SellingOperator(VM_Slot[] slots, Money vmCashReserves, ArrayList<Order> orderHistory, Money change)
+    public SellingOperator(
+		VM_Slot[] slots,
+		Money vmCashReserves,
+		ArrayList<Order> orderHistory,
+		Money change,
+		LinkedHashMap<String, Integer> customItems )
     {
-
-
 		this.orderHistory = orderHistory;
 		this.slots = slots;
 		this.vmCashReserves = vmCashReserves;
 		this.change = change;
+		this.customItems = customItems;
+		
+		for(PresetItem item : PresetItem.values())
+		{
+			presetItems.put(item.name(), item.getIsIndependent());
+		}
     }
 
 
@@ -67,7 +77,8 @@ public class SellingOperator
 	{	
 		String msg = null;
 		boolean orderIsValid;
-		orderIsValid = true;
+		orderIsValid = true; // assumed true
+		
 		// only when selected slot num is within range, this will trigger to add that order
 		if( slotNum >= 1 && slotNum <= slots.length ) {	
 			if(slots[slotNum-1] == null) {
@@ -416,6 +427,26 @@ public class SellingOperator
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
 		
+		else if( s.equalsIgnoreCase("Soy_Sauce") )
+			item = new VM_Item("Soy_Sauce", 4.00, 2);
+		
+		else if( s.equalsIgnoreCase("Chili") )
+			item = new VM_Item("Chili", 2.00, 1);
+		
+		
+		else
+			generateCustomItem( s );
+		
+		return item;
+	}
+	
+	private VM_Item generateCustomItem( String s )
+	{
+		VM_Item item = null;
+		
+		if( getCustomItems().get( s ) != null )
+			item = new VM_Item( new String(s) , 10.00, getCustomItems().get(s) );
+		
 		return item;
 	}
 	
@@ -428,6 +459,7 @@ public class SellingOperator
 	public void addOrderHistory(Order order) {
 		this.orderHistory.add(order);
 	}
+	
 	public double getPaymentTotal() { return paymentTotal; }
 	
 	public double getOrderTotal() { return orderTotal; }
@@ -444,6 +476,9 @@ public class SellingOperator
 	
 	public ArrayList<VM_Item> getSoldItems() { return soldItems; }
 	
+	public LinkedHashMap<String, Integer> getPresetItems() { return presetItems; }
+	
+	public LinkedHashMap<String, Integer> getCustomItems() { return customItems; }
 	
     private double paymentTotal = 0;
 	private double orderTotal = 0;
@@ -459,6 +494,8 @@ public class SellingOperator
 	private VM_Slot[] slots;
 	private Money vmCashReserves;
 	private LinkedHashMap<String, Integer> duplicate;
+	private LinkedHashMap<String, Integer> presetItems;
+	private LinkedHashMap<String, Integer> customItems;
 	private Money payment;
 	private Money change;
 	private Order order;

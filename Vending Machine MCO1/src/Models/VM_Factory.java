@@ -53,17 +53,29 @@ public class VM_Factory
 	public String specifyInitialStocks(String itemName, int qty)
 	{
 		String msg;
-		VM_Slot[] slots;
+		VM_Slot[] slots = null;
 		int i;
 		int j;
-		msg = null;
+		boolean itemExists = true; // assumed true
+		boolean nonNegativeQty = true; // assumed true
+		msg = "";
+		
 		/* Switching between special and regular slots. */
 		if( possibleItems.get( itemName ) == 1 )
 			slots = this.slots;
-		else
+		else if( possibleItems.get( itemName ) == 0 )
 			slots = specialSlots;
+		else {
+			itemExists = false;
+			msg += new String("ERROR: ITEM DOES NOT EXIST.\n"); 
+		}
 		
-		if(qty < 0)
+		if(qty < 0) {
+			nonNegativeQty = false;
+			msg += new String("ERROR: NEGATIVE QUANTITIES NOT ALLOWED.\n");
+		}
+		
+		if(itemExists && nonNegativeQty)
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() == null ||
 					slots[i].getSlotItemName().equalsIgnoreCase(itemName) )
@@ -72,10 +84,9 @@ public class VM_Factory
 						slots[i].addItemStock( generateItem( itemName ) );
 					break;
 				}
-		else
-			msg = new String("ERROR: NEGATIVE QUANTITIES NOT ALLOWED.\n");
-		
-		
+				
+		if(msg.equals(""))
+			return null;
 		return msg;
 	}
 	

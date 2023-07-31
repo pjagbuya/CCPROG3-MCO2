@@ -3,7 +3,7 @@ import java.util.LinkedHashMap;
 import java.util.ArrayList;
 import java.util.Map;
 import java.text.DecimalFormat;
-
+import ItemSelectLib.PresetItem;
 
 /** This class represents a Regular Vending Machine
   * and its methods and attributes
@@ -45,16 +45,29 @@ public class VM_Regular {
 		orderHistory = new ArrayList<Order>();
 		stockedInfos = new ArrayList<VM_StockedInfo>();
 		this.change = change;
-		
+		presetItems = new LinkedHashMap<String, Integer>();
+		customItems = new LinkedHashMap<String, Integer>();
 		
 		setOperator(
 			new SellingOperator(
 				getSlots(),
 				getCurrentMoney(),
 				getOrderHistory(),
-				getChange() ) );
+				getChange(),
+				getCustomItems() ) );
 				
-		maintenance = new Maintenance( getStockedInfos(), getCurrentMoney(), getSlots(), null );
+		maintenance = new Maintenance(
+			getStockedInfos(),
+			getOrderHistory(),
+			getCurrentMoney(),
+			getSlots(),
+			null,
+			getCustomItems() );
+			
+		for(PresetItem item : PresetItem.values())
+		{
+			presetItems.put(item.name(), item.getIsIndependent());
+		}	
 	}
 	
 	
@@ -346,6 +359,10 @@ public class VM_Regular {
 	{
 		this.maintenance = maintenance;
 	}
+	
+	public LinkedHashMap<String, Integer> getPresetItems() { return presetItems; }
+	
+	public LinkedHashMap<String, Integer> getCustomItems() { return customItems; }
 
 	private Maintenance maintenance;
 	private Money change;
@@ -366,5 +383,9 @@ public class VM_Regular {
 	private static final int MIN_SLOTS = 8;
 	/** the maximum number of items a slot can hold */
 	private static final int MAX_ITEMS = 10;
+	
+	private LinkedHashMap<String, Integer> presetItems;
+	/** user-named items and their calorific values */
+	private LinkedHashMap<String, Integer> customItems;
 
 }
