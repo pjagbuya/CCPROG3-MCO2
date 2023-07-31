@@ -58,6 +58,7 @@ public class VM_Regular {
 				
 		maintenance = new Maintenance(
 			getStockedInfos(),
+			getOrderHistory(),
 			getCurrentMoney(),
 			getSlots(),
 			null,

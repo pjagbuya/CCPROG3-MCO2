@@ -28,12 +28,14 @@ public class Maintenance
 	 */
     public Maintenance(
 		ArrayList<VM_StockedInfo> stockedInfos,
+		ArrayList<Order> orderHistory,
 		Money vmMoney,
 		VM_Slot[] slots,
 		VM_Slot[] specialSlots,
 		LinkedHashMap<String, Integer> customItems )
     {
 		this.stockedInfos = stockedInfos;
+		this.orderHistory = orderHistory;
 		this.vmMoney = vmMoney;
 		this.slots = slots; 
 		this.specialSlots = specialSlots;
@@ -382,10 +384,15 @@ public class Maintenance
 	}
 	
 	
+	public ArrayList<VM_StockedInfo> getStockedInfos() { return stockedInfos; }
+	
+	public ArrayList<Order> getOrderHistory() { return orderHistory; }
+	
 	private Money vmMoney;
 	private VM_Slot[] slots;
 	private VM_Slot[] specialSlots;
 	private ArrayList<VM_StockedInfo> stockedInfos;
+	private ArrayList<Order> orderHistory;
 	private LinkedHashMap<String, Integer> presetItems;
 	private LinkedHashMap<String, Integer> customItems;
 }
