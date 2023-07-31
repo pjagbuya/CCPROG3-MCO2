@@ -1,30 +1,31 @@
 package Models;
-
-import java.util.Scanner;
-
 import DenomLib.Denomination;
 import ItemSelectLib.PresetItem;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.InputMismatchException;
+
 /**
- * The class Maintenance represents a Maintenance feature that allows the user to restock,
- * replenish, reprice, add/replace items, and update stock information of a Vending Machine
- *
+ * The class Maintenance represents that part of a vending machine
+ * that allows the user to restock, replenish, reprice, add/replace items,
+ * check order history, and update the inventory information of a Vending Machine.
  * 
- *
  * @author Paul Josef P. Agbuya
  * @author Vince Kenneth D. Rojo
- * @version 1.0
  */
 public class Maintenance
 {
 	/**
 	 * Takes note of the list of possible items in the program
 	 *
-	 * @param presetItems list of names of all item classes in the program, excluding VM_Item
-	
+	 * @param stockedInfos the list of the all inventory records of the parent VM
+	 * @param orderHistory the list of all orders that this machine has performed thus far.
+	 * @param vmMoney the cash reserves of the parent vending machine
+	 * @param slots : the regular slots of the parent vending machine
+	 * @param specialSlots : the special slots of the parent vending machine
+	 * @param presetItems the list of all item classes, besides special items, that are can exist in the program universe.
+	 * @param customItems the list of user-minted items
 	 */
     public Maintenance(
 		ArrayList<VM_StockedInfo> stockedInfos,
@@ -49,11 +50,11 @@ public class Maintenance
     }
 
     /**
-	 * Provides for manual restocking of the VM's sellable items. Keeps looping
-     * and prompting the user of which item slot and how much of such would be restocked
+	 * Provides for manual restocking of the vending machine's individual sellable items.
 	 * 
-	 * @param vm the VM to restock
-	 * @return true when a restocking occurred, false otherwise
+	 * @param itemName the item to restock
+	 * @param qty the number of that item to be restocked
+	 * @return null if stocking is successful, an error message otherwise
 	 */
     public String restockItems(String itemName, int qty)
     {
@@ -103,9 +104,11 @@ public class Maintenance
 
 
     /**
-	 * Provides for repricing of the VM's items, via console prompting
+	 * Provides for repricing of the vendine machine's items.
 	 *
-	 * @param vm the VM whose items are to be replaced
+	 * @param itemName the name of the item to be repriced
+	 * @param amt the new price of the given item
+	 * @return null if repricing is successful, an error message otherwise
 	 */
 	public String repriceItems(String itemName, double amt) 
 	{
@@ -160,9 +163,11 @@ public class Maintenance
 
 
     /**
-	 * Provides for manual replenishing of the VM's cash reserves
+	 * Provides for manual replenishing of the VM's cash reserves.
 	 *
-	 * @param vm is the VM that will receive more cash reserves
+	 * @param denom the word-format representation of a piece of money.
+	 * @param qty the number of that item to be restocked
+	 * @return null if repricing is successful, an error message otherwise
 	 */
 	public String replenishDenominations(String denom, int qty)
 	{
@@ -180,17 +185,32 @@ public class Maintenance
 	}
 	
 	
+	/**
+	 * Creates a new instance of a bill or coin.
+	 *
+	 * @param denom the name of the new coin/bill to be generated
+	 * @result the new bill/coin
+	 *
+	 */
 	public DenominationItem createDenomination(String denom)
 	{
 		return new DenominationItem( denom , Money.getStrToVal().get(denom) );
 	}
 	
 	
+	/**
+	 * Tells the vending machine to add another record to its current inventory records
+	 */ 
 	public void recordCurrentInventory() {
 		stockedInfos.add( new VM_StockedInfo( slots , specialSlots , vmMoney ) );
 	}
 	
-    
+    /**
+	 * Provides for item stock replacement/filling-in
+	 *
+	 * @param itemName the name of the item to be used as a substitute
+	 * @param qty the number of that item to be restocked
+	 */
 	public String replaceItemStock(String itemName, int qty, int slotNum)
 	{
 		String msg = "";
@@ -261,10 +281,11 @@ public class Maintenance
 
 
 	/**
-	 * This method provides a simple collection of cash reserves from VM
-     * via console prompts
+	 * Provides a simple collection of cash reserves.
 	 *
-	 * @param vm the VM from which to collect (subtract) reserves														  
+	 * @param denom the word-format name of the denomination
+	 * @param qty the number of that item to be restocked
+	 * @return null if collecting is successful, an error message otherwise
 	 */
 	public String collectCashReserves(String denom, int qty)
 	{
@@ -294,6 +315,12 @@ public class Maintenance
 	}
 	
 	
+	/**
+	 * Instatiates new food items, based on the food known by the Maintenance.
+	 *
+	 * @param s the String name of the item type to be generated
+	 * @return the generated item, null otherwise
+	 */
 	private VM_Item generateItem( String s )
 	{
 		VM_Item item = null;
@@ -350,6 +377,13 @@ public class Maintenance
 		return item;
 	}
 	
+	
+	/**
+	 * Instatiates new food items, based on the user-named food known by Maintenance.
+	 *
+	 * @param s the String name of the item type to be generated
+	 * @return the generated item, null otherwise
+	 */
 	private VM_Item generateCustomItem( String s )
 	{
 		VM_Item item = null;
@@ -360,6 +394,13 @@ public class Maintenance
 		return item;
 	}
 	
+	
+	/** 
+	 * Allows user to instantiate a VM_Item with a unique name and be able to use its presets later.
+	 *
+	 * @param name the name to be given to this custom item
+	 * @param calories the calorific value of the new item type
+	 */
 	public String createCustomItem(String name, int calories)
 	{
 		int i;
@@ -383,18 +424,40 @@ public class Maintenance
 		return msg;
 	}
 	
-	
+	/**
+	 * Returns the inventory records of the vending machine.
+	 *
+	 * @return inventory records of this VM_Regular
+	 */
 	public ArrayList<VM_StockedInfo> getStockedInfos() { return stockedInfos; }
 	
+	/**
+	 * Returns the order history of the vending machine.
+	 *
+	 * @return orderHistory the list of (successful) transactions
+	 */
 	public ArrayList<Order> getOrderHistory() { return orderHistory; }
 	
+	
+	/**
+	 * Returns the item list that was defined by the user.
+	 *
+	 * @return the list of custom items for this vending machine
+	 */
 	public LinkedHashMap<String, Integer>  getCustomItems() { return customItems; }
 	
+	/** the cash reserves of the parent vending machine */
 	private Money vmMoney;
+	/** the regular slots of the parent vending machine */
 	private VM_Slot[] slots;
+	/** the special slots of the parent vending machine */
 	private VM_Slot[] specialSlots;
+	/** the inventory records of the parent vending machine */
 	private ArrayList<VM_StockedInfo> stockedInfos;
+	/** the previous transaction info of the parent vending machine */
 	private ArrayList<Order> orderHistory;
+	/** the list of items that are present in the default item set of this program  */
 	private LinkedHashMap<String, Integer> presetItems;
+	/** the list of items that are defined by the user during run time */
 	private LinkedHashMap<String, Integer> customItems;
 }
