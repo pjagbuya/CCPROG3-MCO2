@@ -1,16 +1,28 @@
 package NumPad;
 
+import Boxes.AlertBox;
+import StartLib.AppModel;
+import VMLib.VMachineModelPaneView;
+import VMSell.DispensedItemView;
+
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.StackPane;
 
 public class NumPaneController 
 {
-    public NumPaneController(NumPaneView numPaneView)
+    public NumPaneController(AppModel appModel,
+                             NumPaneView numPaneView, 
+                             VMachineModelPaneView vMachineModelPaneView,
+                             DispensedItemView dispensedItemView)
     {
         this.numPaneView = numPaneView;
-
+        this.vMachineModelPaneView = vMachineModelPaneView;
+        this.dispensedItemView = dispensedItemView;
+        this.appModel = appModel;
         TextField numField = this.numPaneView.getNumField();
         Button[] numButtons = this.numPaneView.getNumButtons();
+        AlertBox alertBox = new AlertBox();
         
 
 
@@ -38,8 +50,22 @@ public class NumPaneController
             text = numField.getText();
             numField.setText(text.substring(0, text.length()-1));
         });
+        this.numPaneView.setEnterButtonAction(e->{
+            int num;
+            StackPane item;
+            if(!numField.getText().isEmpty())
+            {
+                num = Integer.parseInt(numField.getText());
+                this.appModel.addToOrder(num-1, 1);
+                
+                item = this.vMachineModelPaneView.getItemContainer(this.appModel.findSlotNameInVM(num-1));
+                this.dispensedItemView.addItemSelected(item);
+            }
+        });
     }
-
+    private AppModel appModel;
+    private VMachineModelPaneView vMachineModelPaneView;
+    private DispensedItemView dispensedItemView;
     private NumPaneView numPaneView;
     
 }

@@ -183,7 +183,8 @@ public class SetDenomPaneView extends ScrollPane
 
 
 
-    public DenomSetSection[] getDenomSetSections() {
+    public DenomSetSection[] getDenomSetSections() 
+    {
         return denomSetSections;
     }
 

@@ -1,6 +1,6 @@
 package MaintenanceLib;
 
-import ItemSelectLib.SetItemPaneController;
+import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import Labels.HeaderLabel;
 import StartLib.CreateRegMenu;

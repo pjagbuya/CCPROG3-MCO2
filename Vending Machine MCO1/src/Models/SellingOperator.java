@@ -35,6 +35,7 @@ public class SellingOperator
 		this.vmCashReserves = vmCashReserves;
 		this.change = change;
 		this.customItems = customItems;
+		this.presetItems = new LinkedHashMap<String, Integer>();
 		
 		for(PresetItem item : PresetItem.values())
 		{

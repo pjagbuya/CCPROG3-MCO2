@@ -8,7 +8,7 @@ public enum Denomination {
     ONE_HUNDRED_BILL("One Hundred Bill", 100.0),
     FIFTY_BILL("Fifty Bill", 50.0),
     TWENTY_BILL("Twenty Bill", 20.0),
-    TWENTY_COIN("Twenty Coin", 20.0),
+    TWENTY_COIN("Twenty Coin", 20.001),
     TEN_COIN("Ten Coin", 10.0),
     FIVE_COIN("Five Coin", 5.0),
     ONE_COIN("One Coin", 1.0),

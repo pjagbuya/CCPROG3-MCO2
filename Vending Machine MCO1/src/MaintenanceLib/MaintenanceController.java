@@ -2,7 +2,7 @@ package MaintenanceLib;
 
 import Boxes.ConfirmBox;
 import DenomLib.SetDenomPaneController;
-import ItemSelectLib.SetItemPaneController;
+import ItemSelectLib.CreateMenuController;
 
 public class MaintenanceController {
     public MaintenanceController(MaintSelectView maintSelectView)

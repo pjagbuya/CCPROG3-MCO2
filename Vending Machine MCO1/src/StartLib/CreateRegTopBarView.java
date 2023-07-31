@@ -4,7 +4,7 @@ import javafx.geometry.Insets;
 import CustomSetup.CustomTopBarView;
 import DenomLib.SetDenomPaneController;
 import DenomLib.SetDenomPaneView;
-import ItemSelectLib.SetItemPaneController;
+import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
@@ -49,7 +49,10 @@ public class CreateRegTopBarView extends CustomTopBarView
 
     }
     
-
+    public void setNameTextField(String text) 
+    {
+        this.nameTextField.setText(text);
+    }
     public TextField getNameTextField() 
     {
         return nameTextField;

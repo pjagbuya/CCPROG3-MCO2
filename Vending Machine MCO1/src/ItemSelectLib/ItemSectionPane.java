@@ -43,6 +43,12 @@ public class ItemSectionPane extends GridPane
         Label tempPriceLabel;
         Label tempStockLabel;
 
+        if(!price.isEmpty())
+            this.finalPrice = Double.parseDouble(price);
+        else
+            this.finalPrice = 20.00;
+
+
         // Label setups
         itemNameLabel = new Label(name);
         tempPriceLabel = new Label("Price");
@@ -65,8 +71,7 @@ public class ItemSectionPane extends GridPane
         stockField.setPromptText("Set Stock");
         stockField.setText(stock);
         stockField.setPrefWidth(100);
-        priceField.setMaxWidth(190);
-        stockField.setMaxWidth(190);
+
         
 
         //Image setup
@@ -124,7 +129,24 @@ public class ItemSectionPane extends GridPane
         this(parentPane, name, "", "", calories, resourceURL);
 
     }
+    public void setVisible()
+    {
+        this.setVisible(true);
+        this.setManaged(true); 
+    }
+    public void setInvisible()
+    {
+        this.setVisible(false);
+        this.setManaged(false);  
+    }
+    public void setFinalPrice(double finalPrice) {
+        this.finalPrice = finalPrice;
+    }
+    public void setItemPriceFieldText(double num)
+    {
+        this.priceField.setText(num +"");
 
+    }
     public Label getCalLabel() 
     {
         return calLabel;
@@ -143,9 +165,12 @@ public class ItemSectionPane extends GridPane
     }
     public TextField getStockField() 
     {
+
         return stockField;
     }
-
+    public double getFinalPrice() {
+        return finalPrice;
+    }
 
     public void setActionEventSubBtn(EventHandler<ActionEvent> eventHandler) 
     {
@@ -190,6 +215,7 @@ public class ItemSectionPane extends GridPane
     private TextField stockField;
     private Image image;
     private ImageView imageView;
+    private double finalPrice;
     
     
     

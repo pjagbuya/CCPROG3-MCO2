@@ -6,7 +6,7 @@ import javafx.geometry.Insets;
 
 import DenomLib.SetDenomPaneController;
 import DenomLib.SetDenomPaneView;
-import ItemSelectLib.SetItemPaneController;
+import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
@@ -187,7 +187,6 @@ public class CustomTopBarView extends HBox
     private Button exitBtn;
     private Button finishBtn;
     private VBox buttonStartVBox, buttonFinishVBox;
-    private Map<Button, GeneralEventHandler> buttonHandlers;
 
     private final double MIN_HEIGHT = 100;
     private final double MIN_WIDTH = 1200;

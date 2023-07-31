@@ -11,7 +11,7 @@ import java.util.function.Consumer;
 import Buttons.MenuButton;
 import CustomSetup.GeneralEventHandler;
 import DenomLib.SetDenomPaneView;
-import ItemSelectLib.SetItemPaneController;
+import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import Labels.HeaderLabel;
 import Labels.LabelToField;
@@ -176,27 +176,27 @@ public class MaintSelectView
 
     public void addActionRestockRepriceItemBtn(EventHandler<ActionEvent> eventHandler) 
     {
-        addActionToButton(restockReprItemBtn, eventHandler);
+        this.restockReprItemBtn.setOnAction(eventHandler);
     }
 
     public void addActionReplaceItemBtn(EventHandler<ActionEvent> eventHandler) {
-        addActionToButton(replaceItemBtn, eventHandler);
+        replaceItemBtn.setOnAction(eventHandler);
     }
 
     public void addActionReplenishCollectBtn(EventHandler<ActionEvent> eventHandler) {
-        addActionToButton(replCollectBtn, eventHandler);
+        replCollectBtn.setOnAction(eventHandler);
     }
 
     public void addActionOrderHisBtn(EventHandler<ActionEvent> eventHandler) {
-        addActionToButton(orderHisBtn, eventHandler);
+        orderHisBtn.setOnAction(eventHandler);
     }
 
     public void addActionStockedInfoBtn(EventHandler<ActionEvent> eventHandler) {
-        addActionToButton(stockedInfoBtn, eventHandler);
+        stockedInfoBtn.setOnAction(eventHandler);
     }
 
     public void addActionExitBtn(EventHandler<ActionEvent> eventHandler) {
-        addActionToButton(exitBtn, eventHandler);
+        exitBtn.setOnAction(eventHandler);
     }
 
     public void addActionTopBarExitBtn(int trackedIndex, EventHandler<ActionEvent> eventHandler) 
@@ -206,7 +206,7 @@ public class MaintSelectView
 
     public void addMoreActToFinishBtnListener(EventHandler<ActionEvent> eventHandler) 
     {
-        addActionToButton(exitBtn, eventHandler);
+        exitBtn.setOnAction(eventHandler);
     }
 
     private void setMainSelectScene() 

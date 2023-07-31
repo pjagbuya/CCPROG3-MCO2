@@ -23,8 +23,8 @@ public class AppView extends BorderPane{
 
         this.parentWin = parentWin;
         this.startMenu = new Scene(this, 1200, 600);
-        this.createRegMenu = new CreateRegMenu(parentWin);
-        this.creationRegMenu = new Scene(this.createRegMenu, 1200, 600);
+        this.createRegView = new CreateRegMenu(parentWin);
+        this.creationRegMenu = new Scene(this.createRegView, 1200, 600);
         
         this.vMachineModelPaneView = new VMachineModelPaneView(parentWin);
         this.setupVMPopUpView = new SetupVMPopUpView(parentWin, this.creationRegMenu);
@@ -89,6 +89,9 @@ public class AppView extends BorderPane{
         setupVMPopUpView.show();
 
     }
+    public void setVmSellingTopBarTitle(String text) {
+        this.vmSellingOpPaneView.getVmSellingTopBarView().setVmName(text);
+    }
 
     public static MenuButton getBtnCreate() 
     {
@@ -104,11 +107,12 @@ public class AppView extends BorderPane{
         return BTN_TESTF;
     }
 
-    public Stage getParentWin() {
+    public Stage getParentWin() 
+    {
         return parentWin;
     }
-    public CreateRegMenu getCreateRegMenu() {
-        return createRegMenu;
+    public CreateRegMenu getCreateRegView() {
+        return createRegView;
     }
     public SetupVMPopUpView getSetupVMPopUpView() {
         return setupVMPopUpView;
@@ -158,7 +162,7 @@ public class AppView extends BorderPane{
     private VMachineModelPaneView vMachineModelPaneView;
     private MaintSelectView maintSelectView;
     private SetupVMPopUpView setupVMPopUpView;
-    private CreateRegMenu createRegMenu;
+    private CreateRegMenu createRegView;
     private VMSellingOpPaneView vmSellingOpPaneView;
 
 

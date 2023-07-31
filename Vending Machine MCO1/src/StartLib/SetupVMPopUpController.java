@@ -1,16 +1,23 @@
 package StartLib;
 
 import Boxes.AlertBox;
+import ItemSelectLib.SetItemPaneView;
+import VMLib.VMachineModelPaneView;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
+import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 
 public class SetupVMPopUpController 
 {
     
-    public SetupVMPopUpController(SetupVMPopUpView setupVMPopUpView)
+    public SetupVMPopUpController(SetupVMPopUpView setupVMPopUpView,
+                                  CreateRegTopBarView createRegTopBarView,
+                                  CreateRegMenu regMenu,
+                                  SetItemPaneView setItemPaneView,
+                                  AppModel appModel)
     {
 
         SetupVMTopBarView mainTopBar = setupVMPopUpView.getSetupVMTopBar();
@@ -20,11 +27,11 @@ public class SetupVMPopUpController
         itemCapField = setupVMPopUpView.getItemCapField();
         nameField = setupVMPopUpView.getNameField();
         
-
+        this.regMenu = regMenu;
         this.setupVMPopUpView = setupVMPopUpView;
-
-
-        
+        this.createRegTopBarView = createRegTopBarView;
+        this.setItemPaneView = setItemPaneView;
+        this.vMachineModelPaneView = regMenu.getvMachineModelPaneView();
 
         // When exit close window
         mainTopBar.setExitBtnListener(e->
@@ -60,9 +67,23 @@ public class SetupVMPopUpController
 
         hiddenTopBar.setFinishBtnListener(e->
         {     
-
+            selectedRadBtn = (RadioButton) setupVMPopUpView.getRadButtons().getSelectedToggle();
             if(nameField.getText().length() != 0)
             {
+ 
+                appModel.addVM( selectedRadBtn.getText(),
+                                nameField.getText(), 
+                                Integer.parseInt(slotCapField.getText()),
+                                Integer.parseInt(itemCapField.getText()));
+                
+                createRegTopBarView.setNameTextField(nameField.getText());
+
+
+                this.setItemPaneView.setUpItemsView(appModel.isSpecialVM());
+                this.vMachineModelPaneView.setMaxSlotVMView(Integer.parseInt(slotCapField.getText()));
+                this.vMachineModelPaneView.setUpVendMachView(null, null);
+
+                setupVMPopUpView.updateVMList(appModel.getVendingMachine());
                 setupVMPopUpView.changeWindowScene();
                 setupVMPopUpView.changePopUpSceneMain();
                 setupVMPopUpView.close();
@@ -139,7 +160,8 @@ public class SetupVMPopUpController
 
 
         this.setupVMPopUpView.setItemFieldFocusListener((observable, oldValue, newValue) ->{
-            if (newValue) {
+            if (newValue) 
+            {
                 itemCapField.setText("");
             }
             else
@@ -203,8 +225,14 @@ public class SetupVMPopUpController
     private TextField slotCapField;
     private TextField itemCapField;
     private TextField nameField;
+    private RadioButton selectedRadBtn;
+    private AppModel appModel;
+    
+    private SetItemPaneView setItemPaneView;
+    private CreateRegMenu regMenu;
+    private VMachineModelPaneView vMachineModelPaneView;
+    private CreateRegTopBarView createRegTopBarView;
     private SetupVMPopUpView setupVMPopUpView;
-    private SetupVMTopBarView setupVMTopBarView;
 
 
 

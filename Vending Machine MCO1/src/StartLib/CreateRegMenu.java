@@ -43,7 +43,7 @@ import java.util.regex.Matcher;
 
 import DenomLib.SetDenomPaneController;
 import DenomLib.SetDenomPaneView;
-import ItemSelectLib.SetItemPaneController;
+import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
@@ -104,6 +104,7 @@ public class CreateRegMenu extends BorderPane
     {
         return vMachineModelPaneView;
     }
+
     private SetDenomPaneView leftDenominationsPane;
     private CreateRegTopBarView createRegTopBarView;
 

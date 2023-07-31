@@ -1,11 +1,15 @@
 package VMLib;
 
 import java.awt.image.BufferedImage;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
+import ItemSelectLib.ItemSectionPane;
+import ItemSelectLib.PresetItem;
 import Labels.LabelToField;
-//import javafx.embed.swing.SwingFXUtils;
+import Models.VM_Regular;
+import Models.VM_Slot;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -36,36 +40,24 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
-public class VMachineModelPaneView extends ScrollPane{
-    public VMachineModelPaneView(Stage parentWin)
+public class VMachineModelPaneView extends ScrollPane
+{
+    public VMachineModelPaneView(Stage parentWin, int maxSlots)
     {
         
         String colorBg = "#071952";
         ColumnConstraints columnConstr = new ColumnConstraints();
         RowConstraints rowConstr = new RowConstraints();
+        this.occupiedNum = 0;
+        this.maxSlots = maxSlots;
 
-        itemNameLabels = new Label[MAX_ITEMS];
+        itemNameLabels = new ArrayList<Label>();
         itemContainerStackPane = new ArrayList<StackPane>();
-
+        imageOrder = new ArrayList<Image>();
         mainCanvasStackPane = new StackPane();
         vendingMachineGridPane = new GridPane();
 
-        possibleItems = new LinkedHashMap<String, String>();
-		possibleItems.put("CHEESE", "/Pics/cheese.png");
-		possibleItems.put("COCOA", "/Pics/cocoa-bean.png");
-		possibleItems.put("CREAM", "/Pics/cream.png");
-		possibleItems.put("EGG", "/Pics/egg.png");
-		possibleItems.put("KANGKONG", "/Pics/kangkong.png");
-		possibleItems.put("MILK", "/Pics/milk.png");
-		possibleItems.put("SALT", "/Pics/salt.png");
-		possibleItems.put("SUGAR", "/Pics/sugar.png");
-		possibleItems.put("CORNSTARCH", "/Pics/cornstarch.png");
-		possibleItems.put("TOFU", "/Pics/tofu.png");
-		possibleItems.put("CHICKEN", "/Pics/chicken-leg.png");
-		possibleItems.put("BBQ", "/Pics/bbq.png");
-		possibleItems.put("FLOUR", "/Pics/flour.png");
-        possibleItems.put("SOY SAUCE", "/Pics/soy-sauce.png");
-        possibleItems.put("CHILI", "/Pics/chili.png");
+
         vendingMachineGridPane.setPrefSize(ScrollPane.USE_COMPUTED_SIZE, ScrollPane.USE_COMPUTED_SIZE);
         vendingMachineGridPane.setMaxSize(ScrollPane.USE_COMPUTED_SIZE, ScrollPane.USE_COMPUTED_SIZE);
         vendingMachineGridPane.setPadding(new Insets(20, 10, 5, 10));
@@ -79,19 +71,25 @@ public class VMachineModelPaneView extends ScrollPane{
 
 
         rowConstr.setMaxHeight(300);
-        columnConstr.setMaxWidth(300);
+        columnConstr.setMaxWidth(200);
         
         vendingMachineGridPane.getColumnConstraints().add(columnConstr);
         vendingMachineGridPane.getRowConstraints().add(rowConstr);
 
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setPadding(new Insets(5));
-        this.prefWidthProperty().bind(parentWin.widthProperty().multiply(0.6));
+        this.prefWidthProperty().bind(parentWin.widthProperty().multiply(0.5));
+        
         this.setContent(mainCanvasStackPane);
 
         this.setStyle("-fx-background-color: "+colorBg+";");
     }
-
+    public VMachineModelPaneView(Stage parentWin)
+    {
+        this(parentWin, 8);
+        
+ 
+    }
     public void addItemToView(Image itemImage, String label)
     {
 
@@ -102,23 +100,20 @@ public class VMachineModelPaneView extends ScrollPane{
         
         if(!containsLabel(label))
         {
-
-            newStackPane = new ItemSlotPaneView(itemImage, label, indPanes, this);   
-            itemContainerStackPane.add(newStackPane);
-            
-            if(itemContainerStackPane.isEmpty())
+            if(itemImage != null && !label.isEmpty())
             {
-                itemNameLabels[indPanes] = ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
-
+                newStackPane = new ItemSlotPaneView(itemImage, label, indPanes, this);   
+                
+                occupiedNum++;
+                itemContainerStackPane.add(newStackPane);
+                
+                itemNameLabels.add(((ItemSlotPaneView) newStackPane).getSlotItemNameLabel());
+                imageOrder.add(((ItemSlotPaneView)newStackPane).getItemImage());
+                vendingMachineGridPane.add(itemContainerStackPane.get(indPanes), indPanes%3
+                                                                            , indPanes/3);
             }
-            else
-            {
-                itemNameLabels[indPanes] =  ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
-            }
 
-            
-            vendingMachineGridPane.add(itemContainerStackPane.get(indPanes), indPanes%3
-                                                                           , indPanes/3);
+
         }
 
 
@@ -139,15 +134,9 @@ public class VMachineModelPaneView extends ScrollPane{
             itemContainerStackPane.add(newStackPane);
             parentPane = ((ItemSlotPaneView)newStackPane).addComponentUnder(node);
 
-            if(itemContainerStackPane.isEmpty())
-            {
-                itemNameLabels[indPanes] = ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
+  
+            itemNameLabels.add(((ItemSlotPaneView) newStackPane).getSlotItemNameLabel());
 
-            }
-            else
-            {
-                itemNameLabels[indPanes] =  ((ItemSlotPaneView) newStackPane).getSlotItemNameLabel();
-            }
 
             
             vendingMachineGridPane.add(parentPane, indPanes%3
@@ -165,19 +154,23 @@ public class VMachineModelPaneView extends ScrollPane{
         {
              if(((ItemSlotPaneView)itemContainer).getNameOfItem().equalsIgnoreCase(label))
             {
-                vendingMachineGridPane.getChildren().remove(itemContainer);
+                itemNameLabels.remove( ((ItemSlotPaneView)itemContainer).getSlotItemNameLabel() );
 
+                vendingMachineGridPane.getChildren().remove(itemContainer);
+                
             }
         }
         
         if(getItemContainer(label) != null)
         {
+            occupiedNum--;
             itemContainerStackPane.remove(getItemContainer(label));
+            
 
         }
             
         rearrangeItems();
-
+        setUpEmptyContainers();
     }
 
 
@@ -187,10 +180,14 @@ public class VMachineModelPaneView extends ScrollPane{
 
         int i = 0;
         vendingMachineGridPane.getChildren().clear();
+        itemNameLabels.clear();
+        imageOrder.clear();
         for(StackPane itemSlot : itemContainerStackPane)
         {
             
             ((ItemSlotPaneView)itemSlot).setSlotNumLabel(i+1);
+            imageOrder.add(((ItemSlotPaneView)itemSlot).getItemImage());
+            itemNameLabels.add( ((ItemSlotPaneView)itemSlot).getSlotItemNameLabel() );
             vendingMachineGridPane.add(itemSlot, i%3
                                                , i/3);
 
@@ -198,20 +195,94 @@ public class VMachineModelPaneView extends ScrollPane{
             i++;
 
         }
+        
 
 
         
     }
 
+    public void setUpVendMachView(ArrayList<Image> imageOrder, 
+                                  ArrayList<String> itemNames)
+    {
 
+        
+        for(int i = 0; i < maxSlots; i++)
+        {
+            
+            try
+            {
+                System.out.println("Image size: " +  imageOrder.size());
+                System.out.println("Size: " +  itemNames.get(i));
+                addItemToView(imageOrder.get(i), itemNames.get(i));
+                
+            }
+            catch(IndexOutOfBoundsException e )
+            {
+                break;
+                
+            }
+            catch(NullPointerException e2)
+            {
+                break;
+            }
+
+            
+        }
+        setUpEmptyContainers();
+
+
+    }
+    public void setUpEmptyContainers()
+    {
+        StackPane newStackPane;
+        for(int i = 0; i < maxSlots; i++)
+        {
+            if(i>= occupiedNum)
+            {
+
+                newStackPane = new ItemSlotPaneView(i, this);  
+                addItemToView(null, "");
+                vendingMachineGridPane.add(newStackPane, i%3
+                                                       , i/3);
+            }
+            
+        }
+        
+    }
+    public void setMaxSlotVMView(int max)
+    {
+        this.maxSlots = max;
+
+    }
+    public void removeEmptyContainers()
+    {
+        StackPane newStackPane;
+        for(int i = 0; i < maxSlots; i++)
+        {
+            if(i>= occupiedNum)
+            {
+                newStackPane = new ItemSlotPaneView(i+1, this);  
+                addItemToView(null, "");
+                vendingMachineGridPane.add(newStackPane, i%3
+                                                       , i/3);
+            }
+            
+        }
+        
+    }
     public StackPane getItemContainer(String label)
     {
-        rearrangeItems();
 
+        int i;
+        i = 0;
         for(StackPane itemSlot : itemContainerStackPane)
         {
             if(((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText().equalsIgnoreCase(label))
-                return itemSlot;
+                return new ItemSlotPaneView(((ItemSlotPaneView)itemSlot).getItemImage(), 
+                                            ((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText(), 
+                                            i+1, this);
+
+            i++;
 
         }
 
@@ -231,15 +302,25 @@ public class VMachineModelPaneView extends ScrollPane{
         return false;
     }
 
-
-
-    private LinkedHashMap<String, String> possibleItems;
-    private Label[] itemNameLabels;
+    public ArrayList<Label> getItemNameLabels() 
+    {
+        return itemNameLabels;
+    }
+    public ArrayList<Image> getImageOrder() {
+        return imageOrder;
+    }
+    public void setMaxSlots(int maxSlots) {
+        this.maxSlots = maxSlots;
+    }
+    private int maxSlots;
+    private int occupiedNum;
+    private ArrayList<Image> imageOrder;
+    private ArrayList<Label> itemNameLabels;
     private ArrayList<StackPane> itemContainerStackPane;
+    private ArrayList<StackPane> emptyContainers;
     private GridPane vendingMachineGridPane;
     private StackPane mainCanvasStackPane;
 
-    private static final int MAX_ITEMS = 100;
 
     
 

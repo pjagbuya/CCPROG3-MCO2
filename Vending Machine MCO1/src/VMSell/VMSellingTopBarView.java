@@ -18,11 +18,11 @@ public class VMSellingTopBarView extends CustomTopBarView{
         super(parentWin);
         HBox spacer1 = new HBox();
         HBox spacer2 = new HBox();
-        Label vmName = new LabelToField("Placeholder Name (Selling)", 20);
-        
+
         HBox addedNode = new HBox();
 
-
+        this.vmName = new LabelToField("Placeholder Name (Selling)", 20);
+        
 
         addedNode.getChildren().addAll(vmName);
         addedNode.setAlignment(Pos.CENTER);
@@ -32,4 +32,10 @@ public class VMSellingTopBarView extends CustomTopBarView{
         this.getFinishBtn().setText("Go To Maintenance");
 
     }
+    public void setVmName(String vmName) {
+        this.vmName.setText(vmName + " (Selling Feature)");
+    }
+
+
+    private Label vmName;
 }

@@ -3,7 +3,9 @@ package StartLib;
 
 import Boxes.AlertBox;
 import Buttons.*;
+import Labels.HeaderLabel;
 import Labels.LabelToField;
+import Models.VM_Regular;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,6 +15,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.RadioButton;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.input.KeyEvent;
@@ -35,7 +38,7 @@ public class SetupVMPopUpView extends Stage
         Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 12);
         
     
-        Label vmLabel = new LabelToField("Vending Mahchines");
+        Label vmLabel = new LabelToField("Vending Mahchines History", 36);
         Label addNewLabel = new LabelToField("Add a vending machine");
         Label nameLabel = new LabelToField("VM Name: ");
         Label slotCapLabel = new LabelToField("Slot Capacity: ");
@@ -43,8 +46,7 @@ public class SetupVMPopUpView extends Stage
         Label vmTypeLabel = new LabelToField("Type of Vending Machine: ");
 
         VBox mainPane = new VBox();         // Main start pane
-        VBox vmMadePane = new VBox();       // Content to list of newly added vending machines
-        VBox emptyPane = new VBox();        // Spacer for middle
+                VBox emptyPane = new VBox();        // Spacer for middle
         VBox hiddenPane = new VBox(40);       // hidden pane to show type of vending machine
 
       
@@ -53,13 +55,17 @@ public class SetupVMPopUpView extends Stage
         HBox nameLabelAndTextHBox = new HBox(10); // Name and TextBox section
         HBox typeSelectHBox = new HBox(10);           // type of vending machine selection
         HBox spacer = new HBox();
-    
+        
+        ScrollPane scrollMainPane = new ScrollPane();
+
+
+        this.vmMadePane = new VBox();       // Content to list of newly added vending machines
         this.setupVMHidTopBar = new SetupVMTopBarView(parentWin);
         this.setupVMHidTopBar.setDefault();
         this.targetScene = targetChangeScene;
         this.origStage = parentWin;
         this.alertBox = new AlertBox();
-
+        this.countVM = 0;
 
         slotAddBtn = new AddButton(parentWin, 25, 25);
         slotSubBtn = new SubButton(parentWin, 25, 25);
@@ -121,11 +127,12 @@ public class SetupVMPopUpView extends Stage
         mainPane.setStyle("-fx-background-color: " + colorBg +";");
         mainPane.getChildren().addAll(setupVMTopBar);
 
-
+        scrollMainPane.setContent(vmMadePane);
+        scrollMainPane.setStyle("-fx-base: " + colorBg +";");
         mainPane.setPrefHeight(600);
         mainPane.setPrefWidth(600);
 
-        mainPane.getChildren().addAll(vmMadePane, emptyPane,addNewLabel, bigAddButton);
+        mainPane.getChildren().addAll(scrollMainPane, emptyPane,addNewLabel, bigAddButton);
         mainPane.setPadding(new Insets(20));
 
 
@@ -135,7 +142,7 @@ public class SetupVMPopUpView extends Stage
         hiddenPane.getChildren().addAll(setupVMHidTopBar, nameLabelAndTextHBox, typeSelectHBox, slotNodesHBox, itemNodesHBox);
         hiddenPane.setPadding(new Insets(20));
 
-
+        
         this.vmMainScene = new Scene(mainPane, 600, 600);
 
         
@@ -148,7 +155,27 @@ public class SetupVMPopUpView extends Stage
 
 
     }
+    public void updateVMList(VM_Regular vm) 
+    {
+        Label labelCount; 
+        Label label = new HeaderLabel('"'+vm.getName()+'"', 24);
+        VBox container = new VBox();
+        countVM++;
+        labelCount = new HeaderLabel("Vending Machine NO. "+countVM+":", 28);
+        container.setSpacing(10);
+        container.setPadding(new Insets(10, 10, 10, 10));;
 
+        container.setStyle("-fx-border-color: #97FEED; -fx-border-width: 1px;");
+
+
+        label.setWrapText(true);
+
+        label.setMaxWidth(300);
+        label.setMinWidth(300);
+        container.getChildren().addAll(labelCount, label);
+        this.vmMadePane.getChildren().add(container);
+        
+    }
     
 
     public Button getItemAddBtn() 
@@ -280,13 +307,16 @@ public class SetupVMPopUpView extends Stage
     }
 
 
-
+    private int countVM;
     private SetupVMTopBarView setupVMTopBar;
     private SetupVMTopBarView setupVMHidTopBar;
     private Scene vmMainScene;
     private Scene vmTypeScene;
     private Scene targetScene;
     private Stage origStage;
+
+    private VBox vmMadePane;
+
 
     private TextField slotCapField;
     private TextField itemCapField;

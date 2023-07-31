@@ -30,6 +30,7 @@ public class ItemSlotPaneView extends StackPane
     {
         this.hiddenPane = new VBox();
         this.bindedPane = bindedPane;
+        this.itemImage = itemImage;
         this.nameOfItem = name;
         this.slotItemNameLabel = new LabelToField(name);
         this.slotItemNameLabel.setWrapText(true);
@@ -87,7 +88,9 @@ public class ItemSlotPaneView extends StackPane
     public VBox getHiddenPane() {
         return hiddenPane;
     }
-
+    public Image getItemImage() {
+        return itemImage;
+    }
     public void setCurrentImageView(ImageView currentImageView) 
     {
         this.currentImageView = currentImageView;
@@ -189,8 +192,9 @@ public class ItemSlotPaneView extends StackPane
         {
             this.getChildren().addAll(itemBox, this.slotItemNameLabel, itemCover, labelRegion, slotNumLabel);
             this.prefHeightProperty().bind(bindedPane.heightProperty().multiply(0.3));
-     
             this.prefWidthProperty().bind(bindedPane.widthProperty().multiply(0.3));
+            
+
         }
        else
             this.getChildren().addAll(itemBox, this.currentImageView, this.slotItemNameLabel, itemCover, labelRegion, slotNumLabel);
@@ -204,9 +208,10 @@ public class ItemSlotPaneView extends StackPane
     private Label slotItemNameLabel;
     private Label slotNumLabel;
     private ImageView currentImageView;
+    private Image itemImage;
     private VMachineModelPaneView bindedPane;
-    private static final int ITEM_BOX_HEIGHT = 250;
-    private static final int ITEM_BOX_WIDTH = 200;
+    private static final int ITEM_BOX_HEIGHT = 200;
+    private static final int ITEM_BOX_WIDTH = 150;
 }
 
 

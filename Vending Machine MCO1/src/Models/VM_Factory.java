@@ -12,10 +12,8 @@ public class VM_Factory
 	public VM_Factory()
 	{
 		possibleItems = new LinkedHashMap<String, Integer>();
-		for(PresetItem item : PresetItem.values())
-		{
-			possibleItems.put(item.name(), item.getIsIndependent());
-		}
+		customItemInfos = new LinkedHashMap<String, Integer>();
+		defaultItems();
 	}
 	
 	
@@ -53,7 +51,7 @@ public class VM_Factory
 	public String specifyInitialStocks(String itemName, int qty)
 	{
 		String msg;
-		VM_Slot[] slots = null;
+		VM_Slot[] slotsVar = null;
 		int i;
 		int j;
 		boolean itemExists = true; // assumed true
@@ -62,9 +60,9 @@ public class VM_Factory
 		
 		/* Switching between special and regular slots. */
 		if( possibleItems.get( itemName ) == 1 )
-			slots = this.slots;
+			slotsVar = this.slots;
 		else if( possibleItems.get( itemName ) == 0 )
-			slots = specialSlots;
+			slotsVar = specialSlots;
 		else {
 			itemExists = false;
 			msg += new String("ERROR: ITEM DOES NOT EXIST.\n"); 
@@ -75,13 +73,18 @@ public class VM_Factory
 			msg += new String("ERROR: NEGATIVE QUANTITIES NOT ALLOWED.\n");
 		}
 		
-		if(itemExists && nonNegativeQty)
-			for(i = 0; i < slots.length; i++)
-				if( slots[i].getSlotItemName() == null ||
-					slots[i].getSlotItemName().equalsIgnoreCase(itemName) )
+		if(itemExists && nonNegativeQty && slotsVar != null)
+		
+			for(i = 0; i < slotsVar.length; i++)
+				if( slotsVar[i].getSlotItemName() == null ||
+					slotsVar[i].getSlotItemName().equalsIgnoreCase(itemName) )
 				{
 					for(j = 0; j < qty; j++)
-						slots[i].addItemStock( generateItem( itemName ) );
+					{
+						System.out.println("Adding this many " +itemName+ ", which is " + qty);
+						slotsVar[i].addItemStock( generateItem( itemName ) );
+					}
+						
 					break;
 				}
 				
@@ -109,8 +112,22 @@ public class VM_Factory
 		return msg;
 	}
 	
-	
-	
+	public void addAsPossibleItem(String name, int calories)
+	{
+		possibleItems.put(name, 1);
+		customItemInfos.put(name, calories);
+
+	}
+	public void defaultItems()
+	{
+		possibleItems.clear();
+		customItemInfos.clear();
+		for(PresetItem item : PresetItem.values())
+		{
+			possibleItems.put(item.name(), item.getIsIndependent());
+		}
+	}	
+
 	private DenominationItem createDenomination(String denom)
 	{
 		return new DenominationItem( denom , Money.getStrToVal().get(denom) );
@@ -159,13 +176,18 @@ public class VM_Factory
 							
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
+		else if (customItemInfos.keySet().contains(s))
+		{
+			item = new VM_Item(s, 20.00, customItemInfos.get(s));
+		}
 		
 		return item;
 	}
-	
+
 	
 	private VM_Regular vm;
 	private LinkedHashMap<String, Integer> possibleItems;
+	private LinkedHashMap<String, Integer> customItemInfos;
 	private Money vmMoney;
 	private VM_Slot[] slots;
 	private VM_Slot[] specialSlots;

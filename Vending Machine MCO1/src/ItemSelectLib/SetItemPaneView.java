@@ -3,6 +3,7 @@ package ItemSelectLib;
 
 
 import java.net.URL;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
@@ -42,71 +43,48 @@ public class SetItemPaneView extends ScrollPane{
     public SetItemPaneView(Stage parentWin)
     {
 
-        
         String colorBg = "#071952";
-
-
-
         String colorLightest = "#97FEED";
-        
-        ArrayList<String> tempListURL;
-        ArrayList<String> tempListItemName;
-
-        
-        this.parentWin = parentWin;
-        
-
-        createNewBtn = new MenuButton("Create New Item", 14);
-        createNewBtn.setAlignment(Pos.CENTER);
-
-        
-        tempListURL = new ArrayList<String>();
-        tempListItemName = new ArrayList<>();
-        for(PresetItem presetItem : PresetItem.values())
-        {
-            tempListItemName.add(presetItem.name());
-            tempListURL.add(presetItem.getImagePath());
-        }
-
-  
-
-        maxItems = tempListURL.size();
-
-        mainCanvasVBox = new VBox();
-        hiddenExpandableVBox = new VBox();
-
-        this.itemSectionGridPanes = new ArrayList<ItemSectionPane>();
-
-
-        mainCanvasVBox.getChildren().add(createNewBtn);
-        // hiddenExpandableVBox.prefWidthProperty().bind(this.widthProperty());
-        // hiddenExpandableVBox.setMaxWidth(this.getWidth()-10);
-
-        mainCanvasVBox.getChildren().add(hiddenExpandableVBox);
-        // mainCanvasVBox.setPrefWidth(243.2);
-        // mainCanvasVBox.prefWidthProperty().bind(this.widthProperty());
-        // mainCanvasVBox.setMaxWidth(this.getWidth()-10);
-        // mainCanvasVBox.setSpacing(10);
-
-        for(int i = 0; i < maxItems; i++)
-        {
-
-            URL resourceUrl = getClass().getResource(tempListURL.get(i));
-            if (resourceUrl != null) {
-                    
-                createNewItem(i, resourceUrl, tempListItemName.get(i), "20", false);
-
-            }
+        DecimalFormat df = new DecimalFormat("0.00");
+        URL resourceUrl;
+        int i;
 
             
+        i = 0;
+
+
+
+        this.parentWin = parentWin;
+        this.mainCanvasVBox = new VBox();
+        this.hiddenExpandableVBox = new VBox();
+
+        this.itemSectionGridPanes = new ArrayList<ItemSectionPane>();
+        this.itemIndependencyList  = new LinkedHashMap<String, Integer>();
+        this.createNewBtn = new MenuButton("Create New Item", 14);
+        createNewBtn.setAlignment(Pos.CENTER);
+
+        this.mainCanvasVBox.getChildren().add(createNewBtn);
+
+
+        this.mainCanvasVBox.getChildren().add(hiddenExpandableVBox);
+        
+
+
+        for (PresetItem presetItem : PresetItem.values()) {
+
+            resourceUrl = getClass().getResource(presetItem.getImagePath());
+            itemIndependencyList.put(presetItem.name(), presetItem.getIsIndependent());
+
+            createNewItem(i, resourceUrl, presetItem.name(), 
+                            df.format(presetItem.getPrice()), "0",
+                            presetItem.getCalories() + "",
+                            false);
+            i++;
 
         }
-        
 
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setPadding(new Insets(5));
-        this.setId("denomPane");
-        // this.setPrefHeight(639);
         
         this.prefWidthProperty().bind(parentWin.widthProperty().divide(5));
         this.setContent(mainCanvasVBox);
@@ -120,12 +98,31 @@ public class SetItemPaneView extends ScrollPane{
 
  
     }
+    public void setUpItemsView(boolean isSpecialVM) 
+    {
 
+        for (ItemSectionPane itemPane : itemSectionGridPanes) 
+        {
+            if (isSpecialVM || itemIndependencyList.get(itemPane.getItemNameLabel().getText())==1) 
+            {
 
-    public void createNewItem(int i, URL resourceUrl, String itemName, String calories, boolean isNewItem)
+                itemPane.setVisible();
+            }
+            else
+            {
+                itemPane.setInvisible();
+            }
+        }
+    }
+    public void createNewItem(int i, URL resourceUrl,
+                              String itemName,    
+                              String price,
+                              String stock,
+                              String calories, 
+                              boolean isNewItem)
     {
  
-        ItemSectionPane itemSectionPane = new ItemSectionPane(this, itemName, calories, resourceUrl);
+        ItemSectionPane itemSectionPane = new ItemSectionPane(this, itemName, price, stock, calories, resourceUrl);
 
         //GridPane where all elements are added
         itemSectionGridPanes.add(itemSectionPane);
@@ -141,8 +138,8 @@ public class SetItemPaneView extends ScrollPane{
     public void createNewItem(String itemName, String calories)
     {
         URL resourceUrl = getClass().getResource("/Pics/default.png");
-        createNewItem(maxItems, resourceUrl, itemName, calories, true);
-        maxItems += 1;
+        createNewItem(itemSectionGridPanes.size(), resourceUrl, itemName,"", "0", calories, true);
+
         
     }
 
@@ -150,16 +147,13 @@ public class SetItemPaneView extends ScrollPane{
     {
         this.hiddenExpandableVBox.getChildren().clear();
     }
-    
+
+
     public VBox getMainCanvasVBox() {
         return mainCanvasVBox;
     }
     public Button getCreateNewBtn() {
         return createNewBtn;
-    }
-
-    public int getMaxItems() {
-        return maxItems;
     }
 
     public ArrayList<ItemSectionPane> getItemSectionGridPanes() 
@@ -168,7 +162,10 @@ public class SetItemPaneView extends ScrollPane{
     }
 
 
-
+    public int getMaxItems()
+    {
+        return itemSectionGridPanes.size();
+    }
 
     public void setActionEventCreateBtn(EventHandler<ActionEvent> eventHandler)
     {
@@ -184,12 +181,11 @@ public class SetItemPaneView extends ScrollPane{
 
 
 
-
     private VBox mainCanvasVBox;
     private VBox hiddenExpandableVBox;
     private Button createNewBtn;
     private ArrayList<ItemSectionPane> itemSectionGridPanes;
-    private int maxItems;
+    private LinkedHashMap<String, Integer> itemIndependencyList;
     private Stage parentWin;
 
 }
