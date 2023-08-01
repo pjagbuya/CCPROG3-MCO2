@@ -498,7 +498,7 @@ public class SellingOperator
 		
 		
 		else
-			generateCustomItem( s );
+			item = generateCustomItem( s );
 		
 		return item;
 	}
