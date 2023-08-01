@@ -126,6 +126,8 @@ public class CreateRegTopBarController {
             { 
                 if(!appModel.isVendingMachineSlotEmpty())
                 {
+                    System.out.println("Denoms" + denomInfo);
+                    System.out.println("Items: " + itemsInfo);
                     appModel.addItemToVM(itemsInfo, orderOfSlots);
                     appModel.addReservesToVM(denomInfo);
                     appModel.repriceItem(repriceInfo);
@@ -134,6 +136,11 @@ public class CreateRegTopBarController {
                     this.appView.getVmSellingOpPaneView().passVMDataToView(this.vMachineModelPaneView.getImageOrder(),
                                                                             orderOfSlots);
                     appView.changeToSellingScreen();
+                    Platform.runLater(()->{
+                        this.appView.getParentWin().setWidth(1200);
+                        this.appView.getParentWin().setHeight(1000);
+                        this.appView.getParentWin().centerOnScreen();
+                    });
                 }
                 else
                 {
@@ -143,6 +150,8 @@ public class CreateRegTopBarController {
 
 
             }
+            denomInfo.clear();
+            itemsInfo.clear();
 
 
         });

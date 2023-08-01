@@ -1,5 +1,6 @@
 package StartLib;
 
+import java.lang.reflect.Array;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -45,18 +46,23 @@ public class AppModel
 
     }
     public String findSlotNameInVM(int num) {
-        if(getVendingMachine().getSlot(num) != null)
-            return getVendingMachine().getSlot(num).getSlotItemName();
+        if(getVendingMachine().getSlot(num-1) != null)
+            return getVendingMachine().getSlot(num-1).getSlotItemName();
         return null;
     }
     public String findSlotCaloriesInVM(int num) {
-        if(getVendingMachine().getSlot(num) != null)
-            return "" + getVendingMachine().getSlot(num).getItems().get(0).getItemCalories();
+        if(getVendingMachine().getSlot(num-1) != null)
+            return "" + getVendingMachine().getSlot(num-1).getItems().get(0).getItemCalories();
         return null;
     }
     public String findSlotPriceInVM(int num) {
-        if(getVendingMachine().getSlot(num) != null)
-            return "" + getVendingMachine().getSlot(num).getItems().get(0).getItemPrice();
+        if(getVendingMachine().getSlot(num-1) != null)
+            return "" + getVendingMachine().getSlot(num-1).getItems().get(0).getItemPrice();
+        return null;
+    }
+    public String findSlotStockInVM(int num) {
+        if(getVendingMachine().getSlot(num-1) != null)
+            return "" + getVendingMachine().getSlot(num-1).getItems().size();
         return null;
     }
     //Selling
@@ -67,10 +73,24 @@ public class AppModel
         return this.seller.addToOrder(slotNum,qty);
 
     }
-    
-    public String proceedWithPaymen(ArrayList<String> )
+    public void resetSellVar()
     {
+        this.seller.resetDefaults();
+    }
+    public void discontinueTransaction()
+    {
+        this.seller.discontinueTransaction();
+        this.seller.resetDefaults();
+        
+    }
 
+    public double getTotalChangeAfterPayment()
+    {
+        return this.seller.getChangeDue();
+    }
+    public Money getChangeAfterPayment()
+    {
+        return this.seller.getChange();
     }
     public String addToPayment(String moneyName) 
     {
@@ -79,12 +99,29 @@ public class AppModel
     }
     public String subToPayment(String moneyName) 
     {
-        return this.seller.addToPayment(moneyName);
+        return this.seller.subtractFromPayment(moneyName);
 
     }
     public String proceedTransaction() 
     {
-        return this.seller.validateTransaction();
+        String msg;
+        this.seller.calculateBasicInformation();
+        msg = this.seller.validateTransaction();
+        if(msg == null)
+        {
+            this.seller.proceedTransaction();
+            soldItems = this.seller.getSoldItems();
+            System.out.println(soldItems);
+            for(VM_Item item : soldItems)
+            {
+                System.out.println("SOLD: " + item.getItemName());
+            }
+
+            
+            
+        }
+        
+        return msg;
 
     }
 
@@ -184,6 +221,7 @@ public class AppModel
 
     
     private VM_Factory factory;
+    private ArrayList<VM_Item> soldItems;
     private ArrayList<VM_Regular> vendingMachines;
     private ArrayList<String> itemOrder;
     private SellingOperator seller;

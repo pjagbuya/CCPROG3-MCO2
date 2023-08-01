@@ -44,7 +44,7 @@ public class NumPaneController
 
         this.numPaneView.setClrButtonAction(e->
         {
-            numField.setText("");
+            resetForm();
         });
 
 
@@ -68,19 +68,18 @@ public class NumPaneController
 
             if(!numFieldInp.getText().isEmpty())
                 msg = this.appModel.addToRegOrder(Integer.parseInt(numFieldInp.getText()),
-                                    1);
+                                              1);
             else
                 msg = "NO INPUTTED SLOT";
 
             if(msg == null)
             {
                 num = Integer.parseInt(numField.getText());
-                this.appModel.addToRegOrder(num, 1);
                 this.appModel.findSlotNameInVM(num);
-                calories = this.appModel.findSlotCaloriesInVM(num-1);
-                price = this.appModel.findSlotPriceInVM(num-1);
+                calories = this.appModel.findSlotCaloriesInVM(num);
+                price = this.appModel.findSlotPriceInVM(num);
                 
-                item = this.vMachineModelPaneView.getItemContainerCopy(this.appModel.findSlotNameInVM(num-1));
+                item = this.vMachineModelPaneView.getItemContainerCopy(this.appModel.findSlotNameInVM(num));
                 this.dispensedItemView.addItemSelected(item, price, calories);
             }
             else if(msg != null)
@@ -89,6 +88,14 @@ public class NumPaneController
             }
             
         });
+    }
+    public void resetForm()
+    {
+        TextField numField = this.numPaneView.getNumField();
+
+        numField.setText("");
+
+        
     }
     private AppModel appModel;
     private VMachineModelPaneView vMachineModelPaneView;

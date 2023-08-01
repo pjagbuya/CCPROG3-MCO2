@@ -48,7 +48,7 @@ public class DenomNumPadView extends BorderPane
         clrButton = new NumButton("CLR", 18);
 
         delButton = new NumButton("UNDO", 18);
-        entrButton = new NumButton("ENTER", 24);
+        entrButton = new NumButton("ORDER", 24);
 
         entrButton.setPrefSize(300, BASELINE_OFFSET_SAME_AS_HEIGHT+20);
         numField.setPrefSize(235, 150);

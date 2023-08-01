@@ -273,20 +273,41 @@ public class VMachineModelPaneView extends ScrollPane
     public StackPane getItemContainer(String label)
     {
 
-        int i;
-        i = 0;
+
         for(StackPane itemSlot : itemContainerStackPane)
         {
             if(((ItemSlotPaneView)itemSlot).getSlotItemNameLabel().getText().equalsIgnoreCase(label))
                 return itemSlot;
 
-            i++;
-
+   
         }
 
         return null;
 
     }
+
+    public void validateLabels(String itemName, int stock)
+    {
+        ItemSlotPaneView itemSlotPaneView;
+        System.out.println("Item vmModel to check: " + itemName);
+        System.out.println("Stock count: " + stock);
+        itemSlotPaneView = ((ItemSlotPaneView)getItemContainer(itemName));
+
+        if(itemSlotPaneView.getSlotItemNameLabel().getText().equalsIgnoreCase(itemName) &&
+          stock == 0)
+        {
+            itemSlotPaneView.getSlotItemNameLabel().setStyle("-fx-text-fill: #FFA500;");
+            itemSlotPaneView.getCurrentImageView().setVisible(false);
+        }
+        else
+        {
+            itemSlotPaneView.getSlotItemNameLabel().setStyle("-fx-text-fill: #97FEED;");
+            itemSlotPaneView.getCurrentImageView().setVisible(true);
+        }
+
+
+    }
+
     public StackPane getItemContainerCopy(String label)
     {
 

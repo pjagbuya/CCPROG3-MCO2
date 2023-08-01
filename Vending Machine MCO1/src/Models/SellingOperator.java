@@ -22,8 +22,8 @@ public class SellingOperator
 	 * 
 	 * @param slots the regular slots of the parent vending machine
   	 * @param vmCashReserves the cash reserves of the parent vending machine
-     * @param orderHistory the list of (successful) transactions from the parent vending machine
-     * @param change the change tray
+    	 * @param orderHistory the list of (successful) transactions from the parent vending machine
+      	 * @param change the change tray
 	 * @param customItems the list of custom items from the parent vending machine
 	 */
 	    public SellingOperator(
@@ -39,7 +39,10 @@ public class SellingOperator
 			this.change = change;
 			this.customItems = customItems;
 			this.presetItems = new LinkedHashMap<String, Integer>();
-			
+		    this.duplicate = new LinkedHashMap<String, Integer>();
+			this.soldItems = new ArrayList<VM_Item>();
+			payment = new Money();
+		    
 			for(PresetItem item : PresetItem.values())
 			{
 				presetItems.put(item.name(), item.getIsIndependent());
@@ -58,20 +61,23 @@ public class SellingOperator
 		duplicateDenominations();
 		
 		/* calculates the total amount of cash reserves currently in the VM */
-		cashReservesTotal = vmCashReserves.getTotalMoney();
+		cashReservesTotal = vmCashReserves.getTotalMoney() + payment.getTotalMoney();
 		
 		/* calculates payment total */
 		for(String s : payment.getDenominations().keySet())
 			paymentTotal += payment.getDenominations().get(s).size() * Money.getStrToVal().get(s);
 		
 		/* calculates order total */
-       	 	orderTotal = order.getTotalCost();
+       	orderTotal = order.getTotalCost();
 		
 		/* calculates calorie total */
 		calorieTotal = order.getTotalCalories();
 		
 		/* calculates change due */
 		changeDue = paymentTotal - orderTotal;
+
+		System.out.println("Inserted Total payment: " + paymentTotal);
+		System.out.println("Inserted Total change: " + changeDue);
 	}
 	
 	
@@ -93,9 +99,7 @@ public class SellingOperator
 		orderIsValid = true; // assumed true
 		
 		// only when selected slot num is within range, this will trigger to add that order
-		if( slotNum >= 1 && slotNum <= slots.length ) 
-		{
-			System.out.println("Slot No. " + (slotNum-1) + ", " + slots[slotNum-1].getSlotItemName());	
+		if( slotNum >= 1 && slotNum <= slots.length ) {	
 			if(slots[slotNum-1] == null || slots[slotNum-1].getSlotItemName() == null) {
 				msg = new String("ERROR: SLOT IS NULL.\n");
 				orderIsValid = false;
@@ -108,6 +112,7 @@ public class SellingOperator
 			}
 			
 			if( orderIsValid ) {
+				System.out.println("ORDERED: " + slots[slotNum-1].getSlotItemName());
 				addToPendingMap( order.getPendingOrder(), slots[slotNum-1], qty);
 				msg = null;
 			}
@@ -127,9 +132,10 @@ public class SellingOperator
 	 */
 	protected void addToPendingMap(LinkedHashMap <String, Integer> pending, VM_Slot slot, int qty)
 	{
+		
 		if( pending.get( slot.getSlotItemName().toUpperCase() ) != null ) 
 		{
-		
+			
 			order.setTotalCost(
 				order.getTotalCost() - 
 				slot.getPrice() *
@@ -143,8 +149,16 @@ public class SellingOperator
 				pending.get(
 					slot.getSlotItemName().toUpperCase() ));
 			calorieTotal = order.getTotalCalories();
+			return;
 		}
 		
+		order.setTotalCost(
+			order.getTotalCost() +
+			slot.getPrice() * qty );
+
+		order.setTotalCalories(
+			order.getTotalCalories() + 
+			slot.getItems().get(0).getItemCalories() * qty );
 		pending.put( slot.getSlotItemName().toUpperCase() , qty );
 	}
 
@@ -157,9 +171,11 @@ public class SellingOperator
 	 */
 	public String addToPayment(String denom)
 	{
-		String msg;		
+		String msg;
+		System.out.println("Not yet added " + denom);		
 		if( Money.getStrToVal().get(denom) != null )
 		{
+			System.out.println("Added " + denom);
 			payment.add( createDenomination( denom ) );
 			msg = null;
 		}
@@ -253,7 +269,8 @@ public class SellingOperator
 		/* duplicating cash reserves of VM, while setting change to zero */
 		for( String s : vmCashReserves.getDenominations().keySet() )
 		{
-			duplicate.put( s , vmCashReserves.getDenominations().get(s).size() );
+			duplicate.put( s , vmCashReserves.getDenominations().get(s).size() + 
+							   payment.getDenominations().get(s).size() );
 			change.getDenominations().put(s , new ArrayList<DenominationItem>() );
 		}
 	}
@@ -261,12 +278,19 @@ public class SellingOperator
 	/**
 	 * Tells the vending machine to go ahead with the transaction.
 	 */
-	public void proceedTrasaction()
+	public void proceedTransaction()
 	{
 		int i;
 		ArrayList<VM_Item> soldItems = dispenseItems( getSlots() );
+		System.out.println(soldItems);
 		for(i = 0; i < soldItems.size(); i++)
+		{
+			System.out.println("Size: " + soldItems.size());
+			System.out.println("Index target: " + i);
 			this.soldItems.add( soldItems.get(i) );
+			
+		}
+			
 		updateCashTrays();
 		orderHistory.add( getOrder() );
 	}
@@ -328,12 +352,14 @@ public class SellingOperator
         /* Takes change out. Accepts and sorts the payment. This means the payment tray should be empty. */
 		for( String s : vmCashReserves.getDenominations().keySet() )
 		{
-			difference = vmCashReserves.getDenominations().get(s).size() - duplicate.get(s);
-			for(i = 0; i < difference; i++)
-				change.add( vmCashReserves.subtract( s ) );
+
 			additional = payment.getDenominations().get(s).size();
 			for(i = 0; i < additional; i++)
 				vmCashReserves.add( payment.subtract( s ) );
+
+			difference = vmCashReserves.getDenominations().get(s).size() - duplicate.get(s);
+			for(i = 0; i < difference; i++)
+				change.add( vmCashReserves.subtract( s ) );
 			for(i = 0; i < additional; i++)
 				payment.getDenominations().put( s , new ArrayList<DenominationItem>() );
 		}
@@ -442,83 +468,6 @@ public class SellingOperator
 		return true;
 	}
 	
-	
-	/**
-	 * Generates an instance of an item.
-	 *
-	 * @param s the name of the item to be instantied.
-	 * @return the instatiated item, null if nothing was instantiated
-	 */
-	protected VM_Item generateItem( String s )
-	{
-		VM_Item item = null;
-		
-		if( s.equalsIgnoreCase("Cheese") )
-			item = new VM_Item("Cheese", 40.00, 15);
-							
-		else if( s.equalsIgnoreCase("Cocoa") )
-			item = new VM_Item("Cocoa", 20.00, 4);
-							
-		else if( s.equalsIgnoreCase("Cream") )
-			item = new VM_Item("Cream", 18.00, 5);
-							
-		else if( s.equalsIgnoreCase("Egg") )
-			item = new VM_Item("Egg", 12.00, 35);
-							
-		else if( s.equalsIgnoreCase("Kangkong") )
-			item = new VM_Item("Kangkong", 10.00, 2);
-							
-		else if( s.equalsIgnoreCase("Cornstarch") ) 
-			item = new VM_Item("Cornstarch", 13.00, 2);
-							
-		else if( s.equalsIgnoreCase("Milk") )
-			item = new VM_Item("Milk", 99.00, 20);
-							
-		else if( s.equalsIgnoreCase("Tofu") )
-			item = new VM_Item("Tofu", 5.00, 3);
-							
-		else if( s.equalsIgnoreCase("Salt") )
-			item = new VM_Item("Salt", 5.00, 1);
-							
-		else if( s.equalsIgnoreCase("Sugar") )
-			item = new VM_Item("Sugar", 5.00, 30);
-							
-		else if( s.equalsIgnoreCase("Chicken") )
-			item = new VM_Item("Chicken", 150.00, 42);
-							
-		else if( s.equalsIgnoreCase("BBQ") )
-			item = new VM_Item("BBQ", 5.00, 1);
-							
-		else if( s.equalsIgnoreCase("Flour") )
-			item = new VM_Item("Flour", 5.00, 1);
-		
-		else if( s.equalsIgnoreCase("Soy_Sauce") )
-			item = new VM_Item("Soy_Sauce", 4.00, 2);
-		
-		else if( s.equalsIgnoreCase("Chili") )
-			item = new VM_Item("Chili", 2.00, 1);
-		
-		
-		else
-			generateCustomItem( s );
-		
-		return item;
-	}
-
-	/**
-	 * Generates an instance of a custom item.
-	 *
-	 * @param s the name of the item to be instantied.
-	 */
-	private VM_Item generateCustomItem( String s )
-	{
-		VM_Item item = null;
-			
-		if( getCustomItems().get( s ) != null )
-			item = new VM_Item( new String(s) , 10.00, getCustomItems().get(s) );
-			
-		return item;
-	}
 
 	/**
 	 * Resets current order back to zero.
@@ -586,7 +535,7 @@ public class SellingOperator
 	 *
 	 * @return the current order instance
 	 */
-	protected Order getOrder() { return order; }
+	public Order getOrder() { return order; }
 		
 	/**
 	 * Returns the stack of released items.
@@ -653,4 +602,5 @@ public class SellingOperator
 	private Money change;
 	/** the current order */
 	private Order order;
+
 }

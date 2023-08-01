@@ -20,6 +20,7 @@ public class DenomSummaryView extends ScrollPane
         this.moneyNameToind = new LinkedHashMap<String, Integer>();
         this.countLabels = new Label[13];
         this.denomSummaryPane = new GridPane();
+        this.denominationCount = new LinkedHashMap<String, Integer>();
         mainCanvasVBox = new VBox();
         i = 0;
         for (Denomination denomination : Denomination.values()) 
@@ -30,6 +31,7 @@ public class DenomSummaryView extends ScrollPane
             denomSummaryPane.add(countLabels[i], 1, i);
 
             moneyNameToind.put(tempNameLabel.getText(), i);
+            denominationCount.put(denomination.getName(), 0);
             i++;
 
             
@@ -39,47 +41,22 @@ public class DenomSummaryView extends ScrollPane
         this.mainCanvasVBox.getChildren().add(denomSummaryPane);
         this.setContent(mainCanvasVBox);
     }
-    // public DenomSummaryView(LinkedHashMap<String, Integer> denomInfo)
-    // {
-    //     Label tempNameLabel;
-       
-    //     int i;
 
-    //     this.moneyNameToind = new LinkedHashMap<String, Integer>();
-    //     this.countLabels = new Label[13];
-    //     this.denomSummaryPane = new GridPane();
-    //     mainCanvasVBox = new VBox();
-    //     i = 0;
-    //     for (Denomination denomination : denomInfo) 
-    //     {
-    //         tempNameLabel = new SubLabel(denomination.getName(), 18);
-    //         denomSummaryPane.add(tempNameLabel, 0, i);
-    //         countLabels[i] = new SubLabel("0", 18);
-    //         denomSummaryPane.add(countLabels[i], 1, i);
-
-    //         moneyNameToind.put(tempNameLabel.getText(), i);
-    //         i++;
-
-            
-    //     }
-    //     denomSummaryPane.setHgap(10);
-    //     denomSummaryPane.setVgap(10);
-    //     this.mainCanvasVBox.getChildren().add(denomSummaryPane);
-    //     this.setContent(mainCanvasVBox);
-    // }
     public void changeDenomSummaryView(LinkedHashMap<String, Integer> denomInfo)
     {
 
         int i;
         i = 0;
+        reset();
         for (Map.Entry<String,Integer> denomination : denomInfo.entrySet()) 
         {
 
-            countLabels[i] = new SubLabel( denomination.getValue()+"", 18);
-
-            updateCountLabel(denomination.getKey());
-            i++;
-
+            denominationCount.put(denomination.getKey(), denomination.getValue());
+            for(i = 0; i < denomination.getValue(); i++)
+            {
+                updateCountLabel(denomination.getKey());
+            }
+            
             
         }
     }
@@ -91,8 +68,9 @@ public class DenomSummaryView extends ScrollPane
     public void updateCountLabel(String moneyName) 
     {
         updateCountLabel(moneyNameToind.get(moneyName));
+        denominationCount.put(moneyName, denominationCount.get(moneyName)+1);
     }
-    public void updateCountLabel(Double moneyVal) 
+    public void updateCountLabel(double moneyVal) 
     {
         updateCountLabel(moneyNameToind.get(Denomination.fromValue(moneyVal)));
     }
@@ -100,14 +78,20 @@ public class DenomSummaryView extends ScrollPane
     {
         int num = Integer.parseInt(this.countLabels[i].getText());
         this.countLabels[i].setText(num-1 + "");
+        
     }
     public void subCountLabel(String moneyName) 
     {
         subCountLabel(moneyNameToind.get(moneyName));
+        denominationCount.put(moneyName, denominationCount.get(moneyName)-1);
     }
-    public void subCountLabel(Double moneyVal) 
+    public void subCountLabel(double moneyVal) 
     {
         subCountLabel(moneyNameToind.get(Denomination.fromValue(moneyVal)));
+        
+    }
+    public LinkedHashMap<String, Integer> getDenominationCount() {
+        return denominationCount;
     }
     public void reset()
     {
@@ -116,7 +100,8 @@ public class DenomSummaryView extends ScrollPane
         for (Map.Entry<String,Integer> denomination : moneyNameToind.entrySet()) 
         {
 
-            countLabels[i] = new SubLabel( 0+"", 18);
+            this.countLabels[i].setText("0");
+            denominationCount.put(denomination.getKey(), 0);
 
             i++;
 
@@ -124,6 +109,7 @@ public class DenomSummaryView extends ScrollPane
         }
     }
     private GridPane denomSummaryPane;
+    private LinkedHashMap<String, Integer> denominationCount;
     private Label[] countLabels;
     private LinkedHashMap<String, Integer> moneyNameToind;
     private VBox mainCanvasVBox;

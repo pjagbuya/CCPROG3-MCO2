@@ -25,9 +25,6 @@ public class AppController {
         VMSellingTopBarView vmSellingTopBarView;
     
 
-        VMSellingOpController vmSellingOpController;
-        
-        CreateMenuController createMenuController;
 
         // VMachineModelPaneController vMachineModelPaneController;
 
@@ -48,12 +45,12 @@ public class AppController {
         vmSellingTopBarView = vmSellingOpPaneView.getVmSellingTopBarView();
 
         // Handles control for all components inthe Selling screen
-        vmSellingOpController = new VMSellingOpController(this,
+        this.vmSellingOpController = new VMSellingOpController(this,
                                                           vmSellingTopBarView, vmSellingOpPaneView, 
                                                           this.appView.getStartMenu(), this.appView.getMaintenanceMenu());
         
         // Handles control for creation of Vending machine menu
-        createMenuController = new CreateMenuController( this, this.setItemPaneView, 
+        this.createMenuController = new CreateMenuController( this, this.setItemPaneView, 
                                                          this.regMenu.getvMachineModelPaneView(), 
                                                          this.setDenomPaneView, this.regMenuTopBar);
 
@@ -61,8 +58,8 @@ public class AppController {
         //                                                               this.regMenu.getvMachineModelPaneView());
 
 
-        maintenanceController = new MaintenanceController(appView.getMaintSelectView());
-        setupVMPopUpController = new SetupVMPopUpController(this.appView.getSetupVMPopUpView(), 
+        this.maintenanceController = new MaintenanceController(appView.getMaintSelectView());
+        this.setupVMPopUpController = new SetupVMPopUpController(this.appView.getSetupVMPopUpView(), 
                                                             this.regMenuTopBar, this.regMenu, 
                                                             this.setItemPaneView, this.appModel);
            
@@ -108,6 +105,14 @@ public class AppController {
         });
 
     }
+    public void resetForm()
+    {
+        vmSellingOpController.resetForm();
+        maintenanceController.resetForm();
+        createMenuController.resetForm();
+
+
+    }
 
     private void setupShowPopUpCreateBtn()
     {
@@ -150,6 +155,11 @@ public class AppController {
     {
         return regMenu;
     }
+    
+    private MaintenanceController maintenanceController;
+    private SetupVMPopUpController setupVMPopUpController;
+    private VMSellingOpController vmSellingOpController;    
+    private CreateMenuController createMenuController;
     private CreateRegMenu regMenu;
     private CreateRegTopBarView regMenuTopBar;
     private SetItemPaneView setItemPaneView;

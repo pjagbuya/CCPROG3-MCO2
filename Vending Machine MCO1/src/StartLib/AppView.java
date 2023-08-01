@@ -55,10 +55,12 @@ public class AppView extends BorderPane{
 
         this.setCenter(btnSection);
         this.setStyle("-fx-base: " + colorBg+ ";");
-
+        this.parentWin.setWidth(1200);
+        this.parentWin.setHeight(800);
         this.parentWin.setScene(this.startMenu);
         this.parentWin.setTitle("Main menu");
         this.parentWin.show();
+        this.parentWin.centerOnScreen();
     }
 
 
@@ -66,21 +68,27 @@ public class AppView extends BorderPane{
     {
 
    
-
+        this.parentWin.setWidth(1200);
+        this.parentWin.setHeight(800);
         this.parentWin.setScene(this.creationRegMenu);
+        this.parentWin.centerOnScreen();
     }
     public void changeToSellingScreen()
     {
- 
         
+        this.parentWin.setWidth(1200);
+        this.parentWin.setHeight(800);
         this.parentWin.setScene(this.sellingMenu);
+        this.parentWin.centerOnScreen();
     }
 
     public void changeToMaintenanceSelectScreen()
     {
 
-
+        this.parentWin.setWidth(1200);
+        this.parentWin.setHeight(800);
         this.parentWin.setScene(this.maintenanceMenu);
+        this.parentWin.centerOnScreen();
 
     }    
     public void showPopUpView()

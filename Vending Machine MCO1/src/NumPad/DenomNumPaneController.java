@@ -3,8 +3,10 @@ package NumPad;
 import java.text.DecimalFormat;
 import java.util.ArrayList;
 
+import DenomLib.Denomination;
 import Models.Money;
 import StartLib.AppController;
+import StartLib.AppModel;
 import VMSell.DispensedItemView;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
@@ -21,9 +23,12 @@ public class DenomNumPaneController
     {
         this.denomNumPadView = denomNumPadView;
         this.dispensedItemView = dispensedItemView;
-        Money moneyDict = new Money();                          //Put logic to model
-        moneyInputHistory = new ArrayList<Double>();
+        this.appModel = appController.getAppModel();
+        this.moneyInputHistory = new ArrayList<Double>();
         this.moneyNameHistory = new ArrayList<String>();
+
+
+
         DecimalFormat df = new DecimalFormat("0.00");
         Button[] denomBtns = denomNumPadView.getNumButtons();
         TextField numField = denomNumPadView.getNumField();
@@ -35,15 +40,17 @@ public class DenomNumPaneController
 
             this.denomNumPadView.setNumButtonAction(i, e->
             {
-                this.dispensedItemView.displayDispensed();
-                stage.setWidth(1200);
-                stage.setHeight(1000);
-                stage.centerOnScreen();
+
                 double num;
                 double inputtedBtnVal;
 
                 String text = numField.getText();
                 String denomNumText = denomBtns[trackedIndex].getText();
+                String denomName;
+        
+                
+
+
                 if(denomNumText.contains(String.valueOf('B')) )
 
                     inputtedBtnVal = 20.00;
@@ -66,15 +73,18 @@ public class DenomNumPaneController
                     else
                         num = -1;
                 }
-
+                System.out.println("Money inputted: " + inputtedBtnVal);
+                denomName = Denomination.fromValue(inputtedBtnVal);
+                System.out.println("Money inputted: " + denomName);
                 if(num != -1)
                 {
                     num += inputtedBtnVal;
                     moneyInputHistory.add(inputtedBtnVal);
-                    moneyNameHistory.add(denomNumText);
+                    moneyNameHistory.add(denomName);
                     numField.setText(df.format(num));
-                    this.dispensedItemView.addToPaymentView(denomNumText);
 
+                    this.dispensedItemView.addToPaymentView(denomName);
+                    this.appModel.addToPayment(denomName);
                 }   
 
                 
@@ -83,7 +93,8 @@ public class DenomNumPaneController
 
         this.denomNumPadView.setClrButtonAction(e->
         {
-            numField.setText("");
+
+            resetForm();
         });
 
         this.denomNumPadView.setDelButtonAction(e->
@@ -94,11 +105,13 @@ public class DenomNumPaneController
         
             
             String text = numField.getText();
-
+            System.out.println(moneyInputHistory);
+            System.out.println(moneyNameHistory);
             if(!moneyInputHistory.isEmpty() && !moneyNameHistory.isEmpty())
             {
                 previousInputVal = moneyInputHistory.get(moneyInputHistory.size()-1);
                 previousInputName = moneyNameHistory.get(moneyNameHistory.size()-1);
+                this.appModel.subToPayment(previousInputName);
             }
             else
             {
@@ -118,6 +131,7 @@ public class DenomNumPaneController
             if(num != -1 && previousInputVal != -1)
             {
                 this.dispensedItemView.subToPaymentView(previousInputName);
+                
                 num -= previousInputVal;
 
                 moneyInputHistory.remove(moneyInputHistory.size()-1);
@@ -127,8 +141,30 @@ public class DenomNumPaneController
 
 
         });
+        this.denomNumPadView.setEnterButtonAction(e->{
+            
+        });
 
     }
+    public void resetForm()
+    {
+        TextField numField = denomNumPadView.getNumField();
+        numField.setText("");
+        if(!moneyInputHistory.isEmpty())
+        {
+            for(String moneyInput : moneyNameHistory)
+            {
+                this.appModel.subToPayment(moneyInput);
+                this.dispensedItemView.subToPaymentView(moneyInput);
+
+            }
+        }
+        moneyNameHistory.clear();
+        moneyInputHistory.clear();
+        numField.setText("");
+        
+    }
+    private AppModel appModel;
     private ArrayList<Double> moneyInputHistory;
     private ArrayList<String> moneyNameHistory;
     private DispensedItemView dispensedItemView;
