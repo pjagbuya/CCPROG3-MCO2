@@ -507,7 +507,7 @@ public class SellingOperator
 	 *
 	 * @return the current order instance
 	 */
-	protected Order getOrder() { return order; }
+	public Order getOrder() { return order; }
 		
 	/**
 	 * Returns the stack of released items.
