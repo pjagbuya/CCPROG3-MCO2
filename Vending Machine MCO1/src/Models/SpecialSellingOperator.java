@@ -277,7 +277,7 @@ public class SpecialSellingOperator extends SellingOperator
 		LinkedHashMap<String, Integer> flavorStocks = new LinkedHashMap<String, Integer>();
 		for( String k : recipeChecker.getFlavorStock().keySet() ) {
 			if( recipeChecker.getFlavorStock().get(k) > 0 )
-				flavorStocks.put( recipeChecker.getAbsoluteBaseIngredients().get(k),
+				flavorStocks.put( new String(recipeChecker.getAbsoluteBaseIngredients().get(k)),
 						  getFlavorStock().get(k) );
 		}
 		return flavorStocks;
