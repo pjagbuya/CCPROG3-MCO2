@@ -1,6 +1,15 @@
 package ItemSelectLib;
 import java.net.URL;
 import java.util.LinkedHashSet;
+
+
+/**
+ * The enum PresetItem lists the items
+ * that are for certain part of the program universe.
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public enum PresetItem
 {
     CHEESE("Cheese", "/Pics/cheese.png", 1, 40.00, 15),
