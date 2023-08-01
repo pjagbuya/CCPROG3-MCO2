@@ -94,7 +94,7 @@ public class SellingOperator
 		
 		// only when selected slot num is within range, this will trigger to add that order
 		if( slotNum >= 1 && slotNum <= slots.length ) {	
-			if(slots[slotNum-1] == null) {
+			if(slots[slotNum-1] == null || slots[slotNum-1].getSlotItemName() == null) {
 				msg = new String("ERROR: SLOT IS NULL.\n");
 				orderIsValid = false;
 			}
