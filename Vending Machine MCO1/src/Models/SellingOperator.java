@@ -145,6 +145,13 @@ public class SellingOperator
 					slot.getSlotItemName().toUpperCase() ));
 			calorieTotal = order.getTotalCalories();
 		}
+
+		order.setTotalCost(
+			order.getTotalCost() +
+			slot.getPrice() * qty );
+		order.setTotalCalories(
+			order.getTotalCalories() + 
+			slot.getItems().get(0).getItemCalories() * qty );
 		
 		pending.put( slot.getSlotItemName().toUpperCase() , qty );
 	}
