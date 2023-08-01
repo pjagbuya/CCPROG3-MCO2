@@ -2,6 +2,7 @@ package StartLib;
 
 
 import Boxes.AlertBox;
+import Boxes.AlertBoxRep;
 import Buttons.*;
 import Labels.HeaderLabel;
 import Labels.LabelToField;
@@ -230,7 +231,7 @@ public class SetupVMPopUpView extends Stage
     }
     public void raiseAlert(String title, String message, int fontSize)
     {
-        alertBox.display(title, message, fontSize);
+        alertBox = new AlertBoxRep(title, message, fontSize);
     }
     public void changePopUpSceneMain()
     {

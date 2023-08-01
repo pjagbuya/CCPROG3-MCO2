@@ -1,6 +1,8 @@
 package VMSell;
 
 
+import java.text.DecimalFormat;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
 
 import Boxes.AlertBox;
@@ -11,11 +13,13 @@ import ItemSelectLib.ItemSectionPane;
 import Labels.SubLabel;
 import Labels.HeaderLabel;
 import Models.VM_Item;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Group;
+import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
@@ -26,10 +30,12 @@ import javafx.scene.layout.VBox;
 
 public class DispensedItemView extends ScrollPane
 {
+    
     public DispensedItemView()
     {
 
         HBox expandableHBox = new HBox();
+
         this.dispensedSectionGridPane = new GridPane();
         this.denomSummaryView = new DenomSummaryView();
         this.denominationCount = new LinkedHashMap<String, Integer>();
@@ -61,7 +67,6 @@ public class DispensedItemView extends ScrollPane
 
 
         this.setContent(expandableHBox);
-        
         this.setVisible(false);
         this.setManaged(false);
     }
@@ -85,17 +90,32 @@ public class DispensedItemView extends ScrollPane
     {
         StackPane tempPane;
         VBox itemInfoVBox;
-
-        Label priceLabel = new SubLabel(priceString);
-        Label calLabel = new SubLabel(calString);
-
+        Integer colIndex;
+        Integer rowIndex;
+        Label priceLabel = new SubLabel("Price: Php "+df.format(Double.parseDouble(priceString)));
+        Label calLabel = new SubLabel("Calories: " + calString + "cal");
+        ObservableList<Node> children = this.dispensedSectionGridPane.getChildren();
+        Iterator<Node> iter = children.iterator();
+        Node selected;
         itemInfoVBox = new VBox();
         itemInfoVBox.getChildren().addAll(priceLabel, calLabel);
         this.itemSelectedStackPane = item;
         this.itemSelectedStackPane.setPrefHeight(200);
         this.itemSelectedStackPane.setPrefWidth(200);
+
+        while (iter.hasNext()) {
+            selected = iter.next();
+            colIndex = GridPane.getColumnIndex(selected);
+            rowIndex = GridPane.getRowIndex(selected);
+            if(colIndex == null) colIndex = 0;
+            if(rowIndex == null) rowIndex = 0;
+    
+            if ((colIndex == 0 && rowIndex == 0) || (colIndex == 0 && rowIndex == 1)) {
+                iter.remove();
+            }
+        }
         this.dispensedSectionGridPane.add(this.itemSelectedStackPane, 0, 0, 1, 1);
-        this.dispensedSectionGridPane.add(this.itemSelectedStackPane, 0, 1, 1, 1);
+        this.dispensedSectionGridPane.add(itemInfoVBox, 0, 1, 1, 1);
             
 
 
@@ -148,7 +168,7 @@ public class DispensedItemView extends ScrollPane
         this.claimBtn.setOnAction(eventHandler);
     }
         
-
+    private static DecimalFormat df = new DecimalFormat("0.00");
     private GridPane dispensedSectionGridPane;
     private LinkedHashMap<String, Integer> denominationCount;
     private VBox mainCanvasVBox;

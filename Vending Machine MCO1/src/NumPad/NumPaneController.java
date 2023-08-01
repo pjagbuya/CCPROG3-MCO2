@@ -58,21 +58,30 @@ public class NumPaneController
         });
         this.numPaneView.setEnterButtonAction(e->{
             int num;
-            String name;
+ 
+            String calories;
+            String price;
             StackPane item;
             AlertBoxRep alertBox;
             TextField numFieldInp = this.numPaneView.getNumField();
-            String msg = this.appModel.addToRegOrder(Integer.parseInt(numFieldInp.getText()),
+            String msg;
+
+            if(!numFieldInp.getText().isEmpty())
+                msg = this.appModel.addToRegOrder(Integer.parseInt(numFieldInp.getText()),
                                     1);
+            else
+                msg = "NO INPUTTED SLOT";
 
             if(msg == null)
             {
                 num = Integer.parseInt(numField.getText());
                 this.appModel.addToRegOrder(num, 1);
                 this.appModel.findSlotNameInVM(num);
+                calories = this.appModel.findSlotCaloriesInVM(num-1);
+                price = this.appModel.findSlotPriceInVM(num-1);
                 
                 item = this.vMachineModelPaneView.getItemContainerCopy(this.appModel.findSlotNameInVM(num-1));
-                this.dispensedItemView.addItemSelected(item);
+                this.dispensedItemView.addItemSelected(item, price, calories);
             }
             else if(msg != null)
             {
