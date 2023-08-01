@@ -69,26 +69,6 @@ public class VM_Special extends VM_Regular
 	public VM_Slot[] getSpecialSlots() { return specialSlots; }
 
 
-	/**
- 	 * Returns the recipe checker of this operator.
-   	 *
-     	 * @return the recipe checker
-     	 */
-	public RecipeChecker getRecipeChecker() { return recipeChecker; }
-
-	/**
- 	 * Sets the recipe checker of this vending machine.
-   	 *
-     * @param recipeChecker the new recipe checker
-     */
-	public void setRecipeChecker(RecipeChecker recipeChecker) { this.recipeChecker = recipeChecker; }
-	
-	
-	
-	
-	
-	/** the Special operators's recipe-checking component */
-	private RecipeChecker recipeChecker;
 	/** slots for items that cannot be sold on their own */
 	private VM_Slot[] specialSlots;
 }
