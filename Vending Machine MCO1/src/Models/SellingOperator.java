@@ -480,6 +480,10 @@ public class SellingOperator
 	public LinkedHashMap<String, Integer> getPresetItems() { return presetItems; }
 	
 	public LinkedHashMap<String, Integer> getCustomItems() { return customItems; }
+
+	public Money getPayment() { return payment; }
+
+	public Money getChange() { return change; }
 	
     private double paymentTotal = 0;
 	private double orderTotal = 0;
