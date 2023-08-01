@@ -129,6 +129,36 @@ public class AppModel
 
 
 
+    private SellingOperator extractOperator(int index) {
+        return vendingMachines.get(index).getOperator();
+    }
+    
+    public String addToPayment(String denom) {
+        return extractOperator(currInd).addToPayment( denom );
+    }
+
+    public String subtractFromPayment(String denom) {
+        return extractOperator(currInd).subtractFromPayment( denom );
+    }
+
+    public Money getChange() {
+        return extractOperator(currInd).getChange();
+    }
+
+    public double getChangeDue() {
+        return extractOperator(currInd).getChangeDue();
+    }
+
+    public Money getPayment() {
+        return extractOperator(currInd).getPayment();
+    }
+
+    public double getPaymentTotal() {
+        return extractOperator(currInd).getPaymentTotal();
+    }
+
+
+    
     
     private VM_Factory factory;
     private ArrayList<VM_Regular> vendingMachines;
