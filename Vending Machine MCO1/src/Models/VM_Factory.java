@@ -256,7 +256,7 @@ public class VM_Factory
 	{
 		VM_Item item = null;
 		
-		if( customItems().keySet().contains(s) )
+		if( customItems.keySet().contains(s) )
 			item = new VM_Item( new String(s) , 20.00, customItems.get(s) );
 		
 		return item;
