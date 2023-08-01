@@ -11,7 +11,7 @@ import java.util.LinkedHashMap;
  * @author Paul Josef P. Agbuya
  * @author Vince Kenneth D. Rojo
  */
-public class VM_Factory
+public class VM_Factory implements Generatable
 {
 	/**
  	 * Instantiates a vending machine factory.
@@ -197,7 +197,7 @@ public class VM_Factory
      	 * @param s the name of the item to be instantiated
        	 * @return the instantiated item, null if nothing was instantiated
      	 */
-	private VM_Item generateItem( String s )
+	public VM_Item generateItem( String s )
 	{
 		VM_Item item = null;
 		
@@ -252,7 +252,7 @@ public class VM_Factory
 	 * @param s the String name of the item to be instantiatd
 	 * @return the generated item, null otherwise
 	 */
-	private VM_Item generateCustomItem( String s )
+	public VM_Item generateCustomItem( String s )
 	{
 		VM_Item item = null;
 		

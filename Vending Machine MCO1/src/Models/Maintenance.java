@@ -14,7 +14,7 @@ import java.util.InputMismatchException;
  * @author Paul Josef P. Agbuya
  * @author Vince Kenneth D. Rojo
  */
-public class Maintenance
+public class Maintenance implements Generatable
 {
 	/**
 	 * Takes note of the list of possible items in the program
@@ -298,7 +298,7 @@ public class Maintenance
 	 * @param s the String name of the item type to be generated
 	 * @return the generated item, null otherwise
 	 */
-	private VM_Item generateItem( String s )
+	public VM_Item generateItem( String s )
 	{
 		VM_Item item = null;
 		
@@ -361,7 +361,7 @@ public class Maintenance
 	 * @param s the String name of the item type to be generated
 	 * @return the generated item, null otherwise
 	 */
-	private VM_Item generateCustomItem( String s )
+	public VM_Item generateCustomItem( String s )
 	{
 		VM_Item item = null;
 		
