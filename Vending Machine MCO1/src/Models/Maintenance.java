@@ -349,7 +349,7 @@ public class Maintenance
 		
 		
 		else
-			generateCustomItem( s );
+			item = generateCustomItem( s );
 		
 		return item;
 	}
