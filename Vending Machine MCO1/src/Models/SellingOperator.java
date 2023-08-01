@@ -39,6 +39,7 @@ public class SellingOperator
 			this.change = change;
 			this.customItems = customItems;
 			this.presetItems = new LinkedHashMap<String, Integer>();
+		    	this.duplicate = new LinkedHashMap<String, Integer>();
 
 			payment = new Money();
 		    
