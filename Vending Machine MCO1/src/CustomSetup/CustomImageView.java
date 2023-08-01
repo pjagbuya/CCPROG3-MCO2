@@ -2,7 +2,6 @@ package CustomSetup;
 
 import ItemSelectLib.ItemSectionPane;
 import VMLib.ItemSlotPaneView;
-import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
 import javafx.beans.binding.Bindings;
 import javafx.scene.control.ScrollPane;
