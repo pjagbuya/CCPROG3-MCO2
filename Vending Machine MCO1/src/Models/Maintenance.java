@@ -437,7 +437,7 @@ public class Maintenance
 			return specialSlots;
 		else if( customItems.get( itemName ) != null )
 			return this.slots;
-		return null
+		return null;
 	}
 	
 	/** the cash reserves of the parent vending machine */
