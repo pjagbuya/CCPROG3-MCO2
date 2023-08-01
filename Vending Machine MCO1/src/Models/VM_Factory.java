@@ -240,7 +240,7 @@ public class VM_Factory
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
 		else
-			generateCustomItem( s );
+			item = generateCustomItem( s );
 		
 		return item;
 	}
