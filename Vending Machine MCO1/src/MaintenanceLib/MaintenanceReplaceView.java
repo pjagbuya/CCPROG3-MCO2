@@ -8,7 +8,6 @@ import java.util.ArrayList;
 import Boxes.AlertBox;
 import ItemSelectLib.SetItemPaneView;
 import Models.VM_Regular;
-import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
 import javafx.event.EventHandler;
 import javafx.scene.input.MouseEvent;
