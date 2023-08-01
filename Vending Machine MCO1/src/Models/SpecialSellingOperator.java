@@ -275,7 +275,7 @@ public class SpecialSellingOperator extends SellingOperator
 	public ArrayList<String> getAvailableFlavors()
 	{
 		ArrayList<String> availableFlavors = new ArrayList<String>();
-		for( String k : recipeChecker.getFlavorStock() ) {
+		for( String k : recipeChecker.getFlavorStock().keySet() ) {
 			if( recipeChecker.getFlavorStock().get(k) > 0 )
 				availableFlavors.add(
 					new String( recipeChecker.getAbsoluteBaseIngredients().get(k) ) );
