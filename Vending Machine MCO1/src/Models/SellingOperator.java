@@ -18,10 +18,13 @@ public class SellingOperator
 {
 
 	/**
-	 * This constructor represent a Selling Operator that manages how
-	 * the flow of prompts and how the Vending machine would get affected
-	 * by such prompts
+	 * Instantiates the "seller" part of the brain of the vending machine.
 	 * 
+	 * @param slots the regular slots of the parent vending machine
+  	 * @param vmCashReserves the cash reserves of the parent vending machine
+    	 * @param orderHistory the list of (successful) transactions from the parent vending machine
+      	 * @param change the change tray
+	 * @param customItems the list of custom items from the parent vending machine
 	 */
     public SellingOperator(
 		VM_Slot[] slots,
@@ -45,7 +48,10 @@ public class SellingOperator
 
 
 	
-	
+/**
+ * Tell the operator to compute for payment total, order total, and calorie total,
+ * and change due for the current transaction.
+ */
 	public void calculateBasicInformation()
 	{
 		/* creates a copy of the set of denominations currently in the VM */
@@ -73,7 +79,11 @@ public class SellingOperator
 	
 	
     
-
+/**
+ * Adds a specified quantity of an item to the order list.
+ *
+ * @return null if the item was successfully added to the order, error message otherwise
+ */
 	public String addToOrder(int slotNum, int qty)
 	{	
 		String msg = null;
@@ -104,7 +114,9 @@ public class SellingOperator
 		return msg;
 	}
 
-	
+/**
+ * Updates the information on the order list.
+ */
 	protected void addToPendingMap(LinkedHashMap <String, Integer> pending, VM_Slot slot, int qty)
 	{
 		if( pending.get( slot.getSlotItemName().toUpperCase() ) != null ) 
@@ -129,11 +141,11 @@ public class SellingOperator
 	}
 
 
-	/**
-	 * This helper method would help prompt the payment the user wishes to give to the machine
-	 * 
-	 * @param payment the payment where the user would store his/her denominations as payment
-	 */
+/**
+ * Adds coins or bills to the payment tray.
+ * 
+ * @param denom the worded value of the coin or banknote to be inserted into the vending machine.
+ */
 	public String addToPayment(String denom)
 	{
 		String msg;		
@@ -147,8 +159,11 @@ public class SellingOperator
 		return msg;
 	}
 	
-	
-	
+/**
+ * Removes coins or bills from the payment tray.
+ * 
+ * @param denom the worded value of the coin or banknote to be removed from the vending machine.
+ */
 	public String subtractFromPayment(String denom)
 	{
 		String msg;		
@@ -164,7 +179,12 @@ public class SellingOperator
 		return msg;
 	}
     
-	
+
+/**
+ * Checks whether the current transaction is valid given its basic information.
+ *
+ * @return null of transaction is valid, error message otherwise
+ */
 	public String validateTransaction()
 	{
 		String msg = new String("");
@@ -192,8 +212,13 @@ public class SellingOperator
 			return null;
 		return msg;
 	}
-	
-	
+
+/**
+ * Checks whether the given slot set has (part of) the required stock.
+ *
+ * @param slots the slot set to be checked, regular or special
+ * @return true if the <regular/special> slot set has the required <independent/dependent> items, false otherwise
+ */
 	protected boolean hasEnoughStock(VM_Slot[] slots)
 	{
 		int i;
@@ -211,16 +236,8 @@ public class SellingOperator
 	}
 	
     /**
-     * This helper method shows the outcome of an order request that is potentially discontinued or
-     * failed
-     * 
-     * @param orderConfirmed states if the order is confirmed when the user follows rules and machine follows rules, false otherwise or when there is restriction
-     * @param transactionIsValid boolean that states the cause of a failure is just a transaction side failure
-     * @param payment the types of denominations inserted into the VM, and their corresponding quantities greater than or equal to 0
-     * @param change the types of denominations returned by the VM as change, and their corresponding quantities greater than or equal to 0
+     * Records the denominations currently stored in the parent's cash reserves as a hashmap.
      */
-	
-	
 	private void duplicateDenominations()
 	{
 		/* duplicating cash reserves of VM, while setting change to zero */
@@ -230,7 +247,10 @@ public class SellingOperator
 			change.getDenominations().put(s , new ArrayList<DenominationItem>() );
 		}
 	}
-	
+
+/**
+ * Tell the vending machine to go ahead with the transaction.
+ */
 	public void proceedTrasaction()
 	{
 		int i;
@@ -240,12 +260,24 @@ public class SellingOperator
 		updateCashTrays();
 		orderHistory.add( getOrder() );
 	}
-	
+
+/**
+ * Creates a coin or banknote.
+ *
+ * @param denom the worded value of the denomnation to be added
+ * @return the coin or banknote itself
+ */
 	public DenominationItem createDenomination(String denom)
 	{
 		return new DenominationItem( denom , Money.getStrToVal().get(denom) );
 	}
-	
+
+/**
+ * Releases items based on current order.
+ *
+ * @param slots the slot set from which to release (a subset of) the ordered items.
+ * @return the released items
+ */
 	public ArrayList<VM_Item> dispenseItems(VM_Slot[] slots)
 	{
         int currAmt;
@@ -273,7 +305,10 @@ public class SellingOperator
 	
 	
 	
-	/** successful transactions ONLY */
+/**
+ * Releases change into the change tray, accepts and sorts the payment. Clears references (pointers) in payment tray.
+ * Reminder: For successful transactions ONLY
+ */
 	public void updateCashTrays()
 	{		
 		int difference; // the difference between the corresponding nos. of denominations in the cash reserve and the duplicate hashmap
@@ -294,7 +329,10 @@ public class SellingOperator
 		}
 	}
 	
-	
+
+/**
+ * Reverts calculated basic transaction information values back to zero.
+ */
 	public void resetDefaults()
 	{
 		paymentTotal = 0;
@@ -304,7 +342,11 @@ public class SellingOperator
 		calorieTotal = 0;
 	}
 	
-	
+/**
+ * Checks whether the cash reserves can release a specified amount of cash, for change.
+ * 
+ * @param amt the total amount that is planned to be released
+ */
 	protected boolean deductChange(double amt)
 	{
 
@@ -380,11 +422,11 @@ public class SellingOperator
 	}
 	
 	
-	/**
-	 * Generate more of a specified item
-	 *
-	 * @param s the name of the item to be added
-	 */
+/**
+ * Generates an instance of an item.
+ *
+ * @param s the name of the item to be instantied.
+ */
 	protected VM_Item generateItem( String s )
 	{
 		VM_Item item = null;
@@ -440,69 +482,154 @@ public class SellingOperator
 		
 		return item;
 	}
-	
-	private VM_Item generateCustomItem( String s )
-	{
-		VM_Item item = null;
-		
-		if( getCustomItems().get( s ) != null )
-			item = new VM_Item( new String(s) , 10.00, getCustomItems().get(s) );
-		
-		return item;
-	}
-	
-	public void createNewOrder()
-	{
-		/* order is made blank */
-		order = new Order();
-	}
-	
-	public void addOrderHistory(Order order) {
-		this.orderHistory.add(order);
-	}
-	
-	public double getPaymentTotal() { return paymentTotal; }
-	
-	public double getOrderTotal() { return orderTotal; }
-	
-	public double getCashReservesTotal() { return cashReservesTotal; }
-	
-	public double getChangeDue() { return changeDue; }
-	
-	public int getCalorieTotal() { return calorieTotal; }
-	
-	protected VM_Slot[] getSlots() { return slots; }
-	
-	protected Order getOrder() { return order; }
-	
-	public ArrayList<VM_Item> getSoldItems() { return soldItems; }
-	
-	public LinkedHashMap<String, Integer> getPresetItems() { return presetItems; }
-	
-	public LinkedHashMap<String, Integer> getCustomItems() { return customItems; }
 
-	public Money getPayment() { return payment; }
+/**
+ * Generates an instance of a custom item.
+ *
+ * @param s the name of the item to be instantied.
+ */
+private VM_Item generateCustomItem( String s )
+{
+	VM_Item item = null;
+		
+	if( getCustomItems().get( s ) != null )
+		item = new VM_Item( new String(s) , 10.00, getCustomItems().get(s) );
+		
+	return item;
+}
 
-	public Money getChange() { return change; }
+/**
+ * Resets current order back to zero.
+ */
+public void createNewOrder()
+{
+	/* order is made blank */
+	order = new Order();
+}
+
+/**
+ * Adds the order to the parent vending machine's order history.
+ *
+ * @param order the order to be added to the transaction records
+ */
 	
-    private double paymentTotal = 0;
-	private double orderTotal = 0;
-	private double cashReservesTotal = 0;
-	private double changeDue = 0;
-	private int calorieTotal = 0;
-	private int slotNum;
-	private int qty;
-	private String inputSlot;
-	private String inputQty;
-	private ArrayList<VM_Item> soldItems = null;
-	private ArrayList<Order> orderHistory;
-	private VM_Slot[] slots;
-	private Money vmCashReserves;
-	private LinkedHashMap<String, Integer> duplicate;
-	private LinkedHashMap<String, Integer> presetItems;
-	private LinkedHashMap<String, Integer> customItems;
-	private Money payment;
-	private Money change;
-	private Order order;
+public void addOrderHistory(Order order) {
+	this.orderHistory.add(order);
+}
+
+/**
+ * Returns the current total of the inserted payment.
+ *
+ * @return the total value of the inserted payment
+ */
+public double getPaymentTotal() { return paymentTotal; }
+	
+/**
+ * Returns the current total of the planned order.
+ *
+ * @return the total value of the inserted payment
+ */
+public double getOrderTotal() { return orderTotal; }
+
+/**
+ * Returns the current total of the cash reserves.
+ *
+ * @return the total value of the parent vending machine's cash reserves
+ */
+public double getCashReservesTotal() { return cashReservesTotal; }
+	
+/**
+ * Returns the numerical value of the change due to the customer.
+ *
+ * @return the numerical value total value of the change due to the customer
+ */
+public double getChangeDue() { return changeDue; }
+
+/**
+ * Returns the total amount of calories in the current order.
+ *
+ * @return the total amount of calories in the current order.
+ */
+public int getCalorieTotal() { return calorieTotal; }
+
+/**
+ * Returns the regular slots of the parent vending machine.
+ *
+ * @return the regular slots of the parent vending machine
+ */
+protected VM_Slot[] getSlots() { return slots; }
+
+/**
+ * Returns the current in-progress order.
+ *
+ * @return the current order instance
+ */
+protected Order getOrder() { return order; }
+	
+/**
+ * Returns the stack of released items.
+ *
+ * @return the stack of released items
+ */
+public ArrayList<VM_Item> getSoldItems() { return soldItems; }
+
+/**
+ * Returns the list of preset items in the program.
+ *
+ * @return the list of preset items
+ */
+public LinkedHashMap<String, Integer> getPresetItems() { return presetItems; }
+
+/**
+ * Returns the list of custom items in the memory of the parent vending machine.
+ *
+ * @return the list of custom items
+ */
+public LinkedHashMap<String, Integer> getCustomItems() { return customItems; }
+
+/**
+ * Returns the payment tray.
+ *
+ * @return the payment tray
+ */
+public Money getPayment() { return payment; }
+
+/**
+ * Returns the change tray.
+ *
+ * @return the change tray
+ */
+public Money getChange() { return change; }
+
+/** total value of the payment */
+private double paymentTotal = 0;
+/** total value of the ordered items */
+private double orderTotal = 0;
+/** total value of the cash reserves */
+private double cashReservesTotal = 0;
+/** numerical value of the change due to the customer */
+private double changeDue = 0;
+/** total amount of calories in the order */
+private int calorieTotal = 0;
+/** the stack of released items */
+private ArrayList<VM_Item> soldItems = null;
+/** the lsit of successful (previous) transactions */
+private ArrayList<Order> orderHistory;
+/** the regular slots of the parent vending machine */
+private VM_Slot[] slots;
+/** the cash reserves of the parent vending machine */
+private Money vmCashReserves;
+/** the record of denominations in the cash reserves */
+private LinkedHashMap<String, Integer> duplicate;
+/** the list of preset items in the program */
+private LinkedHashMap<String, Integer> presetItems;
+/** the list of custom items in the memory of the parent vending machine */
+private LinkedHashMap<String, Integer> customItems;
+/** the payment tray */
+private Money payment;
+/** the change tray */
+private Money change;
+/** the current order */
+private Order order;
 
 }
