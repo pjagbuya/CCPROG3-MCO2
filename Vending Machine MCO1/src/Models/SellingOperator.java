@@ -257,7 +257,7 @@ public class SellingOperator
 	}
 
 	/**
-	 * Tell the vending machine to go ahead with the transaction.
+	 * Tells the vending machine to go ahead with the transaction.
 	 */
 	public void proceedTrasaction()
 	{
@@ -335,6 +335,16 @@ public class SellingOperator
 			for(i = 0; i < additional; i++)
 				payment.getDenominations().put( s , new ArrayList<DenominationItem>() );
 		}
+	}
+	
+	
+	/**
+	 * Tells the vending machine to cancel the transaction. Returns any entered payment.
+	 */
+	public void discontinueTransaction()
+	{
+		for( String s : payment.getDenominations().keySet() )
+			change.add( payment.subtract( s ) );
 	}
 	
 
