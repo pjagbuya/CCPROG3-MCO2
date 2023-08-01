@@ -45,6 +45,10 @@ public class VM_Factory
 		if( vm instanceof VM_Special )
 			this.specialSlots = ((VM_Special)vm).getSpecialSlots();
 
+		if( customItems.size() > 0 )
+		for( String k : customItems.keySet() )
+			vm.getCustomItems().put( k , customItems.get(k) );
+
 		return vm;
 	}
 
@@ -159,6 +163,9 @@ public class VM_Factory
 	public void addAsPossibleItem(String name, int calories)
 	{
 		customItems.put(name, calories);
+
+		for( String k : customItems.keySet() )
+			vm.getCustomItems().put( k , customItems.get(k) );
 	}
 
 	/**
