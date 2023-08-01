@@ -29,6 +29,7 @@ public class AppModel
         this.currItemCap = 10;
         this.currItemSlot = 0;
     }
+    
     public void addVM(String vmType, String name, int nOfSlots, int nOfItems)
     {
 
@@ -43,13 +44,11 @@ public class AppModel
         this.maintainer = getVendingMachine().getMaintenance();
 
     }
-    public String findSlotNameInVM(int num)
-    {
+    public String findSlotNameInVM(int num) {
        return getVendingMachine().getSlot(num).getSlotItemName();
-
     }
-    public String addToOrder(int slotNum, int qty)
-    {
+    
+    public String addToOrder(int slotNum, int qty) {
         return this.seller.addToOrder(slotNum,qty);
     }
 
@@ -64,22 +63,20 @@ public class AppModel
         return true;
     }
 
-    public boolean isVendingMachineSlotEmpty()
-    {
+    public boolean isVendingMachineSlotEmpty() {
         
         return vendingMachines.get(currInd).getSlots().length == 0;
     }
-    public boolean isSpecialVM()
-    {
+    
+    public boolean isSpecialVM() {
         return this.vendingMachines.get(currInd) instanceof VM_Special;
     }
 
-    public void addReservesToVM(String denom, int count)
-    {
+    public void addReservesToVM(String denom, int count) {
         this.factory.specifyInitialCashReserves(denom, count);
     }
-    public void addReservesToVM(LinkedHashMap<String, Integer> setReservesInfo)
-    {
+    
+    public void addReservesToVM(LinkedHashMap<String, Integer> setReservesInfo) {
        for(Map.Entry<String, Integer> item : setReservesInfo.entrySet())
         {
             itemOrder.add(item.getKey());
@@ -87,26 +84,19 @@ public class AppModel
     
         }
     }
-    public void repriceItem(String itemName, double price)
-    {
+    
+    public void repriceItem(String itemName, double price) {
         this.maintainer.repriceItems(itemName, price);
     }
-    public String addItemToVM(String itemName, int qty) 
-    {
-
+    
+    public String addItemToVM(String itemName, int qty) {
         return this.factory.specifyInitialStocks(itemName, qty);
-
     }
-    public void addItemToVM(LinkedHashMap<String, Integer> itemInfo, ArrayList<String> order) 
-    {
-        for(String item: order)
-        {
-            
+    
+    public void addItemToVM(LinkedHashMap<String, Integer> itemInfo, ArrayList<String> order) {
+        for(String item: order) { 
             addItemToVM(item, itemInfo.get(item));
         }
-            
-
-
     }
 
     public String createNewItem(String name, int calories)
@@ -120,23 +110,26 @@ public class AppModel
 
         return msg;
     }
-    public void restartModel()
-    {
+    
+    public void restartModel() {
         this.factory.defaultItems();
     }
-    public VM_Regular getVendingMachine() 
-    {
+    
+    public VM_Regular getVendingMachine() {
         return vendingMachines.get(currInd);
     }
 
-    public int getCurrItemCap() 
-    {
+    public int getCurrItemCap() {
         return currItemCap;
     }
-    public int getCurrSlotCap() 
-    {
+    
+    public int getCurrSlotCap() {
         return currSlotCap;
     }
+
+
+
+    
     private VM_Factory factory;
     private ArrayList<VM_Regular> vendingMachines;
     private ArrayList<String> itemOrder;
