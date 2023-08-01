@@ -245,7 +245,7 @@ public class VM_Slot {
                             " with " + givenItem.getItemName() + ". (Y/N)");
         
         // Only proceed to replace when user agrees
-        if(sc.nextLine().equalsIgnoreCase("Y"))
+        if(/*sc.nextLine().equalsIgnoreCase("Y")*/ true)
         {
             System.out.println("Replaced " + slotItemName + " with " + givenItem.getItemName());
             replaceStock( givenItem );
