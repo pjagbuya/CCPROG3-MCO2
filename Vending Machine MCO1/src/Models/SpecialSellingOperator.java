@@ -203,7 +203,7 @@ public class SpecialSellingOperator extends SellingOperator
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) ) {
-					order.getPendingOrder().put(
+					getOrder().getPendingOrder().put(
 						recipeChecker.getAbsoluteBaseIngredients().get(k) ,
 						recipeChecker.getRequiredStock().get(k) );
 				}
@@ -275,10 +275,10 @@ public class SpecialSellingOperator extends SellingOperator
 	public LinkedHashMap<String, Integer> getAvailableFlavorStock()
 	{
 		LinkedHashMap<String, Integer> flavorStocks = new LinkedHashMap<String, Integer>();
-		for( String k : recipeChecker.getFlavorStock().keySet() ) {
+		for( int k : recipeChecker.getFlavorStock().keySet() ) {
 			if( recipeChecker.getFlavorStock().get(k) > 0 )
 				flavorStocks.put( new String(recipeChecker.getAbsoluteBaseIngredients().get(k)),
-						  getFlavorStock().get(k) );
+						  recipeChecker.getFlavorStock().get(k) );
 		}
 		return flavorStocks;
 	}
