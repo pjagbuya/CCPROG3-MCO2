@@ -272,7 +272,7 @@ public class SpecialSellingOperator extends SellingOperator
    	 *
      	 * @return the list of available flavors.
      	 */
-	public ArrayList<String> getAvailableFlavorsStock()
+	public ArrayList<String> getAvailableFlavors()
 	{
 		ArrayList<String> availableFlavors = new ArrayList<String>();
 		for( String k : recipeChecker.getFlavorStock() ) {
