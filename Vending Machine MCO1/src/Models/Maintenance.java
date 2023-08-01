@@ -67,13 +67,7 @@ public class Maintenance
 		
 		slotIndex = -1;
 
-		/* Switching between special and regular slots. */
-		if( presetItems.get( itemName ) == 1 )
-			slots = this.slots;
-		else if( presetItems.get( itemName ) == 0 )
-			slots = specialSlots;
-		else if( customItems.get( itemName ) != null )
-			slots = this.slots;
+		slots = switchToSlot( itemName );
 		
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
@@ -122,13 +116,8 @@ public class Maintenance
 		
 		/* INPUT VALIDATION */
 		slotIndex = -1;
-		/* Switching between special and regular slots. */
-		if( presetItems.get( itemName ) == 1 )
-			slots = this.slots;
-		else if( presetItems.get( itemName ) == 0 )
-			slots = specialSlots;
-		else if( customItems.get( itemName ) != null )
-			slots = this.slots;
+
+		slots = switchToSlot( itemName );
 		
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
@@ -139,14 +128,7 @@ public class Maintenance
 			
 		if( !slotFound )
 			msg = new String("ERROR: SLOT WITH ITEM NAME NOT FOUND.\n");
-			
-		/* Checks whether the slot is already associated with an item. */
-		if( slotFound && slots[slotIndex].getSlotItemName() == null )
-		{
-			msg = new String("ERROR: SLOT HAS NO NAME. ENTER A DIFF. SLOT NUM.\n");
-			slotHasName = false;
-		}
-			
+		
 		/* Checks whether slot is empty */
 		if( slotFound && slotHasName && slots[slotIndex].getSlotItemStock() == 0 )
 		{	
@@ -223,13 +205,7 @@ public class Maintenance
 		VM_Slot[] slots = null;
 		
 		
-		/* Switching between special and regular slots. */
-		if( presetItems.get( itemName ) == 1 )
-			slots = this.slots;
-		else if( presetItems.get( itemName ) == 0 )
-			slots = specialSlots;
-		else if( customItems.get( itemName ) != null )
-			slots = slots;
+		slots = switchToSlot( itemName );
 		
 		/* START OF INPUT VALIDATION */
 			
@@ -445,6 +421,24 @@ public class Maintenance
 	 * @return the list of custom items for this vending machine
 	 */
 	public LinkedHashMap<String, Integer>  getCustomItems() { return customItems; }
+
+	/**
+         * Chooses a slot set to open based on the given item name.
+	 *
+	 * @param itemName the name of the item
+  	 * @return the slots that correspond with the given name, null if none do
+  	 */
+	private VM_Slot[] switchToSlot(String itemName)
+	{
+		/* Switching between special and regular slots. */
+		if( presetItems.get( itemName ) == 1 )
+			return this.slots;
+		else if( presetItems.get( itemName ) == 0 )
+			return specialSlots;
+		else if( customItems.get( itemName ) != null )
+			return this.slots;
+		return null
+	}
 	
 	/** the cash reserves of the parent vending machine */
 	private Money vmMoney;
