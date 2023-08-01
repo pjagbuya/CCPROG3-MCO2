@@ -22,8 +22,8 @@ public class SellingOperator
 	 * 
 	 * @param slots the regular slots of the parent vending machine
   	 * @param vmCashReserves the cash reserves of the parent vending machine
-    	 * @param orderHistory the list of (successful) transactions from the parent vending machine
-      	 * @param change the change tray
+     * @param orderHistory the list of (successful) transactions from the parent vending machine
+     * @param change the change tray
 	 * @param customItems the list of custom items from the parent vending machine
 	 */
 	    public SellingOperator(
@@ -39,10 +39,10 @@ public class SellingOperator
 			this.change = change;
 			this.customItems = customItems;
 			this.presetItems = new LinkedHashMap<String, Integer>();
-		    	this.duplicate = new LinkedHashMap<String, Integer>();
-
+			this.duplicate = new LinkedHashMap<String, Integer>();
+			
 			payment = new Money();
-		    
+			
 			for(PresetItem item : PresetItem.values())
 			{
 				presetItems.put(item.name(), item.getIsIndependent());
@@ -97,7 +97,7 @@ public class SellingOperator
 		
 		// only when selected slot num is within range, this will trigger to add that order
 		if( slotNum >= 1 && slotNum <= slots.length ) {	
-			if(slots[slotNum-1] == null || slots[slotNum-1].getSlotItemName() == null) {
+			if( slots[slotNum-1] == null || slots[slotNum-1].getSlotItemName() == null ) {
 				msg = new String("ERROR: SLOT IS NULL.\n");
 				orderIsValid = false;
 			}
@@ -130,7 +130,6 @@ public class SellingOperator
 	{
 		if( pending.get( slot.getSlotItemName().toUpperCase() ) != null ) 
 		{
-		
 			order.setTotalCost(
 				order.getTotalCost() - 
 				slot.getPrice() *
@@ -145,7 +144,7 @@ public class SellingOperator
 					slot.getSlotItemName().toUpperCase() ));
 			calorieTotal = order.getTotalCalories();
 		}
-
+		
 		order.setTotalCost(
 			order.getTotalCost() +
 			slot.getPrice() * qty );
@@ -449,6 +448,8 @@ public class SellingOperator
 		}
 		return true;
 	}
+	
+	
 	
 
 	/**

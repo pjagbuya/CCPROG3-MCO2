@@ -60,7 +60,6 @@ public class Maintenance implements Generatable
 		String msg = null;
 		int i;
 		int slotIndex;
-        boolean anItemIsRestocked = false; // initially false
 		boolean slotFound = false; // intially false
 		VM_Slot[] slots = null;
 		
@@ -68,6 +67,7 @@ public class Maintenance implements Generatable
 
 		slots = switchToSlot( itemName );
 		
+		if( slots != null )
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
 				slots[i].getSlotItemName().equalsIgnoreCase(itemName) )
@@ -76,20 +76,14 @@ public class Maintenance implements Generatable
 				slotFound = true;
 			}
 
-		if( slotFound )
+		if( !slotFound )
 			msg = new String("ERROR: SLOT NOT FOUND.\n");
         
         // Only proceed updating and allow adding if the slot
 		if( slotFound && slots[slotIndex].getSlotItemName() != null )
 		{
-			if ( !anItemIsRestocked ) {
-				anItemIsRestocked = true;
-				for( i = 0; i < qty; i++ )
-					slots[slotIndex].addItemStock( generateItem( slots[slotIndex].getSlotItemName() ) );
-			}
-			else
-				msg = new String("ERROR: SLOT HAS NO ASSIGNED ITEM. ENTER A DIFF. SLOT NUM.\n");		
-
+			for( i = 0; i < qty; i++ )
+				slots[slotIndex].addItemStock( generateItem( slots[slotIndex].getSlotItemName() ) );
 		}
 
 		return msg;
@@ -118,6 +112,7 @@ public class Maintenance implements Generatable
 
 		slots = switchToSlot( itemName );
 		
+		if( slots != null )
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
 				slots[i].getSlotItemName().equalsIgnoreCase(itemName) ) {
@@ -211,6 +206,7 @@ public class Maintenance implements Generatable
 		/* START OF INPUT VALIDATION */
 			
 		/* Ensures that each slot has a unique item. */
+		if( slots != null )
 		for(i = 0; i < slots.length; i++)
 			if(	slots[i].getSlotItemName() != null &&
 				slots[i].getSlotItemName().equalsIgnoreCase(itemName) &&
@@ -221,7 +217,7 @@ public class Maintenance implements Generatable
 			}
 			
 		/* Slot Number is Out Of Bounds. */
-		if( !sameNameExists && (slotNum < 1 || slotNum > slots.length) )
+		if( !sameNameExists && slots != null && (slotNum < 1 || slotNum > slots.length) )
 		{
 			msg = msg + "-ERROR: SLOT NUM OUT OF BOUNDS.\n";
 			slotNumOutOfBounds = true;
@@ -285,7 +281,7 @@ public class Maintenance implements Generatable
 			msg = new String("ERROR: SUBTRACTION RESULTS IN NEGATIVE DENOMINATIONS.\n");
 			canSubtract = false;
 		} if( canSubtract )
-			for(i = 0; i < vmMoney.getDenominations().get(denom).size(); i++)
+			for(i = 0; i < qty; i++)
 				vmMoney.subtract(denom);
 		
 		return msg;
@@ -425,7 +421,7 @@ public class Maintenance implements Generatable
 	public LinkedHashMap<String, Integer>  getCustomItems() { return customItems; }
 
 	/**
-         * Chooses a slot set to open based on the given item name.
+     * Chooses a slot set to open based on the given item name.
 	 *
 	 * @param itemName the name of the item
   	 * @return the slots that correspond with the given name, null if none do
@@ -433,9 +429,9 @@ public class Maintenance implements Generatable
 	private VM_Slot[] switchToSlot(String itemName)
 	{
 		/* Switching between special and regular slots. */
-		if( presetItems.get( itemName ) == 1 )
+		if( presetItems.get( itemName ) != null && presetItems.get( itemName ) == 1 )
 			return this.slots;
-		else if( presetItems.get( itemName ) == 0 )
+		else if( presetItems.get( itemName ) != null && presetItems.get( itemName ) == 0 )
 			return specialSlots;
 		else if( customItems.get( itemName ) != null )
 			return this.slots;
