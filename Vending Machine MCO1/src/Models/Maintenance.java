@@ -9,7 +9,7 @@ import java.util.InputMismatchException;
 /**
  * The class Maintenance represents that part of a vending machine
  * that allows the user to restock, replenish, reprice, add/replace items,
- * check order history, and update the inventory information of a Vending Machine.
+ * check order history, and update its inventory information.
  * 
  * @author Paul Josef P. Agbuya
  * @author Vince Kenneth D. Rojo
