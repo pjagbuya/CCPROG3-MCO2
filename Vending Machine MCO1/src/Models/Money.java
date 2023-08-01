@@ -2,21 +2,22 @@ package Models;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 
-/** This class represents a vending machine's cash reserves.
-  * Contains methods and attributes for working with the "cash."
+/** The class Money represents a group of cash denominations.
   * This program's denomination set is based
   * on the current series of Philippine coins and banknotes.
   *
   * @author Paul Josef P. Agbuya
   * @author Vince Kenneth D. Rojo
   */
-public class Money {
+public class Money
+{	
 	/**
 	 * Creates Money object and initializes all denominations to zero pieces.
 	 * Also intializes strToVal and valToStr.
 	 *
 	 */
-	public Money() {
+	public Money()
+	{	
 		denominations = new LinkedHashMap<String, ArrayList<DenominationItem>>();
 		
 		denominations.put( "One Thousand Bill" , new ArrayList<DenominationItem>() );
@@ -50,17 +51,25 @@ public class Money {
 		strToVal.put( "Twenty Five Cents" , 0.25   );
 		strToVal.put( "Five Cents"        , 0.05   );
 		strToVal.put( "One Cent"          , 0.01   );
-
 	}
 	
-	
+	/**
+ 	 * Accepts a coin/banknote into the set.
+   	 *
+     	 * @param denom the coin/banknote
+     	 */
 	public void add(DenominationItem denom)
 	{
 		if( denom != null && denominations.get( denom.getName() ) != null )
 			denominations.get( denom.getName() ).add( denom );
 	}
+
 	
-	
+	/**
+ 	 * Releases a coin/banknote from the set.
+   	 *
+     	 * @param denom the worded value of coin/banknote to be released
+     	 */
 	public DenominationItem subtract(String denom)
 	{
 		DenominationItem dispensedDenom = null;
@@ -73,10 +82,10 @@ public class Money {
 	
 	
 	/**
-	 * Computes for the total value of all cash reserves
+	 * Computes for the total value of all denominations in this set.
 	 * 
-	 * @return the current total of all cash reserves
-	 **/
+	 * @return the total of all denominations
+	 */
 	public double getTotalMoney() 
 	{
 		double total = 0.0;
@@ -93,30 +102,35 @@ public class Money {
 	
 	
 	/**
-	 * Gets cash reserves
+	 * Returns the denomination set.
 	 *
-	 * @return the current set of cash reserves by denomination
-	 **/
+	 * @return the current set of denominations
+	 */
 	public LinkedHashMap<String, ArrayList<DenominationItem>> getDenominations() {
 		return denominations;
 	}
 	
 	
 	/**
-	 * Gets strToVal, for converting from a denomination's
-	 * String representation to its double representation
+	 * Returns strToVal map, for converting from a denomination's
+	 * String representation to its double (numerical) representation
 	 *
-	 * @return the strToVal hashmap of the Money class
-	 **/
+	 * @return the strToVal hashmap of this Money class
+	 */
 	public static LinkedHashMap<String, Double> getStrToVal() {
 		return strToVal;
 	}
+
+
+
+
+
+
+
 	
 
-	/** represents cash reserves, inluding the currently stored number of pieces of each denomination */
+	/** represents cash tubes with labels */
 	private LinkedHashMap<String, ArrayList<DenominationItem>> denominations;
 	/** class hashmap for converting from the String to the double representation of a denomination */
 	private static LinkedHashMap<String, Double> strToVal;
-	/** class hashmap for converting from the double to the String representation of a denomination */
-	private static LinkedHashMap<Double, String> valToStr;
 }
