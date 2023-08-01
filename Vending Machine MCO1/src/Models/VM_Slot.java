@@ -22,10 +22,8 @@ public class VM_Slot {
         storedProfit = 0.0;
         slotItemName = null;
         items = null;
-		copy_stockCount = 0;
-		price = 0.0;
-		
-		slotItemSold = 0;
+	price = 0.0;	
+	slotItemSold = 0;
 		
         if(capacity >= 10)
             MAX = capacity;
