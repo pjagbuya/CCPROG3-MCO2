@@ -45,7 +45,6 @@ import DenomLib.SetDenomPaneController;
 import DenomLib.SetDenomPaneView;
 import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
-import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
 
 public class CreateRegMenu extends BorderPane
