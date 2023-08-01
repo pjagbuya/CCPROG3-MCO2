@@ -18,9 +18,10 @@ public class VM_Special extends VM_Regular
 	/**
  	 * Instantiates a Special vending machine and sets its basic characteristics.
    	 *
-     	 * @param nOfSlots the number of slots in this vending machine
-       	 * @param item_max the maximum number of items per slot
-	 * @change the change tray
+	 * @param name the vending machine's given name
+     * @param nOfSlots the number of slots in this vending machine
+     * @param item_max the maximum number of items per slot
+	 * @param change the change tray
   	 */
 	public VM_Special(String name, 
 					  int nOfSlots, 
@@ -52,8 +53,8 @@ public class VM_Special extends VM_Regular
 	/**
  	 * Sets a new Special operator brain in the vending machine.
    	 *
-     	 * @param the new Special operator brain
-       	 */
+     * @param specialSellingOperator the new Special operator brain
+     */
 	public void setSpecialOperator(SpecialSellingOperator specialSellingOperator)
 	{
 		super.setOperator( specialSellingOperator );
@@ -63,7 +64,7 @@ public class VM_Special extends VM_Regular
 	/**
  	 * Returns the special slots of this vending machine.
    	 *
-     	 * @return the special slots of this vending machine
+     * @return the special slots of this vending machine
    	 */
 	public VM_Slot[] getSpecialSlots() { return specialSlots; }
 
@@ -78,8 +79,8 @@ public class VM_Special extends VM_Regular
 	/**
  	 * Sets the recipe checker of this vending machine.
    	 *
-     	 * @param the new recipe checker
-     	 */
+     * @param recipeChecker the new recipe checker
+     */
 	public void setRecipeChecker(RecipeChecker recipeChecker) { this.recipeChecker = recipeChecker; }
 	
 	

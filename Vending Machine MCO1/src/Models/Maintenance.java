@@ -24,7 +24,6 @@ public class Maintenance
 	 * @param vmMoney the cash reserves of the parent vending machine
 	 * @param slots : the regular slots of the parent vending machine
 	 * @param specialSlots : the special slots of the parent vending machine
-	 * @param presetItems the list of all item classes, besides special items, that are can exist in the program universe.
 	 * @param customItems the list of user-minted items
 	 */
     public Maintenance(
@@ -171,7 +170,7 @@ public class Maintenance
 	 * Creates a new instance of a bill or coin.
 	 *
 	 * @param denom the name of the new coin/bill to be generated
-	 * @result the new bill/coin
+	 * @return the new bill/coin
 	 *
 	 */
 	public DenominationItem createDenomination(String denom)
@@ -192,6 +191,8 @@ public class Maintenance
 	 *
 	 * @param itemName the name of the item to be used as a substitute
 	 * @param qty the number of that item to be restocked
+	 * @param slotNum the number of the slots whose items are to be replaced
+	 * @return null if stock was successfully replaced, error message otherwise
 	 */
 	public String replaceItemStock(String itemName, int qty, int slotNum)
 	{
@@ -376,6 +377,7 @@ public class Maintenance
 	 *
 	 * @param name the name to be given to this custom item
 	 * @param calories the calorific value of the new item type
+	 * @return null if a new custom item was named, error message otherwise
 	 */
 	public String createCustomItem(String name, int calories)
 	{

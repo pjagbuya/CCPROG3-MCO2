@@ -21,6 +21,7 @@ public class VM_Regular {
 	 * @param name the name of the vending machine
 	 * @param nOfSlots the number of slots in this vending machine
 	 * @param item_max the maximum capacity of each slot in this vending maching
+	 * @param change the change tray
 	 */
 	public VM_Regular(String name, 
 					  int nOfSlots, 
@@ -202,8 +203,8 @@ public class VM_Regular {
 	/**
  	 * Sets this vending machine's operator brain.
    	 *
-     	 * @param the new operator brain
-     	 */
+     * @param sellingOperator the new operator brain
+     */
 	public void setOperator(SellingOperator sellingOperator)
 	{
 		operator = sellingOperator;
@@ -222,8 +223,8 @@ public class VM_Regular {
 	/**
  	 * Sets this vending machine's maintenance brain.
    	 *
-     	 * @param the new maintenance brain
-     	 */
+     * @param maintenance the new maintenance brain
+     */
 	public void setMaintenance(Maintenance maintenance)
 	{
 		this.maintenance = maintenance;

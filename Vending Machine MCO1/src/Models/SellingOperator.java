@@ -33,17 +33,17 @@ public class SellingOperator
 			Money change,
 			LinkedHashMap<String, Integer> customItems )
 	    {
-		this.orderHistory = orderHistory;
-		this.slots = slots;
-		this.vmCashReserves = vmCashReserves;
-		this.change = change;
-		this.customItems = customItems;
-		this.presetItems = new LinkedHashMap<String, Integer>();
-		
-		for(PresetItem item : PresetItem.values())
-		{
-			presetItems.put(item.name(), item.getIsIndependent());
-		}
+			this.orderHistory = orderHistory;
+			this.slots = slots;
+			this.vmCashReserves = vmCashReserves;
+			this.change = change;
+			this.customItems = customItems;
+			this.presetItems = new LinkedHashMap<String, Integer>();
+			
+			for(PresetItem item : PresetItem.values())
+			{
+				presetItems.put(item.name(), item.getIsIndependent());
+			}
     	}
 
 
@@ -82,6 +82,8 @@ public class SellingOperator
 	/**
 	 * Adds a specified quantity of an item to the order list.
 	 *
+	 * @param slotNum the number of the slot whose item is to be listed in the order
+	 * @param qty the number of pieces ordered
 	 * @return null if the item was successfully added to the order, error message otherwise
 	 */
 	public String addToOrder(int slotNum, int qty)
@@ -116,6 +118,10 @@ public class SellingOperator
 
 	/**
 	 * Updates the information on the order list.
+	 *
+	 * @param pending the hashmap inside in the Order object
+	 * @param slot a slot set of the vending machine
+	 * @param qty the number of ordered items
 	 */
 	protected void addToPendingMap(LinkedHashMap <String, Integer> pending, VM_Slot slot, int qty)
 	{
@@ -145,6 +151,7 @@ public class SellingOperator
 	 * Adds coins or bills to the payment tray.
 	 * 
 	 * @param denom the worded value of the coin or banknote to be inserted into the vending machine.
+	 * @return null if coin/banknote was successfully added to payment tray, error message otherwise
 	 */
 	public String addToPayment(String denom)
 	{
@@ -163,19 +170,20 @@ public class SellingOperator
 	 * Removes coins or bills from the payment tray.
 	 * 
 	 * @param denom the worded value of the coin or banknote to be removed from the vending machine.
+	 * @return null if coin/banknote was successfully removed from payment tray, error message otherwise
 	 */
 	public String subtractFromPayment(String denom)
 	{
 		String msg;		
 		if( Money.getStrToVal().get(denom) != null )
 		{
-			payment.subtract( denom );
-			msg = null;
+			if( payment.subtract( denom ) != null )
+				msg = null;
+			else
+				msg = new String("ERROR: NO DENOMINATION TO SUBTRACT.");
 		}
 		else
-		{
 			msg = new String("ERROR: DENOMINATION DOES NOT EXIST.");
-		}
 		return msg;
 	}
     
@@ -183,7 +191,7 @@ public class SellingOperator
 	/**
 	 * Checks whether the current transaction is valid given its basic information.
 	 *
-	 * @return null of transaction is valid, error message otherwise
+	 * @return null if transaction is valid, error message otherwise
 	 */
 	public String validateTransaction()
 	{
@@ -217,7 +225,7 @@ public class SellingOperator
 	 * Checks whether the given slot set has (part of) the required stock.
 	 *
 	 * @param slots the slot set to be checked, regular or special
-	 * @return true if the <regular/special> slot set has the required <independent/dependent> items, false otherwise
+	 * @return true if the [regular/special] slot set has the required [independent/dependent] items, false otherwise
 	 */
 	protected boolean hasEnoughStock(VM_Slot[] slots)
 	{
@@ -346,6 +354,7 @@ public class SellingOperator
 	 * Checks whether the cash reserves can release a specified amount of cash, for change.
 	 * 
 	 * @param amt the total amount that is planned to be released
+	 * @return true if the vending machine can return the exact amount of change, false otherwise
 	 */
 	protected boolean deductChange(double amt)
 	{
@@ -426,6 +435,7 @@ public class SellingOperator
 	 * Generates an instance of an item.
 	 *
 	 * @param s the name of the item to be instantied.
+	 * @return the instatiated item, null if nothing was instantiated
 	 */
 	protected VM_Item generateItem( String s )
 	{

@@ -84,9 +84,8 @@ public class VM_Slot {
 
 	
    /**
-     * Tells slot to release a certain quantity of its item.
+     * Tells this slot to release one piece of its item.
      * 
-     * @param qty the number of items to be released from this slot
      * @return the item released
      */
     public VM_Item releaseStock()
@@ -145,7 +144,6 @@ public class VM_Slot {
      * with givenItem if the two items have different names.
      * 
 	 * @param givenItem the given type of item to be added
-     * @param qty the quantity of objects
      */
     public void addItemStock( VM_Item givenItem )
     {

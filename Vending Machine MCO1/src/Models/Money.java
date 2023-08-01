@@ -56,8 +56,8 @@ public class Money
 	/**
  	 * Accepts a coin/banknote into the set.
    	 *
-     	 * @param denom the coin/banknote
-     	 */
+     * @param denom the coin/banknote
+     */
 	public void add(DenominationItem denom)
 	{
 		if( denom != null && denominations.get( denom.getName() ) != null )
@@ -68,8 +68,9 @@ public class Money
 	/**
  	 * Releases a coin/banknote from the set.
    	 *
-     	 * @param denom the worded value of coin/banknote to be released
-     	 */
+     * @param denom the worded value of coin/banknote to be released
+	 * @return the removed coin/banknote
+     */
 	public DenominationItem subtract(String denom)
 	{
 		DenominationItem dispensedDenom = null;

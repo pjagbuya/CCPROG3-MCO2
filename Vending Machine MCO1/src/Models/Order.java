@@ -64,9 +64,14 @@ public class Order
 		return totalCalories;
 	}
 	
+	/**
+	 * Sets the total amount of calories in this order.
+	 *
+	 * @param totalCalories the new total amount of calories for this order
+	 */
 	public void setTotalCalories(int totalCalories) {
         	this.totalCalories = totalCalories;
-    	}
+    }
 	
 	/**
  	 * Clears the current order list and resets totalCostOfOrder back to zero and totalCalories back to 0.
