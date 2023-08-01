@@ -8,7 +8,6 @@ import DenomLib.SetDenomPaneController;
 import DenomLib.SetDenomPaneView;
 import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
-import VMLib.VMachineModelPaneController;
 import VMLib.VMachineModelPaneView;
 import javafx.beans.binding.DoubleBinding;
 import javafx.beans.value.ChangeListener;
