@@ -1,5 +1,13 @@
 package Models;
 
+
+/**
+ * The enum CookingMessages is a list of pop-up messages for
+ * when the special item is being prepared.
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public enum CookingMessages
 {
 	/* These come first, if they come at all */
