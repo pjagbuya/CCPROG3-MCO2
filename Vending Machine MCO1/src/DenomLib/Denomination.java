@@ -1,7 +1,14 @@
 package DenomLib;
 
-public enum Denomination {
-    
+/**
+ * The enum Denomination is a list of all possible coins and banknotes
+ * in the universe of this program.
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
+public enum Denomination
+{    
     ONE_THOUSAND_BILL("One Thousand Bill", 1000.0),
     FIVE_HUNDRED_BILL("Five Hundred Bill", 500.0),
     TWO_HUNDRED_BILL("Two Hundred Bill", 200.0),
