@@ -8,12 +8,11 @@ import java.util.LinkedHashMap;
  *
  * @author Paul Josef P. Agbuya
  * @author Vince Kenneth D. Rojo
- * @version 1.0
  */
 public class Order
 {
 	/**
-     * Intializes pendingOrder, totalCostOfOrder, and Calories to be 0
+     * Instantiates a blank order.
      * 
      */
     public Order()
@@ -37,7 +36,7 @@ public class Order
 	
 	/**
      * Gets the total cost of all items in the list,
-     * based on item prices at the time of computation
+     * based on item prices at the time of ordering.
      * 
      * @return the total cost of the order
      */
@@ -45,16 +44,21 @@ public class Order
     {  
         return totalCostOfOrder;
     }
-	
+
+/**
+  * Sets the total cost of the order.
+  * 
+  * @param totalCostOfOrder the new total cost of this order
+  */
 	public void setTotalCost(double totalCostOfOrder)
     {  
         this.totalCostOfOrder = totalCostOfOrder;
     }
 
     /**
-     * This method gets the total calories that this order contains
+     * Returns the total amount of calories in the food items listed in this order.
      * 
-     * @return the number of calories that are contained within this order
+     * @return the total number of calories of this order
      */
     public int getTotalCalories() {
         return totalCalories;
@@ -64,9 +68,8 @@ public class Order
         this.totalCalories = totalCalories;
     }
 	
-	/**
-     * Clears the current order list and resets totalCostOfOrder back to zero and Calories back to 0
-     * 
+/**
+     * Clears the current order list and resets totalCostOfOrder back to zero and totalCalories back to 0.
      */
     public void clearOrder()
     {
@@ -80,11 +83,11 @@ public class Order
    
 
 
-	/* the list of item types in the order, and the desired quantity of each */
+/** the list of item types in the order, and the desired quantity of each */
     private LinkedHashMap<String, Integer> pendingOrder;
-	/* total cost of all items in the order, based on their selling prices */
+/** total cost of all items in the order, based on their selling prices */
     private double totalCostOfOrder;
-    /* total calories of order, based on the initialized kCal */
+/** total calories of order */
     private int totalCalories;
  
 }
