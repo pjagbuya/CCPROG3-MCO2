@@ -104,10 +104,14 @@ public class SetupVMPopUpController
     {
         this.setupVMPopUpView.setItemAddBtnAction(e->
         {
-            int numCap;
+            if(!itemCapField.getText().isEmpty())
+            {
+                int numCap;
 
-            numCap = Integer.parseInt(itemCapField.getText());
-            itemCapField.setText(numCap+1+"");
+                numCap = Integer.parseInt(itemCapField.getText());
+                itemCapField.setText(numCap+1+"");
+            }
+
 
             
         });
@@ -115,36 +119,43 @@ public class SetupVMPopUpController
         this.setupVMPopUpView.setSlotAddBtnAction(e->
         {
             int numCap;
+            if(!slotCapField.getText().isEmpty())
+            {
+                numCap = Integer.parseInt(slotCapField.getText());
+                slotCapField.setText(numCap+1+"");
 
-            numCap = Integer.parseInt(slotCapField.getText());
-            slotCapField.setText(numCap+1+"");
-
-            
+            }
         });
 
 
         this.setupVMPopUpView.setItemSubBtnAction(e->
         {
             int numCap;
-            
-            numCap = Integer.parseInt(itemCapField.getText());
-
-            if(numCap > 10)
+            if(!itemCapField.getText().isEmpty())
             {
-                itemCapField.setText(numCap-1+"");
-            }
+                numCap = Integer.parseInt(itemCapField.getText());
+
+                if(numCap > 10)
+                {
+                    itemCapField.setText(numCap-1+"");
+                }      
+            }      
+
             
         });
         this.setupVMPopUpView.setSlotSubBtnAction(e->
         {
             int numCap;
-            
-            numCap = Integer.parseInt(slotCapField.getText());
-
-            if(numCap > 8)
+            if(!slotCapField.getText().isEmpty())
             {
-                slotCapField.setText(numCap-1+"");
+                numCap = Integer.parseInt(slotCapField.getText());
+
+                if(numCap > 8)
+                {
+                    slotCapField.setText(numCap-1+"");
+                }
             }
+
             
         });
 
@@ -161,6 +172,7 @@ public class SetupVMPopUpController
 
         this.setupVMPopUpView.setItemFieldFocusListener((observable, oldValue, newValue) ->{
             if (newValue) 
+            
             {
                 itemCapField.setText("");
             }
