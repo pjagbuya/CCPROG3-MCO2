@@ -57,6 +57,8 @@ public class SpecialSellingOperator extends SellingOperator
 			((KangkongChips)specialItem).acceptIngredient( ingredients.get(i) );
 	
 		ingredients.clear();
+
+		getSoldItems().add( specialItem );
 	
 		return specialItem;
 	}
@@ -253,6 +255,32 @@ public class SpecialSellingOperator extends SellingOperator
 	public void renewRecipeChecker()
 	{
 		recipeChecker = new RecipeChecker( getSlots() , specialSlots );
+	}
+
+	/**
+	 * Checks whether all base ingredients are in stock in the required amounts. 
+  	 *
+    	 * @return true if all are in stock in stock in the require amounts, false otherwise
+  	 */
+	public boolean baseIngredientsAreInStock()
+	{
+		return recipeChecker.allAbsoluteBaseIngredientsAreInStock();
+	}
+
+	/**
+ 	 * Returns the list of available flavors.
+   	 *
+     	 * @return the list of available flavors.
+     	 */
+	public ArrayList<String> getAvailableFlavorsStock()
+	{
+		ArrayList<String> availableFlavors = new ArrayList<String>();
+		for( String k : recipeChecker.getFlavorStock() ) {
+			if( recipeChecker.getFlavorStock().get(k) > 0 )
+				availableFlavors.add(
+					new String( recipeChecker.getAbsoluteBaseIngredients().get(k) ) );
+		}
+		return availableFlavors;
 	}
 
 	/** the ingredients that will be used in making the special item */
