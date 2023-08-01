@@ -41,7 +41,7 @@ public class DispensedItemView extends ScrollPane
         this.denominationCount = new LinkedHashMap<String, Integer>();
         this.mainCanvasVBox = new VBox();
         this.itemSelectedStackPane = new StackPane();
-        this.claimBtn = new MenuButton("Claim Items", 24);
+        this.claimBtn = new MenuButton("Claim Change", 24);
         this.proceedOrderBtn = new MenuButton("Proceed To Order", 24);
         this.setVbarPolicy(ScrollBarPolicy.ALWAYS);
         this.setPrefViewportHeight(200);
@@ -59,13 +59,15 @@ public class DispensedItemView extends ScrollPane
     
         this.itemSelectedStackPane.maxHeight(100);
         dispensedSectionGridPane.add(this.itemSelectedStackPane, 0, 0, 1, 1);
+        dispensedSectionGridPane.add(this.proceedOrderBtn, 2, 0, 1, 1);
         dispensedSectionGridPane.add(this.mainCanvasVBox, 1, 0, 1, 3);
         
         expandableHBox.getChildren().addAll(this.itemSelectedStackPane, dispensedSectionGridPane);
         expandableHBox.setSpacing(100);
         expandableHBox.setPadding(new Insets(0, 0, 70, 250));
 
-
+        this.claimBtn.setVisible(false);
+        this.claimBtn.setVisible(false);
         this.setContent(expandableHBox);
         this.setVisible(false);
         this.setManaged(false);
@@ -118,9 +120,11 @@ public class DispensedItemView extends ScrollPane
         this.dispensedSectionGridPane.add(itemInfoVBox, 0, 1, 1, 1);
             
 
-
     }
-
+    public void displayChange(StackPane item, String priceString, String calString)
+    {
+        
+    }
     public void displayDispensed()
     {
 
@@ -155,6 +159,10 @@ public class DispensedItemView extends ScrollPane
     }
     public void reset()
     {
+        this.claimBtn.setVisible(false);
+        this.claimBtn.setVisible(false);
+        this.setVisible(false);
+        this.setManaged(false);
         for (Denomination denomination : Denomination.values()) 
         {
             denominationCount.put(denomination.getName(), 0);

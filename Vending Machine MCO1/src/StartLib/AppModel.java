@@ -67,11 +67,11 @@ public class AppModel
         return this.seller.addToOrder(slotNum,qty);
 
     }
-//    public String addToPayment(ArrayList<String> array) 
-//     {
-//         // return this.seller.addToPayment(moneyName);
+    
+    public String proceedWithPaymen(ArrayList<String> )
+    {
 
-//     }
+    }
     public String addToPayment(String moneyName) 
     {
         return this.seller.addToPayment(moneyName);
