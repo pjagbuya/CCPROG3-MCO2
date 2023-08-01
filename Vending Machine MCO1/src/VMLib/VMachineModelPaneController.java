@@ -17,7 +17,7 @@ public class VMachineModelPaneController {
 
              stockFields = this.setItemPaneView.getStockFields();
              images = setItemPaneView.getImages();
-             if(stockFields[i].getText().length() > 0 && Integer.parseInt(stockFields[i].getText()) > 0)
+             if(stockFields[i].getText().length() > 0 && Integer.parseInt(stockFields[i].getText()) > 0);
          }
      }
      private SetItemPaneView setItemPaneView;
