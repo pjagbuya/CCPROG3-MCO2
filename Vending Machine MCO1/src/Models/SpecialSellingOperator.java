@@ -272,16 +272,20 @@ public class SpecialSellingOperator extends SellingOperator
    	 *
      	 * @return the list of available flavors.
      	 */
-	public ArrayList<String> getAvailableFlavors()
+	public LinkedHashMap<String, Integer> getAvailableFlavorStock()
 	{
-		ArrayList<String> availableFlavors = new ArrayList<String>();
+		LinkedHashMap<String, Integer> flavorStocks = new LinkedHashMap<String, Integer>();
 		for( String k : recipeChecker.getFlavorStock().keySet() ) {
 			if( recipeChecker.getFlavorStock().get(k) > 0 )
-				availableFlavors.add(
-					new String( recipeChecker.getAbsoluteBaseIngredients().get(k) ) );
+				flavorStocks.put( recipeChecker.getAbsoluteBaseIngredients().get(k),
+						  getFlavorStock().get(k) );
 		}
-		return availableFlavors;
+		return flavorStocks;
 	}
+
+	
+
+	
 
 	/** the ingredients that will be used in making the special item */
 	ArrayList<VM_Item> ingredients;
