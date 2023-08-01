@@ -11,7 +11,7 @@ public class VM_Factory
 {
 	public VM_Factory()
 	{
-		possibleItems = new LinkedHashMap<String, Integer>();
+		presetItems = new LinkedHashMap<String, Integer>();
 		customItemInfos = new LinkedHashMap<String, Integer>();
 		defaultItems();
 	}
@@ -32,6 +32,7 @@ public class VM_Factory
 
 		return vm;
 	}
+
 	
 	public VM_Regular sendOutVM()
 	{
@@ -39,14 +40,20 @@ public class VM_Factory
 		vm.getMaintenance().recordCurrentInventory();
 		sentOutVM = vm;
 		
-		/* Clears out factory information */
+		/* Clears out factory information. */
 		vmMoney = null;
 		slots = null;
 		specialSlots = null;		
 		vm = null;
+
+		/* Adds custom items to VM memory. */
+		if( customItems.size() > 0 )
+			for( String k : customItems.keySet() )
+				vm.getCustomItems().put( k , customItems.get(k) );
 		
 		return sentOutVM;
 	}
+
 	
 	public String specifyInitialStocks(String itemName, int qty)
 	{
@@ -59,10 +66,13 @@ public class VM_Factory
 		msg = "";
 		
 		/* Switching between special and regular slots. */
-		if( possibleItems.get( itemName ) == 1 )
+		if( presetItems.get( itemName ) == 1 )
 			slotsVar = this.slots;
-		else if( possibleItems.get( itemName ) == 0 )
+		else if( presetItems.get( itemName ) == 0 )
 			slotsVar = specialSlots;
+		else if( customItems.keySet().contains(itemName) ) {
+			slotsVar = this.slots;
+		}
 		else {
 			itemExists = false;
 			msg += new String("ERROR: ITEM DOES NOT EXIST.\n"); 
@@ -73,20 +83,17 @@ public class VM_Factory
 			msg += new String("ERROR: NEGATIVE QUANTITIES NOT ALLOWED.\n");
 		}
 		
-		if(itemExists && nonNegativeQty && slotsVar != null)
-		
+		if(itemExists && nonNegativeQty && slotsVar != null) {
 			for(i = 0; i < slotsVar.length; i++)
 				if( slotsVar[i].getSlotItemName() == null ||
-					slotsVar[i].getSlotItemName().equalsIgnoreCase(itemName) )
-				{
-					for(j = 0; j < qty; j++)
-					{
+					slotsVar[i].getSlotItemName().equalsIgnoreCase(itemName) ) {
+					for(j = 0; j < qty; j++) {
 						System.out.println("Adding this many " +itemName+ ", which is " + qty);
 						slotsVar[i].addItemStock( generateItem( itemName ) );
 					}
-						
 					break;
 				}
+		}
 				
 		if(msg.equals(""))
 			return null;
@@ -114,17 +121,18 @@ public class VM_Factory
 	
 	public void addAsPossibleItem(String name, int calories)
 	{
-		possibleItems.put(name, 1);
-		customItemInfos.put(name, calories);
-
+		customItems.put(name, calories);
+		
+		for( String k : customItems.keySet() )
+			vm.getCustomItems().put( k , customItems.get(k) );
 	}
+	
 	public void defaultItems()
 	{
-		possibleItems.clear();
+		presetItems.clear();
 		customItemInfos.clear();
-		for(PresetItem item : PresetItem.values())
-		{
-			possibleItems.put(item.name(), item.getIsIndependent());
+		for(PresetItem item : PresetItem.values()) {
+			presetItems.put(item.name(), item.getIsIndependent());
 		}
 	}	
 
@@ -176,18 +184,33 @@ public class VM_Factory
 							
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
-		else if (customItemInfos.keySet().contains(s))
-		{
-			item = new VM_Item(s, 20.00, customItemInfos.get(s));
-		}
+		else
+			generateCustomItem( s );
+		
+		return item;
+	}
+	
+	
+	/**
+	 * Instatiates new food items, based on the user-named food known by Maintenance.
+	 *
+	 * @param s the String name of the item type to be generated
+	 * @return the generated item, null otherwise
+	 */
+	private VM_Item generateCustomItem( String s )
+	{
+		VM_Item item = null;
+		
+		if( customItems().keySet().contains(s) )
+			item = new VM_Item( new String(s) , 20.00, customItems.get(s) );
 		
 		return item;
 	}
 
 	
 	private VM_Regular vm;
-	private LinkedHashMap<String, Integer> possibleItems;
-	private LinkedHashMap<String, Integer> customItemInfos;
+	private LinkedHashMap<String, Integer> presetItems;
+	private LinkedHashMap<String, Integer> customItems;
 	private Money vmMoney;
 	private VM_Slot[] slots;
 	private VM_Slot[] specialSlots;
