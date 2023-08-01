@@ -39,7 +39,9 @@ public class SellingOperator
 			this.change = change;
 			this.customItems = customItems;
 			this.presetItems = new LinkedHashMap<String, Integer>();
-			
+
+			payment = new Money();
+		    
 			for(PresetItem item : PresetItem.values())
 			{
 				presetItems.put(item.name(), item.getIsIndependent());
