@@ -3,39 +3,33 @@ import java.util.ArrayList;
 import java.text.DecimalFormat;
 import java.util.LinkedHashMap;
 import java.util.Map;
-import java.util.Scanner;
 
-/** This class represents a Special Selling Operator
-  * which provides for selling of both regular and special items
-  * through the use of text based prompt
-  *
-  * @author Paul Josef P. Agbuya
-  * @author Vince Kenneth D. Rojo
-  */
+/**
+ * The class SpecialSellingOperator represents a vending machine brain
+ * that can sell both regular and special items.
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SpecialSellingOperator extends SellingOperator
 {
-
-	/**
-	 * This constructor represent a Selling Operator that manages how
-	 * the flow of prompts and how the Vending machine would get affected
-	 * by such prompts
-	 *
-	 * Also sets up the ingredient hashmaps, detailing the stocks of each
-	 *
-	 * @param vm the target vending machine for results and effects of this class
-	 */
-    public SpecialSellingOperator(
+/**
+ * Instantiates a brain for Special vending machines.
+ *
+ * @param vm the target vending machine for results and effects of this class
+ */
+ public SpecialSellingOperator(
 		VM_Slot[] slots,
 		Money vmCashReserves,
 		ArrayList<Order> orderHistory,
 		Money change,
 		VM_Slot[] specialSlots,
 		LinkedHashMap<String, Integer> customItems)
-    {
+ {
 		super(slots, vmCashReserves, orderHistory, change, customItems);
 		this.specialSlots = specialSlots;
 		recipeChecker = new RecipeChecker(getSlots(), specialSlots);
-    }
+ }
 
 
 
