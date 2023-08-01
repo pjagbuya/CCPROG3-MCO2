@@ -238,7 +238,7 @@ public class VM_Slot {
      * 
      * @param givenItem the new item to be held by this slot
      */
-	/*
+
     private void warnReplace( VM_Item givenItem )
     {
         System.out.println("\033[1;33mConflict with another type of item\033[0m, will you be replacing this stock of " + slotItemName + 
@@ -251,7 +251,6 @@ public class VM_Slot {
             replaceStock( givenItem );
         }
     }
-	*/
 	
 	/** 
  	 * Returns the price of the item(s) in this slot.
