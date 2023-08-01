@@ -4,22 +4,20 @@ import java.text.DecimalFormat;
 
 
 /** The class VM_Item represents an item
-  * to be placed inside VM
+  * in the vending machine.
   *
   * @author Paul Josef P. Agbuya
   * @author Vince Kenneth D. Rojo
-  * @version 1.0
   */
 public class VM_Item {
 
     /**
-     * This is a constructor that initializes an item's name,
-     * price, and calories based on the given parameters. It also
-     * sets the number of items sold to 0.
+     * Instantiates an items and initializes its name,
+     * price, and calorific value.
      * 
-     * @param name - string representation of the name of this item
-     * @param price - price or cost of this item
-     * @param calories - amount of calories of this item
+     * @param name string representation of the name of this item
+     * @param price price or cost of this item
+     * @param calories amount of calories in this item
      */
     public VM_Item(String name, 
                    double price, 
@@ -32,7 +30,7 @@ public class VM_Item {
 
     
     /**
-     * Gets the name of this item
+     * Returns the name of this item
      * 
      * @return the string representation of this item's name
      */
@@ -42,7 +40,7 @@ public class VM_Item {
     }
 
     /**
-     * Gets the price of this item
+     * Returns the price of this item
      * 
      * @return the price of this item as a floating-point double
      */
@@ -52,7 +50,7 @@ public class VM_Item {
     }
 
     /**
-     * Gets the number of calories in this item
+     * Returns the number of calories in this item
      * 
      * @return the amount of calories in this item
      */
@@ -62,14 +60,13 @@ public class VM_Item {
     }
 
     /**
-     * Sets the price of this item based on the given parameters
+     * Sets the price of this item.
      * 
      * @param amt the new price to be assigned to this item
-
      */
-	public void setPrice(double amt) {
-		itemPrice = amt;	
-	}
+    public void setPrice(double amt) {
+	itemPrice = amt;	
+     }
 	
 	
 
@@ -94,7 +91,7 @@ public class VM_Item {
 
     /** name of the item */
     private String itemName;
-	/** price of the item, per piece */
+    /** price of the item, per piece */
     private double itemPrice;
     /** the amount of calories in this item */
     protected int itemCalories;
