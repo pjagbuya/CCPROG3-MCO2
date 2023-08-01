@@ -12,13 +12,13 @@ import java.util.LinkedHashMap;
  */
 public class RecipeChecker
 {
-/**
- * Instantiates a cookbook and
- * lists down the available stocks of both required and optional ingredients.
- *
- * @param slots the regular slots of the parent vending machine
- * @param specialSlots the specialSlots of the parent vending machine
- */   	
+	/**
+	 * Instantiates a cookbook and
+	 * lists down the available stocks of both required and optional ingredients.
+	 *
+	 * @param slots the regular slots of the parent vending machine
+	 * @param specialSlots the specialSlots of the parent vending machine
+	 */   	
 	public RecipeChecker(VM_Slot[] slots, VM_Slot[] specialSlots)
 	{
 		int i;
@@ -91,11 +91,11 @@ public class RecipeChecker
 	
 	
 	
-/**
- * Checks whether all base ingredients are present in the required amounts.
- *
- * @return true if all base ingredients are present in the required amounts, false otherwise
- */
+	/**
+	 * Checks whether all base ingredients are present in the required amounts.
+	 *
+	 * @return true if all base ingredients are present in the required amounts, false otherwise
+	 */
 	public boolean allAbsoluteBaseIngredientsAreInStock()
 	{
 		boolean allAreInStock = true; // initially true
@@ -113,69 +113,69 @@ public class RecipeChecker
 	}
 	
 
-/**
- * Returns the flavor list the special item.
- *
- * @return the flavors of the special item
- */
-public LinkedHashMap<Integer, String> getFlavors() { return flavors; }
-
-/**
- * Returns the inverse flavor list of the special item.
- * 
- * @return the inverse flavor map
- */
-public LinkedHashMap<String, Integer> getReversedFlavors() { return reversedFlavors; }
-
-/**
- * Returns the available stock counts of each flavor.
- * 
- * @return the stock counts of each flavor.
- */
-public LinkedHashMap<Integer, Integer> getFlavorStock() { return flavorStock; }
-
-/**
- * Returns the list of base ingredients.
- *
- * @return the list of the base ingredients for the special item.
- */
-public LinkedHashMap<Integer, String> getAbsoluteBaseIngredients() { return absoluteBaseIngredients; }
-
-/**
- * Returns the stock count of each base ingredient.
- *
- * @return the stock counts of the base ingredients for the special item.
- */
-public LinkedHashMap<Integer, Integer> getAbsoluteBaseIngredientStock() { return absoluteBaseIngredientStock; }
-
-/**
- * Returns the inverse base ingredients map.
- *
- * @return the inverse base ingredents map for the special item.
- */
-public LinkedHashMap<String, Integer> getReversedAbsoluteBaseIngredients() { return reversedAbsoluteBaseIngredients; }
-
-
-/**
- * Returns the required stock count for each base ingredient.
- *
- * @return the required stock count for each base ingredient in the special list.
- */
-public LinkedHashMap<Integer, Integer> getRequiredStock() { return requiredStock; }
-
-/** the list of ingredients absolutely required for the special item */
-private LinkedHashMap<Integer, String> absoluteBaseIngredients;
-/** the inverse list of base ingredients */
-private LinkedHashMap<String, Integer> reversedAbsoluteBaseIngredients;
-/** the stock count of each base ingredient */
-private LinkedHashMap<Integer, Integer> absoluteBaseIngredientStock;
-/** the required stock count for each ingredient */	
-private LinkedHashMap<Integer, Integer> requiredStock;
-
-/** the list of flavors for the special item */
-private LinkedHashMap<Integer, String> flavors;
-/** the inverse list of flavors for the special item */
-private LinkedHashMap<String, Integer> reversedFlavors;
-/** the stock count of each flavor */
-private LinkedHashMap<Integer, Integer> flavorStock;
+	/**
+	 * Returns the flavor list the special item.
+	 *
+	 * @return the flavors of the special item
+	 */
+	public LinkedHashMap<Integer, String> getFlavors() { return flavors; }
+	
+	/**
+	 * Returns the inverse flavor list of the special item.
+	 * 
+	 * @return the inverse flavor map
+	 */
+	public LinkedHashMap<String, Integer> getReversedFlavors() { return reversedFlavors; }
+	
+	/**
+	 * Returns the available stock counts of each flavor.
+	 * 
+	 * @return the stock counts of each flavor.
+	 */
+	public LinkedHashMap<Integer, Integer> getFlavorStock() { return flavorStock; }
+	
+	/**
+	 * Returns the list of base ingredients.
+	 *
+	 * @return the list of the base ingredients for the special item.
+	 */
+	public LinkedHashMap<Integer, String> getAbsoluteBaseIngredients() { return absoluteBaseIngredients; }
+	
+	/**
+	 * Returns the stock count of each base ingredient.
+	 *
+	 * @return the stock counts of the base ingredients for the special item.
+	 */
+	public LinkedHashMap<Integer, Integer> getAbsoluteBaseIngredientStock() { return absoluteBaseIngredientStock; }
+	
+	/**
+	 * Returns the inverse base ingredients map.
+	 *
+	 * @return the inverse base ingredents map for the special item.
+	 */
+	public LinkedHashMap<String, Integer> getReversedAbsoluteBaseIngredients() { return reversedAbsoluteBaseIngredients; }
+	
+	
+	/**
+	 * Returns the required stock count for each base ingredient.
+	 *
+	 * @return the required stock count for each base ingredient in the special list.
+	 */
+	public LinkedHashMap<Integer, Integer> getRequiredStock() { return requiredStock; }
+	
+	/** the list of ingredients absolutely required for the special item */
+	private LinkedHashMap<Integer, String> absoluteBaseIngredients;
+	/** the inverse list of base ingredients */
+	private LinkedHashMap<String, Integer> reversedAbsoluteBaseIngredients;
+	/** the stock count of each base ingredient */
+	private LinkedHashMap<Integer, Integer> absoluteBaseIngredientStock;
+	/** the required stock count for each ingredient */	
+	private LinkedHashMap<Integer, Integer> requiredStock;
+	
+	/** the list of flavors for the special item */
+	private LinkedHashMap<Integer, String> flavors;
+	/** the inverse list of flavors for the special item */
+	private LinkedHashMap<String, Integer> reversedFlavors;
+	/** the stock count of each flavor */
+	private LinkedHashMap<Integer, Integer> flavorStock;
 }
