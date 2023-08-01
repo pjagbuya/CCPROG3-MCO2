@@ -19,7 +19,7 @@ public class VM_Factory
 	public VM_Factory()
 	{
 		presetItems = new LinkedHashMap<String, Integer>();
-		customItemInfos = new LinkedHashMap<String, Integer>();
+		customItems = new LinkedHashMap<String, Integer>();
 		defaultItems();
 	}
 	
@@ -174,7 +174,7 @@ public class VM_Factory
 	public void defaultItems()
 	{
 		presetItems.clear();
-		customItemInfos.clear();
+		customItems.clear();
 		for(PresetItem item : PresetItem.values()) {
 			presetItems.put(item.name(), item.getIsIndependent());
 		}
