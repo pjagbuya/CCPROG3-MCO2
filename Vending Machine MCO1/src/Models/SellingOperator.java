@@ -40,6 +40,7 @@ public class SellingOperator
 			this.customItems = customItems;
 			this.presetItems = new LinkedHashMap<String, Integer>();
 			this.duplicate = new LinkedHashMap<String, Integer>();
+			this.soldItems = new ArrayList<VM_Item>();
 			
 			payment = new Money();
 			
@@ -49,7 +50,11 @@ public class SellingOperator
 			}
     	}
 
-
+	
+	/**
+	 * Tells operator to transfer payment to 
+	 */
+	
 	
 	/**
 	 * Tell the operator to compute for payment total, order total, and calorie total,
@@ -57,11 +62,11 @@ public class SellingOperator
 	 */
 	public void calculateBasicInformation()
 	{
-		/* creates a copy of the set of denominations currently in the VM */
+		/* creates a copy of the set of denominations currently in the VM and payment trayss */
 		duplicateDenominations();
 		
-		/* calculates the total amount of cash reserves currently in the VM */
-		cashReservesTotal = vmCashReserves.getTotalMoney();
+		/* calculates the total amount of cash reserves currently in the VM and payment trays */
+		cashReservesTotal = vmCashReserves.getTotalMoney() + payment.getTotalMoney();
 		
 		/* calculates payment total */
 		for(String s : payment.getDenominations().keySet())
@@ -260,7 +265,8 @@ public class SellingOperator
 		/* duplicating cash reserves of VM, while setting change to zero */
 		for( String s : vmCashReserves.getDenominations().keySet() )
 		{
-			duplicate.put( s , vmCashReserves.getDenominations().get(s).size() );
+			duplicate.put( s , vmCashReserves.getDenominations().get(s).size() + payment.getDenominations().get(s).size() );
+			
 			change.getDenominations().put(s , new ArrayList<DenominationItem>() );
 		}
 	}
@@ -335,12 +341,14 @@ public class SellingOperator
         /* Takes change out. Accepts and sorts the payment. This means the payment tray should be empty. */
 		for( String s : vmCashReserves.getDenominations().keySet() )
 		{
-			difference = vmCashReserves.getDenominations().get(s).size() - duplicate.get(s);
-			for(i = 0; i < difference; i++)
-				change.add( vmCashReserves.subtract( s ) );
 			additional = payment.getDenominations().get(s).size();
 			for(i = 0; i < additional; i++)
 				vmCashReserves.add( payment.subtract( s ) );
+			
+			difference = vmCashReserves.getDenominations().get(s).size() - duplicate.get(s);
+			for(i = 0; i < difference; i++)
+				change.add( vmCashReserves.subtract( s ) );
+			
 			for(i = 0; i < additional; i++)
 				payment.getDenominations().put( s , new ArrayList<DenominationItem>() );
 		}
