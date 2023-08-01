@@ -4,20 +4,18 @@ import java.util.ArrayList;
 
 
 
-/** The class VM_Slot represents an abstract slot of the VM
+/** The class VM_Slot represents a slot of the vending machine.
   *
   * @author Paul Josef P. Agbuya
   * @author Vince Kenneth D. Rojo
-  * @version 1.0
   */
 public class VM_Slot {
 
 
     /**
-     * This instructor Initializes a slot's item and capacity based on the given parameters.
-     * Every slot can contain only one actual copy of the item it is set to hold
+     * Instantiates a slot and initializes its capacity.
      * 
-     * @param capacity the maximum no. of items that this slot can hold
+     * @param capacity the maximum number of items that this slot can hold
      */
     public VM_Slot(int capacity){
 
@@ -36,11 +34,10 @@ public class VM_Slot {
     }
 	
 	
-	/**
+   /**
      * Instructs slot to hold a different item, or even another of the same item
      * 
-     * @param givenItem the new item replacing the slot's original item
-     * @param qty the initial stock count of the new item
+     * @param givenItem the new item replacing the slot's original item type
      */
     public void replaceStock(VM_Item givenItem)
     {	
@@ -55,11 +52,11 @@ public class VM_Slot {
     }
 	
 	
-	/**
-     * Checks whether this slot contains the desired number of its item or more
+   /**
+     * Checks whether this slot contains the desired number of its item.
      * 
      * @param qty the desired number of pieces of the item
-	 * @return true if slot contain the desired quantity of items, false otherwise
+     * @return true if slot contain the desired quantity of items, false otherwise
      */
 	public boolean hasEnoughStock(int qty) {
 		if( items != null &&
@@ -71,27 +68,26 @@ public class VM_Slot {
 	}
 	
 	
-	/**
+   /**
      * Computes for that fraction of the total cost
-     * contributed by the desired number of items from this slot
+     * contributed by the desired number of items from this slot.
      * 
      * @param qty the desired quantity of items
-	 * @return the total cost of desired number of items from this slot
+     * @return the total cost of desired number of items from this slot
      */
 	public double computePartialCost(int qty) 
-    {
-        double sum = 0.0;
-		sum = getPrice() * qty;
-        return sum;
+   	 {
+	        double sum = 0.0;
+			sum = getPrice() * qty;
+	        return sum;
 	}
 
 	
-	 /**
-     * Tells slot to "release" a certain quantity of its item,
-     * which in the current design of this program
-     * simply means increasing or decreasing the stock counter
+   /**
+     * Tells slot to release a certain quantity of its item.
      * 
      * @param qty the number of items to be released from this slot
+     * @return the item released
      */
     public VM_Item releaseStock()
     {
@@ -109,7 +105,7 @@ public class VM_Slot {
 	
 	
     /**
-     * Gets the name of this slot
+     * Returns the name of this slot.
      * 
      * @return the String name of the slot
      */
@@ -120,7 +116,7 @@ public class VM_Slot {
 
 
     /**
-     * Gets the stock count of items in the slot
+     * Returns the stock count of items in the slot.
      * 
      * @return the number of items currently in this slot
      */
@@ -132,38 +128,19 @@ public class VM_Slot {
     }
 
     
-	/**
-     * Gets the maximum number of items that this slot can hold
+   /**
+     * Returns the maximum number of items that this slot can hold.
      * 
      * @return the maximum capacity of this slot
      */
-    public int getMAX()
-	{
+    public int getMAX() {
         return MAX;
     }
 
-    
-	/**
-     * Displays the information of the item currently held by this slot,
-     * as well as the stock count.
-     *
-     */
-    public void displayAllItems()
-	{	
-        if (getSlotItemStock() > 0)
-        {
-            System.out.println("Qty: " + getSlotItemStock());
-            System.out.println(items.get(0) + "\n");   
-        }
-        else
-            System.out.println(slotItemName + " slot is empty.\n");
-    }
-
-
-    
-	/**
-     * Adds to the stock count of this slot if givenItem
-     * has the the same name as the currently held item,
+	
+    /**
+     * Adds the given item if it has
+     * the same name as the currently held item,
      * but sets the stock count and replaces the currently held item
      * with givenItem if the two items have different names.
      * 
@@ -174,8 +151,8 @@ public class VM_Slot {
     {
         Scanner sc = new Scanner(System.in);
         
-        // Error that there was no stock added
-        if( givenItem == null )
+        
+        if( givenItem == null ) // Error that there was no stock added
             System.out.println("\033[1;38;5;202mERROR! no stocks/item is detected\033[0m");
         // State and excess and return it
         else if( 1 + getSlotItemStock() > MAX && givenItem.getItemName().equalsIgnoreCase(slotItemName) ) {
@@ -185,16 +162,16 @@ public class VM_Slot {
         }
 
         // If slot was initialized empty, proceed to put in stock
-		if( items == null || getSlotItemStock() == 0 )
+	if( items == null || getSlotItemStock() == 0 )
             replaceStock( givenItem );
 		// Skips conditional construct if restocker is empty
-		else if( givenItem == null );
+	else if( givenItem == null );
         // If the slot is not empty, then proceed to add the stock
         else if( givenItem.getItemName().equalsIgnoreCase(slotItemName) && (getSlotItemStock()+1) <= MAX )
-		{
-			givenItem.setPrice( getPrice() );
-			items.add( givenItem );
-		}
+	{
+		givenItem.setPrice( getPrice() );
+		items.add( givenItem );
+	}
         // if this slot already has an item, but has a different name
         else
             warnReplace( givenItem );
@@ -203,12 +180,11 @@ public class VM_Slot {
 
     }
 
-	
-	/**
-     * This method Sets the price of the item object held by this slot
-     * 
-     * @param amt the new price of the item
 
+   /**
+     * Sets the price of the item instances held by this slot.
+     * 
+     * @param amt the new price of the item(s)
      */
 	public void repriceItem(double amt)
 	{
@@ -221,9 +197,9 @@ public class VM_Slot {
 	}
 	
 	 
-	/**
-     * Gets how many items have been sold
-	 *	by this slot since last restocking
+   /**
+     * Returns how many items have been sold
+     * by this slot since last restocking.
      * 
      * @return the number of items sold by this slot since last restocking
      */
@@ -232,48 +208,44 @@ public class VM_Slot {
     }
 
 	
-	/**
+   /**
      * Sets the number of items sold
-	 * by this slot since the last restocking
+     * by this slot since the last restocking.
      * 
      * @param slotItemSold the new number of items sold by this slot since last restocking
      */
-	public void setSlotItemSold(int slotItemSold) 
-    {
-			this.slotItemSold = slotItemSold;
+	public void setSlotItemSold(int slotItemSold) {
+		this.slotItemSold = slotItemSold;
 	}
 	
-	
+
 	/**
-	 * Gets the amount of profit generated
-	 * by this slot since last restocking
+	 * Returns the amount of profit generated
+	 * by this slot since last restocking.
 	 *
 	 * @return the profit made by the slot thus far
 	 */
-    public double getStoredProfit()
-    {
+    public double getStoredProfit() {
         return storedProfit;
     }
 	
 	
 	/**
-	 * This method resets the stored profit back to 0.0
+	 * Resets the stored profit record back to 0.0
 	 *
 	 *
 	 */
-    public void clearStoredProfit()
-    {
+    public void clearStoredProfit() {
         storedProfit = 0.0;
     }
 	
 	
     /**
      * Informs user of restocking conflict,
-	 * asks user to choose whether or not to replace currently stocked item(s)
-	 * with the new givenItem
+     * asks user to choose whether or not to replace currently stocked item(s)
+     * with the new givenItem.
      * 
      * @param givenItem the new item to be held by this slot
-     * @param stock the initial stock count of the new item
      */
     private void warnReplace( VM_Item givenItem )
     {
@@ -292,24 +264,31 @@ public class VM_Slot {
         sc = null;
     }
 	
+	/** 
+ 	 * Returns the price of the item(s) in this slot.
+ 	 *
+   	 * @return the price
+     	 */
 	public double getPrice() { return price; }
-	
+
+	/**
+ 	 * Returns the items currently held by this slot.
+   	 *
+     	 * @return the stack of items held by this slot
+       	 */
 	public ArrayList<VM_Item> getItems() { return items; }
 	
-    /** the item held by this slot */
-    private VM_Item item;
-    /** the number of items sold by this slot since last restocking or repricing */
+
+    	/** the number of items sold by this slot since last restocking or repricing */
 	private int slotItemSold;
 	/** the slot's item name */
-    private String slotItemName;
-    /** the stock count of the slot from which this slot was copied */
-    private int copy_stockCount;
-    /** profit that this slot has collected */
-    private double storedProfit;
-    /** max capacity of this slot */
-    private final int MAX;
+	private String slotItemName;
+	/** profit that this slot has collected */
+	private double storedProfit;
+	/** max capacity of this slot */
+	private final int MAX;
 	/** the per piece price of the items */
 	private double price;
 	/** the items in this slot */
-    private ArrayList<VM_Item> items;
+	private ArrayList<VM_Item> items;
 }
