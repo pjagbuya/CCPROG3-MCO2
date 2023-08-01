@@ -1,5 +1,5 @@
 package Models;
-import java.util.Scanner;
+
 import java.util.ArrayList;
 
 
@@ -149,7 +149,6 @@ public class VM_Slot {
      */
     public void addItemStock( VM_Item givenItem )
     {
-        Scanner sc = new Scanner(System.in);
         
         
         if( givenItem == null ) // Error that there was no stock added
@@ -158,7 +157,6 @@ public class VM_Slot {
         else if( 1 + getSlotItemStock() > MAX && givenItem.getItemName().equalsIgnoreCase(slotItemName) ) {
             System.out.println("You had an excess of " + 1 + " " +givenItem.getItemName() + " while we were stocking. Returning...");
             System.out.println("\033[1;33m" + "Press and Enter Any Key To Continue..." + "\033[0m");
-            sc.nextLine();
         }
 
         // If slot was initialized empty, proceed to put in stock
@@ -175,9 +173,6 @@ public class VM_Slot {
         // if this slot already has an item, but has a different name
         else
             warnReplace( givenItem );
-        
-        sc = null;
-
     }
 
 
@@ -247,11 +242,9 @@ public class VM_Slot {
      * 
      * @param givenItem the new item to be held by this slot
      */
+	/*
     private void warnReplace( VM_Item givenItem )
     {
-
-        Scanner sc = new Scanner(System.in);
-
         System.out.println("\033[1;33mConflict with another type of item\033[0m, will you be replacing this stock of " + slotItemName + 
                             " with " + givenItem.getItemName() + ". (Y/N)");
         
@@ -261,8 +254,8 @@ public class VM_Slot {
             System.out.println("Replaced " + slotItemName + " with " + givenItem.getItemName());
             replaceStock( givenItem );
         }
-        sc = null;
     }
+	*/
 	
 	/** 
  	 * Returns the price of the item(s) in this slot.
