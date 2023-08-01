@@ -13,79 +13,109 @@ import java.util.Map;
  */
 public class SpecialSellingOperator extends SellingOperator
 {
-/**
- * Instantiates a brain for Special vending machines.
- *
- * @param vm the target vending machine for results and effects of this class
- */
- public SpecialSellingOperator(
-		VM_Slot[] slots,
-		Money vmCashReserves,
-		ArrayList<Order> orderHistory,
-		Money change,
-		VM_Slot[] specialSlots,
-		LinkedHashMap<String, Integer> customItems)
- {
-		super(slots, vmCashReserves, orderHistory, change, customItems);
-		this.specialSlots = specialSlots;
-		recipeChecker = new RecipeChecker(getSlots(), specialSlots);
- }
+	/**
+	 * Instantiates a brain for Special vending machines.
+	 *
+	 * @param slots the regular slots of the parent vending machine
+	 * @param vmCashReserves the cash reserves of the parent vending machine
+	 * @param orderHistory the list of (successful) transactions from the parent vending machine
+	 * @param change the change tray
+	 * @param specialSlots the special slots of the parent vending machine
+	 * @param customItems the list of custom items from the parent vending machine
+	 */
+	 public SpecialSellingOperator(
+			VM_Slot[] slots,
+			Money vmCashReserves,
+			ArrayList<Order> orderHistory,
+			Money change,
+			VM_Slot[] specialSlots,
+			LinkedHashMap<String, Integer> customItems)
+	 {
+			super(slots, vmCashReserves, orderHistory, change, customItems);
+			this.specialSlots = specialSlots;
+			recipeChecker = new RecipeChecker(getSlots(), specialSlots);
+	 }
 
 
-
+	/**
+	 * Actually forms the Special Item.
+	 *
+	 * @return the special item
+	 */
 	public VM_Item createSpecialItem()
 	{
 		VM_Item specialItem;
 		int i;
-
+	
 		specialItem =
 			new KangkongChips(
 			"Kangkong Chips",
 			getOrder().getTotalCost() ,
 			getOrder().getTotalCalories() );
-
+	
 		for(i = 0; i < ingredients.size(); i++)
 			((KangkongChips)specialItem).acceptIngredient( ingredients.get(i) );
-
+	
 		ingredients.clear();
-
+	
 		return specialItem;
 	}
 
 
 
-
+	/**
+	 * Checks whether the Special item transaction is valid.
+	 *
+	 * @return null if transaction is valid, error message otherwise
+	 */
 	public String validateTransaction()
 	{
 		String msg = super.validateTransaction();
-
+	
 		if( msg.equals("") )
 			if( !hasEnoughStock(specialSlots) )
 				msg = msg + "ERROR: SPECIAL STOCK INSUFFICIENT.\n";
 		else
 			msg = msg + "ERROR: REGULAR STOCK INSUFFICIENT.\n";
-
+	
 		return msg;
 	}
 
+
+	/**
+	 * Tells vending machine to proceed with the trasaction.
+	 */
 	public void proceedTrasaction()
 	{
 		int i;
 		ArrayList<VM_Item> soldItems = dispenseItems( getSlots() );
-		for(i = 0; i < soldItems.size(); i++)
+		
+		for(i = 0; i < soldItems.size(); i++) {
 			ingredients.add( soldItems.get(i) );
+		}
+		
 		soldItems.clear();
 		soldItems = dispenseItems( specialSlots );
-		for(i = 0; i < soldItems.size(); i++)
+		
+		for(i = 0; i < soldItems.size(); i++) {
 			ingredients.add( soldItems.get(i) );
+		}
+		
 		soldItems.clear();
 		dispenseItems( getSlots() );
 		dispenseItems( specialSlots );
 		updateCashTrays();
 		addOrderHistory(getOrder());
-
+	
 	}
 
+	/**
+	 * Adds an ingredient to the order for the special item.
+	 *
+	 * @param ingredient the name of the ingredient to be added
+	 * @param qty the amount of the ingredient to be added
+	 * @return null if ingredient was successfully added, error message otherwise
+	 */
 	public String addIngredient(String ingredient, int qty)
 	{
 		String msg;
@@ -149,6 +179,10 @@ public class SpecialSellingOperator extends SellingOperator
 		return msg;
 	}
 
+
+	/**
+	 * Tells the vendine machine to add the required base ingredients to the order for the special item.
+	 */
 	public void addAbsoluteBaseIngredients()
 	{
 		VM_Slot[] slots = null;
@@ -157,6 +191,7 @@ public class SpecialSellingOperator extends SellingOperator
 		/* Add absolute base ingredients to order. */
 		for( int k : recipeChecker.getAbsoluteBaseIngredients().keySet() )
 		{
+			/* choosing the appropricate slot set */
 			if( getPresetItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 1 )
 				slots = getSlots();
 			else if( getPresetItems().get( recipeChecker.getAbsoluteBaseIngredients().get(k).toUpperCase() ) == 0 )
@@ -173,9 +208,14 @@ public class SpecialSellingOperator extends SellingOperator
 		}
 	}
 
-
+	/**
+	 * Allows customer to choose a flavor for the special item.
+	 *
+	 * @param chosenFlavor the flavor for the special item
+	 * @return null if a flavor was succesfully chosen, error message otherwise
+	 */
 	public String chooseFlavor(int chosenFlavor)
-	{
+		{
 		String msg = null;
 		int i;
 		VM_Slot[] slots = null;
@@ -192,6 +232,7 @@ public class SpecialSellingOperator extends SellingOperator
 		/* adds flavor to Order, if it is not PLAIN */
 		if( msg == null && !flavors.get(chosenFlavor).equalsIgnoreCase("PLAIN") )
 		{
+			/* choosing the appropriate slot set */
 			if( getPresetItems().get( flavors.get(chosenFlavor) ) == 1 )
 				slots = getSlots();
 			else if( getPresetItems().get( flavors.get(chosenFlavor) ) == 0 )
@@ -206,15 +247,19 @@ public class SpecialSellingOperator extends SellingOperator
 		return msg;
 	}
 
-
+	/**
+	 * Resets the recipe checker.
+ 	*/
 	public void renewRecipeChecker()
 	{
 		recipeChecker = new RecipeChecker( getSlots() , specialSlots );
 	}
 
-
+	/** the ingredients that will be used in making the special item */
 	ArrayList<VM_Item> ingredients;
+	/** the cookbook for the special ingredient */
 	RecipeChecker recipeChecker;
+	/** the special slots of the parent vending machine */
 	VM_Slot[] specialSlots;
 
 }
