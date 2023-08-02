@@ -155,7 +155,8 @@ public class CreateRegTopBarController {
 
             }
             
-
+            resetForm();
+            appController.resetForm();
 
 
 
