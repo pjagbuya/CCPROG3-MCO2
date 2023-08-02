@@ -39,7 +39,12 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-
+/**
+ * This class is a holistic vending machine view, that the user wished to create
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class VMachineModelPaneView extends ScrollPane
 {
     public VMachineModelPaneView(Stage parentWin, int maxSlots)

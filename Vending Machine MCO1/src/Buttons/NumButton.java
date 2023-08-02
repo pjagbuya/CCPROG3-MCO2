@@ -4,7 +4,12 @@ import CustomSetup.CustomButton;
 import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-
+/**
+ * This is a num pad button that can easily be set and used for number
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class NumButton extends CustomButton
 {
     public NumButton(String text, int size)

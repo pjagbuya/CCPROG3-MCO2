@@ -19,7 +19,12 @@ import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
-
+/**
+ * This class controls what is going to be passed or reseted by topbar components of the CreateRegMenu
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class CreateRegTopBarController {
     
 

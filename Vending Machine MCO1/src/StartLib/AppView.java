@@ -16,7 +16,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+/**
+ * This class is the beginning view at which users can start to choose to create, and branches out to other views for functionalities
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class AppView extends BorderPane{
     public AppView(Stage parentWin)
     {

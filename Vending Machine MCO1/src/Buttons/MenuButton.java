@@ -25,7 +25,12 @@ import javafx.scene.image.Image;
 
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-
+/**
+ * This is a menu button that is by default inherits the custom button attributes
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class MenuButton extends CustomButton {
     private String selfLabel;
 

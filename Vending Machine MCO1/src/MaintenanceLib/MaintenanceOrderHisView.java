@@ -11,7 +11,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+/**
+ * This class adds the order info into view based on the app model
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class MaintenanceOrderHisView extends BorderPane
 {
     public MaintenanceOrderHisView(Stage parentWin)
@@ -26,7 +31,7 @@ public class MaintenanceOrderHisView extends BorderPane
         this.orderNum = 0;
 
 
-        addOrderInfo("20 PHP, 1 pc/s Ice Cream");
+
         mainScrollPane.setContent(this.mainCanvasPane);
 
         this.setCenter(mainScrollPane);

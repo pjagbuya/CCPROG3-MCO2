@@ -22,14 +22,19 @@ import javafx.stage.Stage;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 
-// Classes below are used to validate if something contains a number
+
 import java.util.regex.Pattern;
 
 import Boxes.ConfirmBox;
 
 import java.util.regex.Matcher;
 
-
+/**
+ * This class is the starting class for which when the application is started
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 
 public class App extends Application {
 

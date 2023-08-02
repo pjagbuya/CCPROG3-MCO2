@@ -1,6 +1,12 @@
 package ItemSelectLib;
 import java.net.URL;
 import java.util.LinkedHashSet;
+/**
+ * This enum represents all the available preset items for the user
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public enum PresetItem
 {
     CHEESE("Cheese", "/Pics/cheese.png", 1, 40.00, 15),
@@ -16,8 +22,6 @@ public enum PresetItem
     CHICKEN("Chicken", "/Pics/chicken-leg.png", 1, 150.00, 42),
     BBQ("BBQ", "/Pics/bbq.png", 0, 5.00, 1),
     FLOUR("Flour", "/Pics/flour.png", 0, 5.00, 1);
-    // SOY_SAUCE("Soy Sauce", "/Pics/soy-sauce.png", 0, 0.00, 0),
-    // CHILI("Chili", "/Pics/chili.png", 0, 0.00, 0);
 
     private final String name;
     private final String imagePath;

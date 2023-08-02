@@ -2,7 +2,7 @@ package DenomLib;
 
 import java.beans.EventHandler;
 
-import InterfaceLib.EventHandlerInterface;
+
 import MaintenanceLib.MaintSelectView;
 import MaintenanceLib.MaintenanceReplenishCollectView;
 import StartLib.AppModel;
@@ -13,7 +13,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
 import javafx.stage.Stage;
-
+/**
+ * Denom Pane Controller that serves as a means to extract all denominations and occuring changes on textfields
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SetDenomPaneController{
     public SetDenomPaneController(SetDenomPaneView denomPaneView)
     {

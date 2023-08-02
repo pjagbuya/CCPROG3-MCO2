@@ -46,7 +46,12 @@ import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 
 import VMLib.VMachineModelPaneView;
-
+/**
+ * This class shows the menu where users can create the vending machine
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class CreateRegMenu extends BorderPane
 {
    

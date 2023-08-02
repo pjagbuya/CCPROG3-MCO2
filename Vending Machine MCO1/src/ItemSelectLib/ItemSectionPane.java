@@ -31,6 +31,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
 
+/**
+ * This item sections sets a particular prompting field for the user to reprice, add or subtract stocks
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class ItemSectionPane extends GridPane
 {
     public ItemSectionPane(ScrollPane parentPane, String name, String price, String stock, String calories, URL resourceUrl)

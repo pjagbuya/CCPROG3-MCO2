@@ -4,9 +4,20 @@ import javafx.scene.control.Button;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.text.Font;
-
+/**
+ * This abstract class morphs buttons for other classes to inherit
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public abstract class CustomButton extends Button
 {
+    /**
+     * The custom Button that can be morphed by other objects
+     * @param text sets teh text of the button
+     * @param font the font at which the button should be set
+     * @param size size of the button
+     */
     public CustomButton(String text, String font, int size)
     {
         super(text);
@@ -110,6 +121,6 @@ public abstract class CustomButton extends Button
     }
 
 
-
+    /**The default style it wants teh set up to be */
     private String defaultStyle;
 }

@@ -9,7 +9,12 @@ import VMSell.DispensedItemView;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.StackPane;
-
+/**
+ * This class controller sets the numpad where the user gets to press and type the slot nums and this class helps display it
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class NumPaneController 
 {
     public NumPaneController(AppController appController,

@@ -6,7 +6,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
+/**
+ * Button that inherits button and is labelled as interactible and has fixed set graphics
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class InteractibleBtn extends Button{
     public InteractibleBtn(String numText)
     {

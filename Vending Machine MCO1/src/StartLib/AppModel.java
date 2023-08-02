@@ -15,7 +15,12 @@ import Models.VM_Item;
 import Models.VM_Regular;
 import Models.VM_Slot;
 import Models.VM_Special;
-
+/**
+ * This class is responsible for storing the data that is found in the Vending Machine
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class AppModel 
 {
     public AppModel()

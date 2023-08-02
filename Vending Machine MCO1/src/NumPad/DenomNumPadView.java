@@ -19,7 +19,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.text.Font;
-
+/**
+ * This class builds a numpad for inserting and simulating cash inputting
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class DenomNumPadView extends BorderPane
 {
     public DenomNumPadView()
@@ -48,9 +53,9 @@ public class DenomNumPadView extends BorderPane
         clrButton = new NumButton("CLR", 18);
 
         delButton = new NumButton("UNDO", 18);
-        entrButton = new NumButton("ORDER", 24);
 
-        entrButton.setPrefSize(300, BASELINE_OFFSET_SAME_AS_HEIGHT+20);
+
+
         numField.setPrefSize(235, 150);
         numField.setAlignment(Pos.CENTER);
         numField.setEditable(false);
@@ -98,8 +103,6 @@ public class DenomNumPadView extends BorderPane
         }
         layout.setHgap(5);
         layout.setVgap(20);
-        layout.add(entrButton, 0, maxSize/3+2, 3, 1);
-
 
         layout.setAlignment(Pos.CENTER);
 
@@ -129,11 +132,7 @@ public class DenomNumPadView extends BorderPane
 
     }
 
-    public void setEnterButtonAction(EventHandler<ActionEvent> eventHandler)
-    {
-        this.entrButton.setOnAction(eventHandler);
 
-    }
     public Button getClrButton() 
     {
         return clrButton;
@@ -142,10 +141,7 @@ public class DenomNumPadView extends BorderPane
     {
         return delButton;
     }
-    public Button getEntrButton() 
-    {
-        return entrButton;
-    }
+
     public Button[] getNumButtons() 
     {
         return numButtons;
@@ -162,5 +158,5 @@ public class DenomNumPadView extends BorderPane
     private Button[] numButtons;
     private Button delButton;
     private Button clrButton;
-    private Button entrButton;
+
 }

@@ -4,7 +4,12 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
+/**
+ * This button is set with the graphic for the plus sign
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class AddButton extends Button{
     public AddButton(int imgWidth, int imgHeight)
     {

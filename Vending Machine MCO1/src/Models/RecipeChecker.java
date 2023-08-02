@@ -100,6 +100,8 @@ public class RecipeChecker
 	{
 		boolean allAreInStock = true; // initially true
 		
+		for( int k : absoluteBaseIngredientStock.keySet() )
+		System.out.print( k + " : " + absoluteBaseIngredientStock.get(k) + "\n");
 
 
 		for( int k : absoluteBaseIngredientStock.keySet() )

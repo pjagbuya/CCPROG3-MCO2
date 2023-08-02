@@ -19,7 +19,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+/**
+ * This class simulates prompting the user for a new item and calories it is associated with
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class ItemNameBox 
 {
     public ItemNameBox()

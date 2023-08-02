@@ -13,7 +13,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
-
+/**
+ * This class controller simulates the button presses as inputs in the screen
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class DenomNumPaneController 
 {
     
@@ -139,9 +144,6 @@ public class DenomNumPaneController
             }
 
 
-        });
-        this.denomNumPadView.setEnterButtonAction(e->{
-            
         });
 
     }

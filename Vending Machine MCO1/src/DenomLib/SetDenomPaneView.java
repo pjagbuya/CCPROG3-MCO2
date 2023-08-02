@@ -3,7 +3,7 @@ package DenomLib;
 import Buttons.AddButton;
 import Buttons.DenominationBtn;
 import Buttons.SubButton;
-import InterfaceLib.EventHandlerInterface;
+
 import Models.VM_Regular;
 import StartLib.AppModel;
 import javafx.beans.value.ChangeListener;
@@ -41,8 +41,12 @@ import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
-
+/**
+ * This class serves as view for the Denominations that are prompting the user to be set
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SetDenomPaneView extends ScrollPane
 {
 
@@ -222,7 +226,7 @@ public class SetDenomPaneView extends ScrollPane
         return denomSetSections;
     }
 
-    private EventHandlerInterface listener;
+
     private GridPane leftPaneGrid;
     private DenomSetSection[] denomSetSections;
 

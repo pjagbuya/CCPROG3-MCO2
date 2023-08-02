@@ -19,7 +19,12 @@ import javafx.scene.Scene;
 import javafx.scene.image.Image;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-
+/**
+ * This class sets UI view of the selling option for the viewer
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class VMSellingOpPaneView extends BorderPane
 {
     public VMSellingOpPaneView(Stage parentWin)

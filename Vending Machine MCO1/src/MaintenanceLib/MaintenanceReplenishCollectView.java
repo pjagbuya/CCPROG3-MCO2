@@ -14,7 +14,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
+/**
+ * This class shows replenish/collect menu UI of this program
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class MaintenanceReplenishCollectView extends BorderPane 
 {
     public MaintenanceReplenishCollectView(Stage parentWin)

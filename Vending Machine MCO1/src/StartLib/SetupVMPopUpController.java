@@ -9,7 +9,12 @@ import javafx.scene.control.Button;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyEvent;
-
+/**
+ * This class is a controller that relays the data of what the user wants his/her vending machine to be
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SetupVMPopUpController 
 {
     

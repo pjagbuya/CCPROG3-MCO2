@@ -9,6 +9,12 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 
+/**
+ * Summary view of the transactions or denominations available in this particular pane UI graphic
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class DenomSummaryView extends ScrollPane
 {
     public DenomSummaryView()

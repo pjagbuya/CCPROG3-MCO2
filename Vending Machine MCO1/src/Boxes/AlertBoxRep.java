@@ -1,5 +1,10 @@
 package Boxes;
-
+/**
+ * This is an alertBox that inherits the custom alertbox but it can be called more than once
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class AlertBoxRep extends AlertBox
 {
     public AlertBoxRep(String title, String message)

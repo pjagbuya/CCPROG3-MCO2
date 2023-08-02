@@ -9,9 +9,9 @@ import java.util.Set;
 import java.util.function.Consumer;
 
 import Buttons.MenuButton;
-import CustomSetup.GeneralEventHandler;
+
 import DenomLib.SetDenomPaneView;
-import InterfaceLib.EventHandlerInterface;
+
 import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import Labels.HeaderLabel;
@@ -30,7 +30,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+/**
+ * This class show the maintenance selection view
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class MaintSelectView
 {
 
@@ -43,7 +48,7 @@ public class MaintSelectView
         this.maintenanceReplaceView = new MaintenanceReplaceView(parentWin);
         this.maintenanceReplenishCollectView = new MaintenanceReplenishCollectView(parentWin);
         this.vMachineModelPaneView = new VMachineModelPaneView(parentWin);
-        this.maintenanceRestockRepriceView = new MaintenanceRestockRepriceView(parentWin);
+
         this.setItemPaneView = new SetItemPaneView(parentWin);
         this.maintenanceOrderHisView = new MaintenanceOrderHisView(parentWin);
         this.maintenanceStockedInfoView = new MaintenanceStockedInfoView(parentWin);
@@ -121,15 +126,7 @@ public class MaintSelectView
     }
 
 
-    public void addActionToButton(MenuButton button, EventHandler<ActionEvent> action) {
-        if (!buttonHandlers.containsKey(button)) 
-        {
-            return;
-        }
-        
-        buttonHandlers.get(button).addHandler(action);
-        button.setOnAction(buttonHandlers.get(button));
-    }
+
     public Stage getParentWin() {
         return parentWin;
     }
@@ -338,9 +335,8 @@ public class MaintSelectView
     private MenuButton exitBtn;
 
     private Stage parentWin;
-    private Map<MenuButton, GeneralEventHandler> buttonHandlers;
 
-   
+
 
     private BorderPane rootPane;
     private Scene mainSelectScene;
@@ -350,7 +346,6 @@ public class MaintSelectView
     private Scene restockReprScene;
     private Scene stockedInfoScene;
 
-    private MaintenanceRestockRepriceView maintenanceRestockRepriceView;
     private MaintenanceStockedInfoView maintenanceStockedInfoView;
     private MaintenanceOrderHisView maintenanceOrderHisView;
     private MaintenanceReplenishCollectView maintenanceReplenishCollectView;

@@ -22,7 +22,12 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Stage;
-
+/**
+ * This class is a view of the top bar from the pop up view that have slightly different versions of usage per Pane view
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SetupVMTopBarView extends CustomTopBarView
 {
     public SetupVMTopBarView(Stage parentWin)

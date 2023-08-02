@@ -33,7 +33,12 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+/**
+ * This class is a dispensed item view that shows any of the things the user wishes to see dispensed and readies the popup to dispense
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class DispensedItemView extends ScrollPane
 {
     

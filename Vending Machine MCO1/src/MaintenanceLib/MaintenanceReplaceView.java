@@ -14,7 +14,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.stage.Stage;
-
+/**
+ * This class shows teh replace restock reprice info into view
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class MaintenanceReplaceView extends BorderPane
 {
     public MaintenanceReplaceView(Stage parentWin)

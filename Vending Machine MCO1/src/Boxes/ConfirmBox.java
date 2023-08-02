@@ -22,7 +22,12 @@ import javafx.scene.text.FontWeight;
 import javafx.scene.layout.VBox;
 
 
-
+/**
+ * This class is a confirm box that receives user's yes or no input
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class ConfirmBox {
 
     

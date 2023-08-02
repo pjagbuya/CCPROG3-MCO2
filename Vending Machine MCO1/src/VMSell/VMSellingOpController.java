@@ -15,7 +15,12 @@ import StartLib.AppController;
 import StartLib.AppModel;
 import VMLib.VMachineModelPaneView;
 import javafx.scene.Scene;
-
+/**
+ * This class controller communicates with topbar view, app model, and items of which user wants to dispense
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class VMSellingOpController 
 {
     public VMSellingOpController(AppController appController,

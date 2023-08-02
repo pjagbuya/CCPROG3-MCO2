@@ -1,40 +1,62 @@
 package Models;
-import java.util.Scanner;
 
 import DenomLib.Denomination;
 import ItemSelectLib.PresetItem;
-
 import java.util.LinkedHashMap;
-import java.util.InputMismatchException;
 
-public class VM_Factory
+
+/**
+ * The class VM_Factory represents a factory where vending machines are made.
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
+public class VM_Factory implements Generatable
 {
+	/**
+ 	 * Instantiates a vending machine factory.
+	 */
 	public VM_Factory()
 	{
 		presetItems = new LinkedHashMap<String, Integer>();
-
-		customItems = new LinkedHashMap<String, Integer>(); 
+		customItems = new LinkedHashMap<String, Integer>();
 		defaultItems();
 	}
 	
-	
+	/**
+	 * Instantiates a blank vending machine.
+  	 *
+    	 * @param vmType the type of vending maching to be manufactured
+	 * @param name the name of the vending machine
+      	 * @param nOfSlots the number of slots that the vending machine will contain
+	 * @param maxItemsPerSlot the maximum number of items per slot
+  	 * @return the vending machine object
+	 */
 	public VM_Regular createBlankVM (String vmType, String name, int nOfSlots, int maxItemsPerSlot)
 	{
-
+		VM_Regular vm;
 		if( vmType.equalsIgnoreCase("R") )
-			this.vm = new VM_Regular(name, nOfSlots, maxItemsPerSlot, new Money());
+			vm = new VM_Regular(name, nOfSlots, maxItemsPerSlot, new Money());
 		else
-			this.vm = new VM_Special(name, nOfSlots, maxItemsPerSlot, new Money());
+			vm = new VM_Special(name, nOfSlots, maxItemsPerSlot, new Money());
 		
-		this.vmMoney = this.vm.getCurrentMoney();
-		this.slots = this.vm.getSlots();
+		this.vmMoney = vm.getCurrentMoney();
+		this.slots = vm.getSlots();
 		if( vm instanceof VM_Special )
 			this.specialSlots = ((VM_Special)vm).getSpecialSlots();
 
-		return this.vm;
+		if( customItems.size() > 0 )
+		for( String k : customItems.keySet() )
+			vm.getCustomItems().put( k , customItems.get(k) );
+
+		return vm;
 	}
 
-	
+	/**
+ 	 * Sends out the vending machine from the manufacturing facility.
+   	 *
+   	 * @return the readied vending machine
+     	 */
 	public VM_Regular sendOutVM()
 	{
 		VM_Regular sentOutVM;
@@ -55,7 +77,13 @@ public class VM_Factory
 		return sentOutVM;
 	}
 
-	
+	/**
+ 	 * Allows user to add stocks to the vending machine.
+	 * 
+  	 * @param itemName the name of the item to be added
+    	 * @param qty the amount of the item to be added
+      	 * @return null if adding was successful, error message if not
+    	 */
 	public String specifyInitialStocks(String itemName, int qty)
 	{
 		String msg;
@@ -67,15 +95,13 @@ public class VM_Factory
 		msg = "";
 		
 		/* Switching between special and regular slots. */
-
-		if( customItems.keySet().contains(itemName) ) 
-		{
-			slotsVar = this.slots;
-		}
-		else if( presetItems.get( itemName ) == 1 )
+		if( presetItems.get( itemName ) == 1 )
 			slotsVar = this.slots;
 		else if( presetItems.get( itemName ) == 0 )
 			slotsVar = specialSlots;
+		else if( customItems.keySet().contains(itemName) ) {
+			slotsVar = this.slots;
+		}
 		else {
 			itemExists = false;
 			msg += new String("ERROR: ITEM DOES NOT EXIST.\n"); 
@@ -91,7 +117,7 @@ public class VM_Factory
 				if( slotsVar[i].getSlotItemName() == null ||
 					slotsVar[i].getSlotItemName().equalsIgnoreCase(itemName) ) {
 					for(j = 0; j < qty; j++) {
-
+						System.out.println("Adding this many " +itemName+ ", which is " + qty);
 						slotsVar[i].addItemStock( generateItem( itemName ) );
 					}
 					break;
@@ -103,7 +129,13 @@ public class VM_Factory
 		return msg;
 	}
 	
-	
+	/**
+ 	 * Allows user to add cash to the vending machine.
+	 *
+  	 * @param denom the worded value of the denomination to be added
+    	 * @param qty the number of pieces of the denomination to be added
+      	 * @return null if adding was successful, error message if not
+    	 */
 	public String specifyInitialCashReserves(String denom, int qty)
 	{
 		String msg;
@@ -121,15 +153,24 @@ public class VM_Factory
 		
 		return msg;
 	}
-	
+
+	/**
+ 	 * Adds a custom (user-named) item to the list of items in this program.
+   	 *
+     	 * @param name the name of the item to be added
+       	 * @param calories the calorific value of the item
+     	 */
 	public void addAsPossibleItem(String name, int calories)
 	{
 		customItems.put(name, calories);
-		
+
 		for( String k : customItems.keySet() )
 			vm.getCustomItems().put( k , customItems.get(k) );
 	}
-	
+
+	/**
+	 * Resets the possible item types back to the preset items only. 
+    	 */
 	public void defaultItems()
 	{
 		presetItems.clear();
@@ -139,13 +180,24 @@ public class VM_Factory
 		}
 	}	
 
+	/**
+  	 * Instantiates a coin or banknote.
+    	 *
+      	 * @param denom the worded value of the denomination to be instantiated
+	 * @return the new coin or banknote instance
+     	 */
 	private DenominationItem createDenomination(String denom)
 	{
 		return new DenominationItem( denom , Money.getStrToVal().get(denom) );
 	}	
 	
-	
-	private VM_Item generateItem( String s )
+	/**
+ 	 * Instantiates an item.
+   	 *
+     	 * @param s the name of the item to be instantiated
+       	 * @return the instantiated item, null if nothing was instantiated
+     	 */
+	public VM_Item generateItem( String s )
 	{
 		VM_Item item = null;
 		
@@ -187,21 +239,20 @@ public class VM_Factory
 							
 		else if( s.equalsIgnoreCase("Flour") )
 			item = new VM_Item("Flour", 5.00, 1);
-		else if( customItems.keySet().contains(s) )
-			item = new VM_Item( new String(s) , 20.00, customItems.get(s) );
-			// generateCustomItem( s );
+		else
+			item = generateCustomItem( s );
 		
 		return item;
 	}
 	
 	
 	/**
-	 * Instatiates new food items, based on the user-named food known by Maintenance.
+	 * Instatiates items, based on the user-named (custom) food items list.
 	 *
-	 * @param s the String name of the item type to be generated
+	 * @param s the String name of the item to be instantiatd
 	 * @return the generated item, null otherwise
 	 */
-	private VM_Item generateCustomItem( String s )
+	public VM_Item generateCustomItem( String s )
 	{
 		VM_Item item = null;
 		
@@ -211,12 +262,16 @@ public class VM_Factory
 		return item;
 	}
 
-	
+	/** the vending machine */
 	private VM_Regular vm;
-	private LinkedHashMap<String, Integer> customItemInfos;
+	/** the list of preset items in the program */
 	private LinkedHashMap<String, Integer> presetItems;
+	/** the list of custom items noted by this factory */
 	private LinkedHashMap<String, Integer> customItems;
+	/** the vending machine's cash reserves */
 	private Money vmMoney;
+	/** the vending machine's regular slots */
 	private VM_Slot[] slots;
+	/** the vending machine's special slots, if any */
 	private VM_Slot[] specialSlots;
 }

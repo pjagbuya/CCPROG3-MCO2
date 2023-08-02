@@ -4,7 +4,12 @@ import javafx.scene.control.Button;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
-
+/**
+ * This is a sub sign button graphic
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SubButton extends Button{
     public SubButton(int imgWidth, int imgHeight)
     {

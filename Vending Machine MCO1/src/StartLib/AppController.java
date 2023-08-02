@@ -7,7 +7,6 @@ import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import MaintenanceLib.MaintSelectView;
 import MaintenanceLib.MaintenanceController;
-import MaintenanceLib.MaintenanceRestockRepriceView;
 import NumPad.DenomNumPaneController;
 import NumPad.NumPaneController;
 
@@ -16,7 +15,12 @@ import VMSell.VMSellingOpPaneView;
 import VMSell.VMSellingTopBarView;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
+/**
+ * This class is the general head of instantiating all controllers and assigning them to specific views
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class AppController {
     public AppController (AppView appView, AppModel appModel)
     {

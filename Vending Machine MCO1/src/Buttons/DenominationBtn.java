@@ -36,7 +36,12 @@ import java.util.regex.Matcher;
 import javafx.scene.effect.BoxBlur;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.MouseEvent;
-
+/**
+ * This button is set with the graphic for the denomination with some hover mechanisms
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class DenominationBtn extends Button
 {
     public DenominationBtn(String numText)

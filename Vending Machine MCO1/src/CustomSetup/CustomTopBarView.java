@@ -31,7 +31,12 @@ import javafx.stage.Stage;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Consumer;
-
+/**
+ * The top bar view customized and morphed by other class
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class CustomTopBarView extends HBox
 {
     public CustomTopBarView(Stage parentWin)

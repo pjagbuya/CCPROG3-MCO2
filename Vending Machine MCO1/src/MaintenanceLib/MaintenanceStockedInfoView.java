@@ -11,7 +11,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+/**
+ * This class show stocked information and inventory view of this program vending machine
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class MaintenanceStockedInfoView extends BorderPane{
     public MaintenanceStockedInfoView(Stage parentWin)
     {

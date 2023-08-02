@@ -12,7 +12,12 @@ import StartLib.AppController;
 import StartLib.AppModel;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-
+/**
+ * This cclass sets the Maintenance controller which communicates with the selet view and its components
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class MaintenanceController {
     public MaintenanceController(AppController appController, MaintSelectView maintSelectView)
     {

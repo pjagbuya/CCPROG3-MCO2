@@ -9,7 +9,12 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.stage.Stage;
-
+/**
+ * This class sets UI view of the selling option top bar for the user
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class VMSellingTopBarView extends CustomTopBarView{
 
     public VMSellingTopBarView(Stage parentWin)

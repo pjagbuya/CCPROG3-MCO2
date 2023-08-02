@@ -28,7 +28,12 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
-
+/**
+ * This class is a view that shows a popup that will prompt the view wheter or not she would want a new vending machine
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SetupVMPopUpView extends Stage
 {
     public SetupVMPopUpView(Stage parentWin, Scene targetChangeScene)

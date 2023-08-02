@@ -20,7 +20,12 @@ import javafx.scene.paint.LinearGradient;
 import javafx.scene.paint.Stop;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-
+/**
+ * This class is a view of itemSlots at which items are displayed on the vending machine as
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class ItemSlotPaneView extends StackPane 
 {
     public ItemSlotPaneView(Image itemImage, 

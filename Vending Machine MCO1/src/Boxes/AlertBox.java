@@ -10,7 +10,12 @@ import javafx.scene.text.FontWeight;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
-
+/**
+ * This class is a custom alertBox that display error messages only once
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class AlertBox {
 
     public void display(String title, String message, int size)

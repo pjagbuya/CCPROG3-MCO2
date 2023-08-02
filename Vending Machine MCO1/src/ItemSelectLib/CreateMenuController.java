@@ -29,6 +29,12 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
+/**
+ * This class serves as a controller that communicates with views and controllers
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class CreateMenuController {
 
     public CreateMenuController(AppController appController, 

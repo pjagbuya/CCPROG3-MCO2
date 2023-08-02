@@ -7,7 +7,12 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-
+/**
+ * This class shows the sell or maintenance button option that the user will go through if he/she exits one of the vending features
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class SellOrMaintView extends BorderPane
 {
     public SellOrMaintView(Stage parentWin)

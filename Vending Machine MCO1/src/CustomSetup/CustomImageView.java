@@ -7,7 +7,12 @@ import javafx.beans.binding.Bindings;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
-
+/**
+ * This abstract class is the custom image view that most items graphics follow the rules in
+ *
+ * @author Paul Josef P. Agbuya
+ * @author Vince Kenneth D. Rojo
+ */
 public class CustomImageView extends ImageView
 {
     public CustomImageView(Image image, ItemSectionPane itemSectionPane)
