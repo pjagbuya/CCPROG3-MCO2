@@ -232,6 +232,22 @@ public class VMachineModelPaneView extends ScrollPane
 
 
     }
+    public void setUpVendMachView(VM_Regular vm) 
+    {
+        VM_Slot[] slots = vm.getSlots();
+        StackPane newStackPane;
+        for (int i = 0; i < slots.length; i++) 
+        {
+            if(slots[i] == null || slots[i].getSlotItemName() == null)
+            {
+                newStackPane = new ItemSlotPaneView(i, this);  
+                addItemToView(null, "");
+                vendingMachineGridPane.add(newStackPane, i%3
+                                                       , i/3);
+            }
+
+        }
+    }
     public void setUpEmptyContainers()
     {
         StackPane newStackPane;
@@ -249,6 +265,19 @@ public class VMachineModelPaneView extends ScrollPane
         }
         
     }
+    // public void setUpVMachines(VM_Regular vm)
+    // {
+    //     VM_Slot[] slots = vm.getSlots();
+    //     for(int i = 0; i < slots.length; i++)
+    //     {
+    //         if(slots[i] != null && slots[i].getSlotItemName() != null)
+    //         {
+                
+    //         }
+            
+    //     }
+        
+    // }
     public void setMaxSlotVMView(int max)
     {
         this.maxSlots = max;

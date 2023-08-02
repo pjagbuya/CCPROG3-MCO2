@@ -11,6 +11,8 @@ import Buttons.AddButton;
 import Buttons.MenuButton;
 import Buttons.SubButton;
 import CustomSetup.CustomImageView;
+import Models.VM_Regular;
+import Models.VM_Slot;
 import javafx.application.Platform;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -67,8 +69,8 @@ public class SetItemPaneView extends ScrollPane{
         this.mainCanvasVBox.getChildren().add(hiddenExpandableVBox);
         
 
-
         resetToDefault();
+        
 
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
         this.setPadding(new Insets(5));
@@ -90,10 +92,11 @@ public class SetItemPaneView extends ScrollPane{
         itemIndependencyList.put(name, 1);
 
     }
+
     public void setUpItemsView(boolean isSpecialVM) 
     {
         System.out.println(itemIndependencyList);
-       
+        
         for (ItemSectionPane itemPane : itemSectionGridPanes) 
         {
              System.out.println(itemPane);
@@ -117,7 +120,7 @@ public class SetItemPaneView extends ScrollPane{
     {
  
         ItemSectionPane itemSectionPane = new ItemSectionPane(this, itemName, price, stock, calories, resourceUrl);
-
+        
         //GridPane where all elements are added
         itemSectionGridPanes.add(itemSectionPane);
 
@@ -147,9 +150,9 @@ public class SetItemPaneView extends ScrollPane{
         URL resourceUrl;
         int i;
         itemIndependencyList.clear();
-        itemSectionGridPanes.clear();
         i = 0;
-
+        removeAddedItems();
+        System.out.println("I am called");
         for (PresetItem presetItem : PresetItem.values()) {
 
             resourceUrl = getClass().getResource(presetItem.getImagePath());
@@ -164,7 +167,21 @@ public class SetItemPaneView extends ScrollPane{
         }
 
     }
+    public void resetStockTxtFields()
+    {
 
+        itemIndependencyList.clear();
+
+
+        removeAddedItems();
+        System.out.println("I am called");
+        for (ItemSectionPane item: itemSectionGridPanes) {
+
+            item.getStockField().setText("0");
+
+        }
+
+    }
 
     public VBox getMainCanvasVBox() {
         return mainCanvasVBox;

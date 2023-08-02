@@ -79,9 +79,8 @@ public class SetupVMPopUpController
                 createRegTopBarView.setNameTextField(nameField.getText());
 
 
-                this.setItemPaneView.setUpItemsView(appModel.isSpecialVM());
                 this.vMachineModelPaneView.setMaxSlotVMView(Integer.parseInt(slotCapField.getText()));
-                this.vMachineModelPaneView.setUpVendMachView(null, null);
+                this.vMachineModelPaneView.setUpVendMachView(appModel.getVendingMachine());
 
                 setupVMPopUpView.updateVMList(appModel.getVendingMachine());
                 setupVMPopUpView.changeWindowScene();

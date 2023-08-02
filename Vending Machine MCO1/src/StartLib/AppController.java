@@ -110,10 +110,18 @@ public class AppController {
         vmSellingOpController.resetForm();
         maintenanceController.resetForm();
         createMenuController.resetForm();
+        this.appModel.restartModel();
 
 
     }
+    public void createMenuResetresetForm()
+    {
 
+        createMenuController.resetForm();
+
+
+
+    }
     private void setupShowPopUpCreateBtn()
     {
         ConfirmBox confirmBox = new ConfirmBox();

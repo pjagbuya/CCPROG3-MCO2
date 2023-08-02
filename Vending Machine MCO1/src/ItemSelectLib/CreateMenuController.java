@@ -65,7 +65,7 @@ public class CreateMenuController {
             itemNameBox.display("Name Setup", "Name of your item");
 
         });
-
+        setupSetItemSectionListeners();
         itemNameBox.setCalTxtFieldFilter(KeyEvent.KEY_TYPED, event->{
             if (!event.getCharacter().matches("\\d")) {  // "\\d" matches any digit, equivalent to [0-9]
             event.consume();  
@@ -106,13 +106,13 @@ public class CreateMenuController {
             
 
         });
-        setupSetItemSectionListeners();
+        
 
     }
     public void setupSetItemSectionListeners()
     {
         DecimalFormat df = new DecimalFormat("0.00");
-        
+        this.itemAndStock = new LinkedHashMap<String, Integer>();
         
  
         
@@ -174,6 +174,7 @@ public class CreateMenuController {
 
                       
                 }
+                
 
             });
 
@@ -273,7 +274,7 @@ public class CreateMenuController {
                 {
                     priceField.setText("");
                 }
-
+                
 
             });
 
@@ -307,6 +308,8 @@ public class CreateMenuController {
                             stockField.setText(maxCap + "");
                             alertBox.display("ERROR", "Your at full item capacity, your given item cap: " + maxCap);
                         }
+                        itemAndStock.put(itemNameLabel.getText(), Integer.parseInt(stockField.getText()));    
+
 
                     }
                     else if((doubleNum <= 0 || 
@@ -320,7 +323,7 @@ public class CreateMenuController {
                             addedItemLabel.remove(itemNameLabel);
                     }
                     
-                }    
+                }
 
 
             });
@@ -346,13 +349,17 @@ public class CreateMenuController {
         ItemSectionPane itemSectionPane;
         Label itemNameLabel;
 
-        this.setItemPaneView.removeAddedItems();
+
         
-        this.setItemPaneView.resetToDefault();
+        this.setItemPaneView.resetStockTxtFields();
         this.vMachineModelPaneView.setUpVendMachView(null, null);
 
 
     }
+    public LinkedHashMap<String, Integer> getItemAndStock() {
+        return itemAndStock;
+    }
+    private LinkedHashMap<String, Integer> itemAndStock;
     private CreateRegTopBarView createRegTopBarView;
     private ArrayList<Label> addedItemLabel;
     private ArrayList<ItemSectionPane> itemSectionPanes;   

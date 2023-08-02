@@ -186,6 +186,8 @@ public class AppModel
     }
     
     public void addItemToVM(LinkedHashMap<String, Integer> itemInfo, ArrayList<String> order) {
+        System.out.println(itemInfo);
+        System.out.println(order);
         for(String item: order) { 
             addItemToVM(item, itemInfo.get(item));
         }

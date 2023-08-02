@@ -88,16 +88,18 @@ public class CreateRegTopBarController {
             itemsInfo = new LinkedHashMap<String, Integer>();
             denomInfo = new LinkedHashMap<String, Integer>();
             
-            for (ItemSectionPane item : itemSectionPanes) {
-                System.out.println(item.getStockField().getText());
-                if (!item.getStockField().getText().isEmpty()) {
-                    stockValue = Integer.parseInt(item.getStockField().getText());
-                    if (stockValue > 0) {
-                        repriceInfo.put(item.getItemNameLabel().getText(), item.getFinalPrice());
-                        itemsInfo.put(item.getItemNameLabel().getText(), stockValue);
-                    }
-                }
-            }
+            // for (ItemSectionPane item : itemSectionPanes) {
+            //     System.out.println(item.getStockField().getText());
+            //     if (!item.getStockField().getText().isEmpty()) {
+            //         stockValue = Integer.parseInt(item.getStockField().getText());
+            //         if (stockValue > 0) {
+            //             repriceInfo.put(item.getItemNameLabel().getText(), item.getFinalPrice());
+            //             itemsInfo.put(item.getItemNameLabel().getText(), stockValue);
+            //             item.getStockField().setText("0");
+            //         }
+            //     }
+            // }
+            itemsInfo = this.createMenuController.getItemAndStock();
             
             System.out.println(repriceInfo);
 
@@ -124,7 +126,7 @@ public class CreateRegTopBarController {
                 event.consume();
             else
             { 
-                if(!appModel.isVendingMachineSlotEmpty())
+                if(itemsInfo.size() != 0)
                 {
                     System.out.println("Denoms" + denomInfo);
                     System.out.println("Items: " + itemsInfo);
@@ -136,11 +138,13 @@ public class CreateRegTopBarController {
                     this.appView.getVmSellingOpPaneView().passVMDataToView(this.vMachineModelPaneView.getImageOrder(),
                                                                             orderOfSlots);
                     appView.changeToSellingScreen();
-                    Platform.runLater(()->{
-                        this.appView.getParentWin().setWidth(1200);
-                        this.appView.getParentWin().setHeight(1000);
-                        this.appView.getParentWin().centerOnScreen();
-                    });
+
+                    this.appView.getParentWin().setWidth(1200);
+                    this.appView.getParentWin().setHeight(1000);
+                    this.appView.getParentWin().centerOnScreen();
+                    denomInfo.clear();
+                    itemsInfo.clear();
+
                 }
                 else
                 {
@@ -150,12 +154,29 @@ public class CreateRegTopBarController {
 
 
             }
-            denomInfo.clear();
-            itemsInfo.clear();
+            
+            resetForm();
+            appController.resetForm();
+
 
 
         });
 
+
+    }
+    private void resetForm()
+    {
+        ArrayList<ItemSectionPane> itemSectionPanes;
+        itemSectionPanes = setItemPaneView.getItemSectionGridPanes();
+        for (ItemSectionPane item : itemSectionPanes) {
+            System.out.println(item.getStockField().getText());
+            
+            item.getStockField().setText("0");
+            vMachineModelPaneView.removeItemToView(item.getItemNameLabel().getText());
+        }
+        createMenuController.resetForm();
+        setDenomPaneController.resetForm();
+        setItemPaneView.resetToDefault();
 
     }
     private AppView appView;
@@ -165,5 +186,6 @@ public class CreateRegTopBarController {
     private SetDenomPaneController setDenomPaneController; 
     private CreateMenuController createMenuController;
     private CreateRegTopBarView createRegTopBarView;
-
+    private LinkedHashMap<String, Integer> itemsInfo;
+    private LinkedHashMap<String, Integer> denomInfo;
 }
