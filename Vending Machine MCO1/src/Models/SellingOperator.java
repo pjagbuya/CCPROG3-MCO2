@@ -274,7 +274,7 @@ public class SellingOperator
 	/**
 	 * Tells the vending machine to go ahead with the transaction.
 	 */
-	public void proceedTrasaction()
+	public void proceedTransaction()
 	{
 		int i;
 		ArrayList<VM_Item> soldItems = dispenseItems( getSlots() );
