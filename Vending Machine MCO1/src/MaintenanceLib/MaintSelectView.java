@@ -41,7 +41,8 @@ public class MaintSelectView
 
         this.maintenanceReplaceView = new MaintenanceReplaceView(parentWin);
         this.maintenanceReplenishCollectView = new MaintenanceReplenishCollectView(parentWin);
-        this.vMachineModelPaneView = new VMachineModelPaneView(this.parentWin);
+        this.vMachineModelPaneView = new VMachineModelPaneView(parentWin);
+        this.maintenanceRestockRepriceView = new MaintenanceRestockRepriceView(parentWin);
         this.setItemPaneView = new SetItemPaneView(parentWin);
         this.maintenanceOrderHisView = new MaintenanceOrderHisView(parentWin);
         this.maintenanceStockedInfoView = new MaintenanceStockedInfoView(parentWin);
@@ -68,7 +69,16 @@ public class MaintSelectView
 
         initializeButtonHandlers();
     }
-
+    public void updateReferedFields()
+    {
+        
+    }
+    public void setSetItemPaneView(SetItemPaneView setItemPaneView) {
+        this.setItemPaneView = setItemPaneView;
+    }
+    public void setvMachineModelPaneView(VMachineModelPaneView vMachineModelPaneView) {
+        this.vMachineModelPaneView = vMachineModelPaneView;
+    }
  
     public void switchDefaultSelectMaintMenu()
     {
@@ -260,8 +270,8 @@ public class MaintSelectView
         mainCanvasVBox.getChildren().add(titleLabel);
 
         this.rootPane.setTop(maintenanceTopBarView);
-        this.rootPane.setCenter(vMachineModelPaneView);
-        this.rootPane.setRight(setItemPaneView);
+        this.rootPane.setCenter(this.vMachineModelPaneView);
+        this.rootPane.setRight(this.setItemPaneView);
 
         this.restockReprScene = new Scene(this.rootPane, MIN_WIDTH, MIN_HEIGHT);
 
@@ -350,7 +360,7 @@ public class MaintSelectView
     private Scene restockReprScene;
     private Scene stockedInfoScene;
 
-
+    private MaintenanceRestockRepriceView maintenanceRestockRepriceView;
     private MaintenanceStockedInfoView maintenanceStockedInfoView;
     private MaintenanceOrderHisView maintenanceOrderHisView;
     private MaintenanceReplenishCollectView maintenanceReplenishCollectView;

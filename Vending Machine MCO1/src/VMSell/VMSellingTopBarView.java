@@ -28,8 +28,11 @@ public class VMSellingTopBarView extends CustomTopBarView{
         addedNode.setAlignment(Pos.CENTER);
         addedNode.setPadding(new Insets(0,0,0,20));
         HBox.setMargin(addedNode, new Insets(0,0,0,20));
+        
         this.addToChildren(addedNode);
-        this.getFinishBtn().setText("Go To Maintenance");
+        super.removeFinishBtn();
+        this.getExitBtn().setText("End Test");
+        
 
     }
     public void setVmName(String vmName) {

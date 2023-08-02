@@ -5,6 +5,7 @@ import DenomLib.SetDenomPaneController;
 import DenomLib.SetDenomPaneView;
 import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
+import MaintenanceLib.MaintSelectView;
 import MaintenanceLib.MaintenanceController;
 import MaintenanceLib.MaintenanceRestockRepriceView;
 import NumPad.DenomNumPaneController;
@@ -35,6 +36,7 @@ public class AppController {
         this.appView = appView;
         this.appModel = appModel;
         this.regMenu = this.appView.getCreateRegView();
+        this.maintSelectView = this.appView.getMaintSelectView();
         this.regMenuTopBar = this.regMenu.getCreateRegTopBarView();
         this.setItemPaneView = this.regMenu.getRightSetItemPane();
         this.setDenomPaneView = this.regMenu.getLeftDenominationsPane();
@@ -47,7 +49,7 @@ public class AppController {
         // Handles control for all components inthe Selling screen
         this.vmSellingOpController = new VMSellingOpController(this,
                                                           vmSellingTopBarView, vmSellingOpPaneView, 
-                                                          this.appView.getStartMenu(), this.appView.getMaintenanceMenu());
+                                                          this.appView.getSellOrMaintMenu(), this.appView.getMaintenanceMenu());
         
         // Handles control for creation of Vending machine menu
         this.createMenuController = new CreateMenuController( this, this.setItemPaneView, 
@@ -60,11 +62,12 @@ public class AppController {
 
         this.maintenanceController = new MaintenanceController(appView.getMaintSelectView());
         this.setupVMPopUpController = new SetupVMPopUpController(this.appView.getSetupVMPopUpView(), 
-                                                            this.regMenuTopBar, this.regMenu, 
-                                                            this.setItemPaneView, this.appModel);
+                                                                this.regMenuTopBar, this.regMenu, 
+                                                                this.setItemPaneView, this.appModel);
            
 
         setupShowPopUpCreateBtn();
+        setUpSellOrMaintBtns();
 
         this.appView.setBtnToMaintenanceAction(
             e->
@@ -90,21 +93,13 @@ public class AppController {
         // ON exit of maintenance menu go back to this menu
         this.appView.setBtnExitOnMaintSelectView(event ->
         {
-            boolean isToSellScreen;
+            this.appView.changeToSellOrMaintView();
 
- 
-            isToSellScreen = confirmBox.display("Alert", "Would you like to go back to sell screen? Pressing no puts you to main menu");
-            if(isToSellScreen)
-            {
-                this.appView.changeToSellingScreen();
-            }
-            else
-            {
-                this.appView.changeToMainMenu();
-            }
         });
 
     }
+
+
     public void resetForm()
     {
         vmSellingOpController.resetForm();
@@ -132,6 +127,39 @@ public class AppController {
 
         });
 
+
+    }
+    private void setUpSellOrMaintBtns()
+    {
+        ConfirmBox confirmBox = new ConfirmBox();
+        this.appView.setBtnToExitOutSellOrMaintMenu(e->
+        {
+            boolean isToExit;
+
+
+ 
+            isToExit = confirmBox.display("Alert", "This will put you back to main menu, are you sure?");
+            if(isToExit)
+            {
+                this.appView.changeToMainMenu();
+            }
+            else
+            {
+                e.consume();
+            }
+
+        }
+            
+        );
+        this.appView.setBtnSellAction(e->{
+            this.appView.changeToSellingScreen();
+        });
+        this.appView.setBtnToMaint(e->
+        {
+            this.maintSelectView.setSetItemPaneView(this.setItemPaneView);
+            this.maintSelectView.setvMachineModelPaneView(this.appView.getVmSellingOpPaneView().getvMachineModelPaneView());
+            this.appView.changeToMaintenanceSelectScreen();
+        });
 
     }
 
@@ -173,6 +201,7 @@ public class AppController {
     private SetItemPaneView setItemPaneView;
     private SetDenomPaneView setDenomPaneView;
     private SetupVMPopUpView setUpVMPopUpView;
+    private MaintSelectView maintSelectView;
     private Stage primaryWindow;
     private AppModel appModel;
     private AppView appView;

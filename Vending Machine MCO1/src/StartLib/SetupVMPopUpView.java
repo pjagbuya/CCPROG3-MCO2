@@ -6,6 +6,7 @@ import Boxes.AlertBoxRep;
 import Buttons.*;
 import Labels.HeaderLabel;
 import Labels.LabelToField;
+import Labels.SubLabel;
 import Models.VM_Regular;
 import javafx.beans.value.ChangeListener;
 import javafx.event.ActionEvent;
@@ -38,13 +39,17 @@ public class SetupVMPopUpView extends Stage
 
         Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 12);
         
-    
+        
         Label vmLabel = new LabelToField("Vending Mahchines History", 36);
         Label addNewLabel = new LabelToField("Add a vending machine");
         Label nameLabel = new LabelToField("VM Name: ");
         Label slotCapLabel = new LabelToField("Slot Capacity: ");
         Label itemCapLabel = new LabelToField("Item Capacity: ");
         Label vmTypeLabel = new LabelToField("Type of Vending Machine: ");
+        Label descriptionReg = new SubLabel("Regular Vending Machines can only dispense one item \nat a time, with just a functionality that\n"+
+                                            "it can make an indepndent item to the vending machine");
+        Label descriptionSp = new SubLabel("Special Vending Machines have same functionalities of \nRegular vending machiens but have dependent\n"+
+                                            "items that can be combined with another item to form \na new form of item fixed in this program");                                         
 
         VBox mainPane = new VBox();         // Main start pane
         VBox emptyPane = new VBox();        // Spacer for middle
@@ -140,7 +145,8 @@ public class SetupVMPopUpView extends Stage
         // hidden pane for type select of vending machine setup
         hiddenPane.setStyle("-fx-background-color: " + colorBg +";");
 
-        hiddenPane.getChildren().addAll(setupVMHidTopBar, nameLabelAndTextHBox, typeSelectHBox, slotNodesHBox, itemNodesHBox);
+        hiddenPane.getChildren().addAll(setupVMHidTopBar, nameLabelAndTextHBox, typeSelectHBox, 
+                                        slotNodesHBox, itemNodesHBox, descriptionReg, descriptionSp);
         hiddenPane.setPadding(new Insets(20));
 
         

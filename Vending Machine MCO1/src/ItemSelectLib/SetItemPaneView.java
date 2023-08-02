@@ -44,10 +44,12 @@ public class SetItemPaneView extends ScrollPane{
 
     public SetItemPaneView(Stage parentWin)
     {
-
+        DecimalFormat df = new DecimalFormat("0.00");
+        URL resourceUrl;
+        int i;
         String colorBg = "#071952";
         String colorLightest = "#97FEED";
-        int i;
+
 
             
         i = 0;
@@ -68,8 +70,19 @@ public class SetItemPaneView extends ScrollPane{
 
         this.mainCanvasVBox.getChildren().add(hiddenExpandableVBox);
         
+        i = 0;
+        for (PresetItem presetItem : PresetItem.values()) {
 
-        resetToDefault();
+            resourceUrl = getClass().getResource(presetItem.getImagePath());
+            itemIndependencyList.put(presetItem.name(), presetItem.getIsIndependent());
+
+            createNewItem(i, resourceUrl, presetItem.name(), 
+                            df.format(presetItem.getPrice()), "0",
+                            presetItem.getCalories() + "",
+                            false);
+            i++;
+
+        }
         
 
         this.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -144,33 +157,13 @@ public class SetItemPaneView extends ScrollPane{
     {
         this.hiddenExpandableVBox.getChildren().clear();
     }
-    public void resetToDefault()
-    {
-        DecimalFormat df = new DecimalFormat("0.00");
-        URL resourceUrl;
-        int i;
-        itemIndependencyList.clear();
-        i = 0;
-        removeAddedItems();
-        System.out.println("I am called");
-        for (PresetItem presetItem : PresetItem.values()) {
-
-            resourceUrl = getClass().getResource(presetItem.getImagePath());
-            itemIndependencyList.put(presetItem.name(), presetItem.getIsIndependent());
-
-            createNewItem(i, resourceUrl, presetItem.name(), 
-                            df.format(presetItem.getPrice()), "0",
-                            presetItem.getCalories() + "",
-                            false);
-            i++;
-
-        }
-
-    }
+ 
     public void resetStockTxtFields()
     {
 
         itemIndependencyList.clear();
+        System.out.println("I am called");
+
 
 
         removeAddedItems();

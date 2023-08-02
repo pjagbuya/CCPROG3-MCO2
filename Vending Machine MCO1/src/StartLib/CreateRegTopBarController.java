@@ -155,8 +155,7 @@ public class CreateRegTopBarController {
 
             }
             
-            resetForm();
-            appController.resetForm();
+
 
 
 
@@ -176,7 +175,7 @@ public class CreateRegTopBarController {
         }
         createMenuController.resetForm();
         setDenomPaneController.resetForm();
-        setItemPaneView.resetToDefault();
+        setItemPaneView.resetStockTxtFields();
 
     }
     private AppView appView;

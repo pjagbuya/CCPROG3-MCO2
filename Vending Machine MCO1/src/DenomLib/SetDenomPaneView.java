@@ -3,6 +3,8 @@ package DenomLib;
 import Buttons.AddButton;
 import Buttons.DenominationBtn;
 import Buttons.SubButton;
+import Models.VM_Regular;
+import StartLib.AppModel;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
@@ -49,6 +51,19 @@ public class SetDenomPaneView extends ScrollPane
     public SetDenomPaneView(Stage parentWin)
     {
  
+        this(parentWin, new LinkedHashMap<String, Integer>())
+
+    }
+
+    public SetDenomPaneView(Stage parentWin,
+                            LinkedHashMap<String, Integer> denomCount)
+    {
+        updateView(parentWin, denomCount);
+        
+
+    }
+    public void updateView(Stage parentWin, LinkedHashMap<String, Integer> denomCount)
+    {
         RowConstraints rowConstraints = new RowConstraints();  
         
         DecimalFormat df = new DecimalFormat("0.00");
@@ -67,12 +82,14 @@ public class SetDenomPaneView extends ScrollPane
         
         Font headerBoldLabel = Font.font("Helvetica", FontWeight.BOLD, 18);
         DenominationBtn tempDenomBtn;
-        labelTextData = new LinkedHashMap<String, Double>();
+        this.labelTextData = new LinkedHashMap<String, Double>();
 
         for(Denomination denoms : Denomination.values())
         {
             labelTextData.put(denoms.getName(), denoms.getValue());
         }
+
+        
         
         
         this.denomSetSections = new DenomSetSection[13];
@@ -109,7 +126,9 @@ public class SetDenomPaneView extends ScrollPane
             else
                 tempDenomBtn = new DenominationBtn(df.format(tempVal));
             denomSetSections[i] = new DenomSetSection(parentWin, tempString, tempVal, tempDenomBtn);
-
+            
+            if(!denomCount.isEmpty())
+                denomSetSections[i].getTextField().setText("" + denomCount.get(tempString));
 
             leftPaneGrid.add(denomSetSections[i].getDenomGraphic(), 0,currInd+1);
             leftPaneGrid.add(denomSetSections[i].getButtonAndTextFieldPane(), 1,currInd+1);

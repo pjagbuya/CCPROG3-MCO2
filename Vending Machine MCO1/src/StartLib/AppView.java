@@ -30,8 +30,8 @@ public class AppView extends BorderPane{
         this.setupVMPopUpView = new SetupVMPopUpView(parentWin, this.creationRegMenu);
         this.vmSellingOpPaneView = new VMSellingOpPaneView(parentWin);
         this.maintSelectView = new MaintSelectView(parentWin);
-
-
+        this.sellOrMaintView = new SellOrMaintView(parentWin);
+        this.sellOrMaintMenu = new Scene(this.sellOrMaintView, 1200, 600);
 
         
         this.sellingMenu = new Scene(this.vmSellingOpPaneView, 1200, 600);
@@ -56,10 +56,17 @@ public class AppView extends BorderPane{
         this.setCenter(btnSection);
         this.setStyle("-fx-base: " + colorBg+ ";");
         this.parentWin.setWidth(1200);
-        this.parentWin.setHeight(800);
+        this.parentWin.setHeight(600);
         this.parentWin.setScene(this.startMenu);
         this.parentWin.setTitle("Main menu");
         this.parentWin.show();
+        this.parentWin.centerOnScreen();
+    }
+    public void changeToSellOrMaintView()
+    {
+        this.parentWin.setWidth(1200);
+        this.parentWin.setHeight(600);
+        this.parentWin.setScene(this.sellOrMaintMenu);
         this.parentWin.centerOnScreen();
     }
 
@@ -69,7 +76,7 @@ public class AppView extends BorderPane{
 
    
         this.parentWin.setWidth(1200);
-        this.parentWin.setHeight(800);
+        this.parentWin.setHeight(600);
         this.parentWin.setScene(this.creationRegMenu);
         this.parentWin.centerOnScreen();
     }
@@ -86,7 +93,7 @@ public class AppView extends BorderPane{
     {
 
         this.parentWin.setWidth(1200);
-        this.parentWin.setHeight(800);
+        this.parentWin.setHeight(600);
         this.parentWin.setScene(this.maintenanceMenu);
         this.parentWin.centerOnScreen();
 
@@ -147,6 +154,10 @@ public class AppView extends BorderPane{
     public Scene getStartMenu() {
         return startMenu;
     }
+    public Scene getSellOrMaintMenu() {
+        return sellOrMaintMenu;
+    }
+    
     public void setBtnCreateRegAction(EventHandler<ActionEvent> eventHandler) 
     {
         BTN_CREATE.setOnAction(eventHandler);
@@ -164,6 +175,22 @@ public class AppView extends BorderPane{
     {
         this.BTN_TESTF.setOnAction(eventHandler);
     }
+
+    public void setBtnSellAction(EventHandler<ActionEvent> eventHandler) 
+    {
+        this.sellOrMaintView.setToSellBtnAction(eventHandler);
+    }
+
+    public void setBtnToExitOutSellOrMaintMenu(EventHandler<ActionEvent> eventHandler)
+    {
+        this.sellOrMaintView.setExitBtnAction(eventHandler);
+    }
+    public void setBtnToMaint(EventHandler<ActionEvent> eventHandler)
+    {
+        this.sellOrMaintView.setToMaintBtnAction(eventHandler);
+    }
+
+
     private Stage parentWin;
 
 
@@ -172,12 +199,13 @@ public class AppView extends BorderPane{
     private SetupVMPopUpView setupVMPopUpView;
     private CreateRegMenu createRegView;
     private VMSellingOpPaneView vmSellingOpPaneView;
-
+    private SellOrMaintView sellOrMaintView;
 
     private Scene startMenu;
     private Scene maintenanceMenu;
     private Scene creationRegMenu;
     private Scene sellingMenu;
+    private Scene sellOrMaintMenu;
 
     private static final MenuButton BTN_CREATE = new MenuButton("Create a Vending Machine");
     private static final MenuButton BTN_TESTF = new MenuButton("Test Features of a Vending Machine");

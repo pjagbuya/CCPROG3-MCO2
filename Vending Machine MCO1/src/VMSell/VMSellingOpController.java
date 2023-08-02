@@ -50,31 +50,14 @@ public class VMSellingOpController
 
         this.vmSellingTopBarView.setExitBtnListener(e->
         {
-            boolean isExit;
-
-            ConfirmBox confirmBox;
-            confirmBox = new ConfirmBox();
-            if(confirmBox.display("WARNING", "You are leaving without sending out you Vending Machine, Are you sure?"))
-            {
-
-                resetForm();
-                appController.resetForm();
-                this.vmSellingTopBarView.changeWindowScene(targetExit);
-            }
-            else
-            {
-                e.consume();
-            }
-        });
-
-
-        this.vmSellingTopBarView.setFinishBtnListener(e->
-        {
-            
+           
             resetForm();
-            this.vmSellingTopBarView.changeWindowScene(targetMaint);
-                
+            this.vmSellingTopBarView.changeWindowScene(targetExit);
+         
         });
+
+
+
 
         this.dispensedItemView.setProceedBtnAction(e->
         {
