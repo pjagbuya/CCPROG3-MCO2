@@ -108,11 +108,11 @@ public class SetItemPaneView extends ScrollPane{
 
     public void setUpItemsView(boolean isSpecialVM) 
     {
-        System.out.println(itemIndependencyList);
+
         
         for (ItemSectionPane itemPane : itemSectionGridPanes) 
         {
-             System.out.println(itemPane);
+  
             if (isSpecialVM || itemIndependencyList.get(itemPane.getItemNameLabel().getText())==1) 
             {
 
@@ -162,12 +162,12 @@ public class SetItemPaneView extends ScrollPane{
     {
 
         itemIndependencyList.clear();
-        System.out.println("I am called");
+
 
 
 
         removeAddedItems();
-        System.out.println("I am called");
+
         for (ItemSectionPane item: itemSectionGridPanes) {
 
             item.getStockField().setText("0");

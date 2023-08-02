@@ -75,7 +75,6 @@ public class VMSellingOpController
                 stock = Integer.parseInt(this.appModel.findSlotStockInVM(chosenSlot));
                 itemName = this.appModel.findSlotNameInVM(chosenSlot);
                 this.dispensedItemView.performDispense();
-                System.out.println("CHANGE: " + this.appModel.getChangeAfterPayment().getDenominations());
                 this.dispensedItemView.displayChange(this.appModel.getChangeAfterPayment(), 
                                                      this.appModel.getTotalChangeAfterPayment());
                 this.vMachineModelPaneView.validateLabels(itemName, stock);

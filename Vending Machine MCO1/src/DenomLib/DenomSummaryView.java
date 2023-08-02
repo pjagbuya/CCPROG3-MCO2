@@ -90,6 +90,12 @@ public class DenomSummaryView extends ScrollPane
         subCountLabel(moneyNameToind.get(Denomination.fromValue(moneyVal)));
         
     }
+
+    public void setCountLabel(String moneyName, int count) 
+    {
+
+        this.countLabels[moneyNameToind.get(moneyName)].setText(count+"");
+    }
     public LinkedHashMap<String, Integer> getDenominationCount() {
         return denominationCount;
     }

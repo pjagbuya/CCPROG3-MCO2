@@ -1,6 +1,8 @@
 package MaintenanceLib;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
 import Boxes.AlertBox;
 import DenomLib.DenomSummaryView;
@@ -20,6 +22,7 @@ public class MaintenanceReplenishCollectView extends BorderPane
         GridPane mainGridPane = new GridPane();
         this.rightSetDenomPane = new SetDenomPaneView(parentWin);
         this.denomSummaryView = new DenomSummaryView();
+        this.parentWin = parentWin;
         
         // Must extact labels from VM machine and then add them to screen of Vmachinemodelview
         //this.centerVMachineModelPaneView.addItemWithComp(getAccessibleHelp(), centerVMachineModelPaneView, null);
@@ -29,7 +32,20 @@ public class MaintenanceReplenishCollectView extends BorderPane
         this.setRight(this.rightSetDenomPane);
         this.setCenter(mainGridPane);
     }
+    public void updateDenomSetSection(LinkedHashMap<String, Integer> denomCount)
+    {
+        for(Map.Entry<String, Integer> entry : denomCount.entrySet())
+        {
+            for(int i = 0; i < entry.getValue(); i++)
+            {
+                
+                this.denomSummaryView.updateCountLabel(entry.getKey());
+            }
+        }
 
+        this.rightSetDenomPane.updateView(denomCount);
+    }
+    
     public void updateCountLabel(int i) 
     {
         this.denomSummaryView.updateCountLabel(i);
@@ -54,11 +70,23 @@ public class MaintenanceReplenishCollectView extends BorderPane
     {
         this.denomSummaryView.subCountLabel(moneyVal);
     }   
+    public void setCountLabel(String name, int count)
+    {
+        this.denomSummaryView.setCountLabel(name, count);
+    }
+    public LinkedHashMap<String, Integer> getDenominationCount()
+    {
+        return this.denomSummaryView.getDenominationCount();
+    }
+    public void resetCountLabels() 
+    {
+        this.denomSummaryView.reset();
+    }
     public SetDenomPaneView getRightSetDenomPane() 
     {
         return rightSetDenomPane;
     }
-
+    private Stage parentWin;
     private AlertBox alertBox;
     private SetDenomPaneView rightSetDenomPane;
     private DenomSummaryView denomSummaryView;

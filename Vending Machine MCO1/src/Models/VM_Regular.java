@@ -99,9 +99,7 @@ public class VM_Regular {
 	public void displayAllItems() {
 		int i;
 		boolean isThereItem;
-		System.out.println();
-		System.out.println("Item Info: ");
-		System.out.println();
+
 
 		isThereItem = false;
 		for(i = 0; i < slots.length; i++)
@@ -110,8 +108,7 @@ public class VM_Regular {
 				slots[i].displayAllItems();
 				isThereItem = true;
 			}
-		if(!isThereItem)
-			System.out.println("No item stock/label is available to display");
+
 				
 	}
 
@@ -190,29 +187,7 @@ public class VM_Regular {
 
 
 	
-	
-	
-	/**
-	 * Display's the VM's transaction history (not including failed transactions)
-	 * starting from the last restocking or repricing
-	 *
-	 *
-	 */
-	public void displayOrderHistory() {
-		int i;
-		
-		for(i = 0; i < orderHistory.size(); i++) {
-			System.out.println("\nORDER NO. " + (i+1));
-			for(String s : orderHistory.get(i).getPendingOrder().keySet())
-				System.out.println(
-					orderHistory.get(i).getTotalCost() +
-					" PHP " +
-					orderHistory.get(i).getPendingOrder().get(s) +
-					" pc(s). " +
-					s +
-					"\n" );
-		}
-	}
+
 	
 	
 

@@ -74,7 +74,7 @@ public class SpecialSellingOperator extends SellingOperator
 	{
 		String msg = super.validateTransaction();
 	
-		if( msg.equals("") )
+		if( msg != null && msg.equals("") )
 			if( !hasEnoughStock(specialSlots) )
 				msg = msg + "ERROR: SPECIAL STOCK INSUFFICIENT.\n";
 		else
@@ -162,8 +162,8 @@ public class SpecialSellingOperator extends SellingOperator
 				}
 		}
 
-		if( !ingredientHasSlot )
-			msg = new String("ERROR: NO SLOT HAS THIS .\n");
+		if( !ingredientHasSlot && !ingredientIsAnotherFlavor )
+			msg = new String("ERROR: NO SLOT HAS THIS ITEM.\n");
 		if( ingredientHasSlot && !ingredientHasEnoughStock )
 			msg = new String("ERROR: NOT ENOUGH STOCK OF INGREDIENT.\n");
 
@@ -203,9 +203,10 @@ public class SpecialSellingOperator extends SellingOperator
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
 					slots[i].getSlotItemName().equalsIgnoreCase( recipeChecker.getAbsoluteBaseIngredients().get(k) ) ) {
-					getOrder().getPendingOrder().put(
-						recipeChecker.getAbsoluteBaseIngredients().get(k) ,
-						recipeChecker.getRequiredStock().get(k) );
+						addToPendingMap(
+							getOrder().getPendingOrder(),
+							slots[i],
+							recipeChecker.getRequiredStock().get(k) );
 				}
 		}
 	}
@@ -216,34 +217,38 @@ public class SpecialSellingOperator extends SellingOperator
 	 * @param chosenFlavor the flavor for the special item
 	 * @return null if a flavor was succesfully chosen, error message otherwise
 	 */
-	public String chooseFlavor(int chosenFlavor)
-		{
+	public String chooseFlavor(String chosenFlavor)
+	{
 		String msg = null;
 		int i;
+		int choice = 0;
 		VM_Slot[] slots = null;
 		LinkedHashMap<Integer, String> flavors = recipeChecker.getFlavors();
 		LinkedHashMap<Integer, Integer> flavorStock = recipeChecker.getFlavorStock();
-
+		
+		if( recipeChecker.getReversedFlavors().get(chosenFlavor.toUpperCase()) != null )
+			choice = recipeChecker.getReversedFlavors().get(chosenFlavor);
+		
 		// only when selected slot num is within range, this will trigger to add that order
-		if( flavors.get(chosenFlavor) != null &&
-			flavorStock.get(chosenFlavor) > 0 )
+		if( flavors.get(choice) != null &&
+			flavorStock.get(choice) > 0 )
 			msg = null;
 		else
 			msg = new String("ERROR: FLAVOR NOT AVAILABLE.\n");
 
 		/* adds flavor to Order, if it is not PLAIN */
-		if( msg == null && !flavors.get(chosenFlavor).equalsIgnoreCase("PLAIN") )
+		if( msg == null && !flavors.get(choice).equalsIgnoreCase("PLAIN") )
 		{
 			/* choosing the appropriate slot set */
-			if( getPresetItems().get( flavors.get(chosenFlavor) ) == 1 )
+			if( getPresetItems().get( flavors.get(choice) ) == 1 )
 				slots = getSlots();
-			else if( getPresetItems().get( flavors.get(chosenFlavor) ) == 0 )
+			else if( getPresetItems().get( flavors.get(choice) ) == 0 )
 				slots = specialSlots;
-			else if( getCustomItems().get( flavors.get(chosenFlavor) ) != null )
+			else if( getCustomItems().get( flavors.get(choice) ) != null )
 				slots = getSlots();
 			for(i = 0; i < slots.length; i++)
 				if( slots[i].getSlotItemName() != null &&
-					slots[i].getSlotItemName().equalsIgnoreCase( flavors.get(chosenFlavor) ) )
+					slots[i].getSlotItemName().equalsIgnoreCase( flavors.get(choice) ) )
 					addToPendingMap( getOrder().getPendingOrder() , slots[i] , 1 );
 		}
 		return msg;
@@ -272,16 +277,20 @@ public class SpecialSellingOperator extends SellingOperator
    	 *
      	 * @return the list of available flavors.
      	 */
-	public ArrayList<String> getAvailableFlavorsStock()
+	public LinkedHashMap<String, Integer> getAvailableFlavorStock()
 	{
-		ArrayList<String> availableFlavors = new ArrayList<String>();
-		for( int k: recipeChecker.getFlavorStock().keySet() ) {
+		LinkedHashMap<String, Integer> flavorStocks = new LinkedHashMap<String, Integer>();
+		for( int k : recipeChecker.getFlavorStock().keySet() ) {
 			if( recipeChecker.getFlavorStock().get(k) > 0 )
-				availableFlavors.add(
-					new String( recipeChecker.getAbsoluteBaseIngredients().get(k) ) );
+				flavorStocks.put( new String(recipeChecker.getAbsoluteBaseIngredients().get(k)),
+						  recipeChecker.getFlavorStock().get(k) );
 		}
-		return availableFlavors;
+		return flavorStocks;
 	}
+
+	
+
+	
 
 	/** the ingredients that will be used in making the special item */
 	ArrayList<VM_Item> ingredients;

@@ -9,12 +9,12 @@ import java.util.InputMismatchException;
 /**
  * The class Maintenance represents that part of a vending machine
  * that allows the user to restock, replenish, reprice, add/replace items,
- * check order history, and update the inventory information of a Vending Machine.
+ * check order history, and update its inventory information.
  * 
  * @author Paul Josef P. Agbuya
  * @author Vince Kenneth D. Rojo
  */
-public class Maintenance
+public class Maintenance implements Generatable
 {
 	/**
 	 * Takes note of the list of possible items in the program
@@ -24,7 +24,6 @@ public class Maintenance
 	 * @param vmMoney the cash reserves of the parent vending machine
 	 * @param slots : the regular slots of the parent vending machine
 	 * @param specialSlots : the special slots of the parent vending machine
-	 * @param presetItems the list of all item classes, besides special items, that are can exist in the program universe.
 	 * @param customItems the list of user-minted items
 	 */
     public Maintenance(
@@ -61,7 +60,6 @@ public class Maintenance
 		String msg = null;
 		int i;
 		int slotIndex;
-        boolean anItemIsRestocked = false; // initially false
 		boolean slotFound = false; // intially false
 		VM_Slot[] slots = null;
 		
@@ -69,6 +67,7 @@ public class Maintenance
 
 		slots = switchToSlot( itemName );
 		
+		if( slots != null )
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
 				slots[i].getSlotItemName().equalsIgnoreCase(itemName) )
@@ -77,20 +76,14 @@ public class Maintenance
 				slotFound = true;
 			}
 
-		if( slotFound )
+		if( !slotFound )
 			msg = new String("ERROR: SLOT NOT FOUND.\n");
         
         // Only proceed updating and allow adding if the slot
 		if( slotFound && slots[slotIndex].getSlotItemName() != null )
 		{
-			if ( !anItemIsRestocked ) {
-				anItemIsRestocked = true;
-				for( i = 0; i < qty; i++ )
-					slots[slotIndex].addItemStock( generateItem( slots[slotIndex].getSlotItemName() ) );
-			}
-			else
-				msg = new String("ERROR: SLOT HAS NO ASSIGNED ITEM. ENTER A DIFF. SLOT NUM.\n");		
-
+			for( i = 0; i < qty; i++ )
+				slots[slotIndex].addItemStock( generateItem( slots[slotIndex].getSlotItemName() ) );
 		}
 
 		return msg;
@@ -118,8 +111,8 @@ public class Maintenance
 		slotIndex = -1;
 
 		slots = switchToSlot( itemName );
-
 		
+		if( slots != null )
 		for(i = 0; i < slots.length; i++)
 			if( slots[i].getSlotItemName() != null &&
 				slots[i].getSlotItemName().equalsIgnoreCase(itemName) ) {
@@ -163,7 +156,7 @@ public class Maintenance
 				vmMoney.add( createDenomination(denom) );
 		else
 			msg = new String("ERROR: DENOMINATION DOES NOT EXIST.\n");
-		
+
 		return msg;
 	}
 	
@@ -172,7 +165,7 @@ public class Maintenance
 	 * Creates a new instance of a bill or coin.
 	 *
 	 * @param denom the name of the new coin/bill to be generated
-	 * @result the new bill/coin
+	 * @return the new bill/coin
 	 *
 	 */
 	public DenominationItem createDenomination(String denom)
@@ -193,6 +186,8 @@ public class Maintenance
 	 *
 	 * @param itemName the name of the item to be used as a substitute
 	 * @param qty the number of that item to be restocked
+	 * @param slotNum the number of the slots whose items are to be replaced
+	 * @return null if stock was successfully replaced, error message otherwise
 	 */
 	public String replaceItemStock(String itemName, int qty, int slotNum)
 	{
@@ -211,17 +206,18 @@ public class Maintenance
 		/* START OF INPUT VALIDATION */
 			
 		/* Ensures that each slot has a unique item. */
+		if( slots != null )
 		for(i = 0; i < slots.length; i++)
 			if(	slots[i].getSlotItemName() != null &&
 				slots[i].getSlotItemName().equalsIgnoreCase(itemName) &&
 				slots[i].getSlotItemStock() != 0)
 			{
-				msg = msg + "ERROR: SLOT WITH SAME ITEM EXISTS. RESTOCK INSTEAD.\n";
-				sameNameExists = true;
+				msg = restockItems(itemName, qty);
+				sameNameExists = false;
 			}
 			
 		/* Slot Number is Out Of Bounds. */
-		if( !sameNameExists && (slotNum < 1 || slotNum > slots.length) )
+		if( !sameNameExists && slots != null && (slotNum < 1 || slotNum > slots.length) )
 		{
 			msg = msg + "-ERROR: SLOT NUM OUT OF BOUNDS.\n";
 			slotNumOutOfBounds = true;
@@ -243,7 +239,7 @@ public class Maintenance
 		}
 			
 		/* Decision of whether to continue with stock replacement/filling-in */
-		if(	qtyIsPositive && !sameNameExists && itemExists && !slotNumOutOfBounds )
+		if(	qtyIsPositive && !sameNameExists && itemExists && !slotNumOutOfBounds && msg.length() == 0)
 		{
 			for(i = 0; i < qty; i++)
 				slots[slotNum-1].addItemStock( generateItem( itemName ) );
@@ -285,9 +281,9 @@ public class Maintenance
 			msg = new String("ERROR: SUBTRACTION RESULTS IN NEGATIVE DENOMINATIONS.\n");
 			canSubtract = false;
 		} if( canSubtract )
-			for(i = 0; i < vmMoney.getDenominations().get(denom).size(); i++)
+			for(i = 0; i < qty; i++)
 				vmMoney.subtract(denom);
-		
+
 		return msg;
 	}
 	
@@ -298,7 +294,7 @@ public class Maintenance
 	 * @param s the String name of the item type to be generated
 	 * @return the generated item, null otherwise
 	 */
-	private VM_Item generateItem( String s )
+	public VM_Item generateItem( String s )
 	{
 		VM_Item item = null;
 		
@@ -349,7 +345,7 @@ public class Maintenance
 		
 		
 		else
-			generateCustomItem( s );
+			item = generateCustomItem( s );
 		
 		return item;
 	}
@@ -361,7 +357,7 @@ public class Maintenance
 	 * @param s the String name of the item type to be generated
 	 * @return the generated item, null otherwise
 	 */
-	private VM_Item generateCustomItem( String s )
+	public VM_Item generateCustomItem( String s )
 	{
 		VM_Item item = null;
 		
@@ -377,6 +373,7 @@ public class Maintenance
 	 *
 	 * @param name the name to be given to this custom item
 	 * @param calories the calorific value of the new item type
+	 * @return null if a new custom item was named, error message otherwise
 	 */
 	public String createCustomItem(String name, int calories)
 	{
@@ -424,21 +421,17 @@ public class Maintenance
 	public LinkedHashMap<String, Integer>  getCustomItems() { return customItems; }
 
 	/**
-         * Chooses a slot set to open based on the given item name.
+     * Chooses a slot set to open based on the given item name.
 	 *
 	 * @param itemName the name of the item
   	 * @return the slots that correspond with the given name, null if none do
   	 */
 	private VM_Slot[] switchToSlot(String itemName)
 	{
-		System.out.println("Switch to slot");
-		System.out.println(itemName);
-		System.out.println(presetItems);
-		System.out.println(presetItems.get( itemName ) );
 		/* Switching between special and regular slots. */
 		if( presetItems.get( itemName ) != null && presetItems.get( itemName ) == 1 )
 			return this.slots;
-		else if( presetItems.get( itemName ) != null && presetItems.get( itemName ) == 0)
+		else if( presetItems.get( itemName ) != null && presetItems.get( itemName ) == 0 )
 			return specialSlots;
 		else if( customItems.get( itemName ) != null )
 			return this.slots;

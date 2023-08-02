@@ -11,6 +11,7 @@ import java.util.function.Consumer;
 import Buttons.MenuButton;
 import CustomSetup.GeneralEventHandler;
 import DenomLib.SetDenomPaneView;
+import InterfaceLib.EventHandlerInterface;
 import ItemSelectLib.CreateMenuController;
 import ItemSelectLib.SetItemPaneView;
 import Labels.HeaderLabel;
@@ -67,7 +68,6 @@ public class MaintSelectView
         // set the one to first show is the select screen
         switchDefaultSelectMaintMenu();
 
-        initializeButtonHandlers();
     }
     public void updateReferedFields()
     {
@@ -94,7 +94,7 @@ public class MaintSelectView
  
     }
 
-    
+
     public void switchToReplaceMenu() 
     {
         this.parentWin.setScene(replaceScene);
@@ -120,20 +120,10 @@ public class MaintSelectView
 
     }
 
-    public void initializeButtonHandlers() {
-        buttonHandlers = new HashMap<>();
-        
-        // Register each button with its event handler
-        buttonHandlers.put(restockReprItemBtn, new GeneralEventHandler());
-        buttonHandlers.put(replaceItemBtn, new GeneralEventHandler());
-        buttonHandlers.put(replCollectBtn, new GeneralEventHandler());
-        buttonHandlers.put(orderHisBtn, new GeneralEventHandler());
-        buttonHandlers.put(stockedInfoBtn, new GeneralEventHandler());
-        buttonHandlers.put(exitBtn, new GeneralEventHandler());
-    }
 
     public void addActionToButton(MenuButton button, EventHandler<ActionEvent> action) {
-        if (!buttonHandlers.containsKey(button)) {
+        if (!buttonHandlers.containsKey(button)) 
+        {
             return;
         }
         
@@ -350,7 +340,7 @@ public class MaintSelectView
     private Stage parentWin;
     private Map<MenuButton, GeneralEventHandler> buttonHandlers;
 
-
+   
 
     private BorderPane rootPane;
     private Scene mainSelectScene;

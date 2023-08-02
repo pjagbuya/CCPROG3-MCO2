@@ -143,21 +143,6 @@ public class VM_Slot {
     }
 
     
-	/**
-     * Displays the information of the item currently held by this slot,
-     * as well as the stock count.
-     *
-     */
-    public void displayAllItems()
-	{	
-        if (getSlotItemStock() > 0)
-        {
-            System.out.println("Qty: " + getSlotItemStock());
-            System.out.println(items.get(0) + "\n");   
-        }
-        else
-            System.out.println(slotItemName + " slot is empty.\n");
-    }
 
 
     
@@ -172,16 +157,14 @@ public class VM_Slot {
      */
     public void addItemStock( VM_Item givenItem )
     {
-        Scanner sc = new Scanner(System.in);
+
         
         // Error that there was no stock added
         if( givenItem == null )
-            System.out.println("\033[1;38;5;202mERROR! no stocks/item is detected\033[0m");
+
         // State and excess and return it
-        else if( 1 + getSlotItemStock() > MAX && givenItem.getItemName().equalsIgnoreCase(slotItemName) ) {
-            System.out.println("You had an excess of " + 1 + " " +givenItem.getItemName() + " while we were stocking. Returning...");
-            System.out.println("\033[1;33m" + "Press and Enter Any Key To Continue..." + "\033[0m");
-            sc.nextLine();
+        if( 1 + getSlotItemStock() > MAX && givenItem.getItemName().equalsIgnoreCase(slotItemName) ) {
+            return;
         }
 
         // If slot was initialized empty, proceed to put in stock
@@ -197,9 +180,8 @@ public class VM_Slot {
 		}
         // if this slot already has an item, but has a different name
         else
-            warnReplace( givenItem );
-        
-        sc = null;
+            return;
+
 
     }
 
@@ -267,30 +249,7 @@ public class VM_Slot {
     }
 	
 	
-    /**
-     * Informs user of restocking conflict,
-	 * asks user to choose whether or not to replace currently stocked item(s)
-	 * with the new givenItem
-     * 
-     * @param givenItem the new item to be held by this slot
-     * @param stock the initial stock count of the new item
-     */
-    private void warnReplace( VM_Item givenItem )
-    {
 
-        Scanner sc = new Scanner(System.in);
-
-        System.out.println("\033[1;33mConflict with another type of item\033[0m, will you be replacing this stock of " + slotItemName + 
-                            " with " + givenItem.getItemName() + ". (Y/N)");
-        
-        // Only proceed to replace when user agrees
-        if(sc.nextLine().equalsIgnoreCase("Y"))
-        {
-            System.out.println("Replaced " + slotItemName + " with " + givenItem.getItemName());
-            replaceStock( givenItem );
-        }
-        sc = null;
-    }
 	
 	public double getPrice() { return price; }
 	

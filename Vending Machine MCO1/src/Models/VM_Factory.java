@@ -67,8 +67,7 @@ public class VM_Factory
 		msg = "";
 		
 		/* Switching between special and regular slots. */
-		System.out.println("Name: " + itemName);
-		System.out.println(presetItems);
+
 		if( customItems.keySet().contains(itemName) ) 
 		{
 			slotsVar = this.slots;
@@ -92,7 +91,7 @@ public class VM_Factory
 				if( slotsVar[i].getSlotItemName() == null ||
 					slotsVar[i].getSlotItemName().equalsIgnoreCase(itemName) ) {
 					for(j = 0; j < qty; j++) {
-						System.out.println("Adding this many " +itemName+ ", which is " + qty);
+
 						slotsVar[i].addItemStock( generateItem( itemName ) );
 					}
 					break;

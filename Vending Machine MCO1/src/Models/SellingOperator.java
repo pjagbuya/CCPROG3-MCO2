@@ -76,8 +76,7 @@ public class SellingOperator
 		/* calculates change due */
 		changeDue = paymentTotal - orderTotal;
 
-		System.out.println("Inserted Total payment: " + paymentTotal);
-		System.out.println("Inserted Total change: " + changeDue);
+
 	}
 	
 	
@@ -112,7 +111,7 @@ public class SellingOperator
 			}
 			
 			if( orderIsValid ) {
-				System.out.println("ORDERED: " + slots[slotNum-1].getSlotItemName());
+
 				addToPendingMap( order.getPendingOrder(), slots[slotNum-1], qty);
 				msg = null;
 			}
@@ -172,10 +171,10 @@ public class SellingOperator
 	public String addToPayment(String denom)
 	{
 		String msg;
-		System.out.println("Not yet added " + denom);		
+	
 		if( Money.getStrToVal().get(denom) != null )
 		{
-			System.out.println("Added " + denom);
+
 			payment.add( createDenomination( denom ) );
 			msg = null;
 		}
@@ -282,11 +281,10 @@ public class SellingOperator
 	{
 		int i;
 		ArrayList<VM_Item> soldItems = dispenseItems( getSlots() );
-		System.out.println(soldItems);
+
 		for(i = 0; i < soldItems.size(); i++)
 		{
-			System.out.println("Size: " + soldItems.size());
-			System.out.println("Index target: " + i);
+
 			this.soldItems.add( soldItems.get(i) );
 			
 		}

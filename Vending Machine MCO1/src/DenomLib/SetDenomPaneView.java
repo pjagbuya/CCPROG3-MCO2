@@ -3,6 +3,7 @@ package DenomLib;
 import Buttons.AddButton;
 import Buttons.DenominationBtn;
 import Buttons.SubButton;
+import InterfaceLib.EventHandlerInterface;
 import Models.VM_Regular;
 import StartLib.AppModel;
 import javafx.beans.value.ChangeListener;
@@ -38,6 +39,7 @@ import java.util.ArrayList;
 
 import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 
 
@@ -51,19 +53,6 @@ public class SetDenomPaneView extends ScrollPane
     public SetDenomPaneView(Stage parentWin)
     {
  
-        this(parentWin, new LinkedHashMap<String, Integer>())
-
-    }
-
-    public SetDenomPaneView(Stage parentWin,
-                            LinkedHashMap<String, Integer> denomCount)
-    {
-        updateView(parentWin, denomCount);
-        
-
-    }
-    public void updateView(Stage parentWin, LinkedHashMap<String, Integer> denomCount)
-    {
         RowConstraints rowConstraints = new RowConstraints();  
         
         DecimalFormat df = new DecimalFormat("0.00");
@@ -127,8 +116,6 @@ public class SetDenomPaneView extends ScrollPane
                 tempDenomBtn = new DenominationBtn(df.format(tempVal));
             denomSetSections[i] = new DenomSetSection(parentWin, tempString, tempVal, tempDenomBtn);
             
-            if(!denomCount.isEmpty())
-                denomSetSections[i].getTextField().setText("" + denomCount.get(tempString));
 
             leftPaneGrid.add(denomSetSections[i].getDenomGraphic(), 0,currInd+1);
             leftPaneGrid.add(denomSetSections[i].getButtonAndTextFieldPane(), 1,currInd+1);
@@ -165,6 +152,30 @@ public class SetDenomPaneView extends ScrollPane
         this.setStyle("-fx-background-color: "+colorBg+";");
 
     }
+
+
+    public void updateView(LinkedHashMap<String, Integer> denomCount)
+    {
+        int ind;
+        ind = 0;
+        if(denomCount.isEmpty())
+            return;
+        for(DenomSetSection denom: denomSetSections)
+        {
+
+            denom.getTextField().setText("" + denomCount.get(denom.getMoneyNameLabel().getText()));
+
+        }
+    }
+
+    public void disableTextFields()
+    {
+        for(DenomSetSection denomSetSection: denomSetSections)
+        {
+            denomSetSection.getTextField().setEditable(false);
+        }
+
+    }
     public void setActionEventAddBtn(int ind, EventHandler<ActionEvent> eventHandler) 
     {
 
@@ -192,6 +203,10 @@ public class SetDenomPaneView extends ScrollPane
         denomSetSections[ind].setTxtFieldFilter(eventType, eventFilter);
  
     }
+    public void setTxtFieldChangeListener(int ind, ChangeListener<String> changeListener)
+    {
+        denomSetSections[ind].getTextField().textProperty().addListener(changeListener);
+    }
 
     public void setTxtFieldFocusListener(int ind, ChangeListener<Boolean> changeListener)
     {
@@ -207,7 +222,7 @@ public class SetDenomPaneView extends ScrollPane
         return denomSetSections;
     }
 
-
+    private EventHandlerInterface listener;
     private GridPane leftPaneGrid;
     private DenomSetSection[] denomSetSections;
 

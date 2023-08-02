@@ -211,8 +211,7 @@ public class VMachineModelPaneView extends ScrollPane
             
             try
             {
-                System.out.println("Image size: " +  imageOrder.size());
-                System.out.println("Size: " +  itemNames.get(i));
+
                 addItemToView(imageOrder.get(i), itemNames.get(i));
                 
             }
@@ -318,8 +317,7 @@ public class VMachineModelPaneView extends ScrollPane
     public void validateLabels(String itemName, int stock)
     {
         ItemSlotPaneView itemSlotPaneView;
-        System.out.println("Item vmModel to check: " + itemName);
-        System.out.println("Stock count: " + stock);
+
         itemSlotPaneView = ((ItemSlotPaneView)getItemContainer(itemName));
 
         if(itemSlotPaneView.getSlotItemNameLabel().getText().equalsIgnoreCase(itemName) &&

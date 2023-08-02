@@ -73,9 +73,9 @@ public class DenomNumPaneController
                     else
                         num = -1;
                 }
-                System.out.println("Money inputted: " + inputtedBtnVal);
+
                 denomName = Denomination.fromValue(inputtedBtnVal);
-                System.out.println("Money inputted: " + denomName);
+
                 if(num != -1)
                 {
                     num += inputtedBtnVal;
@@ -105,8 +105,7 @@ public class DenomNumPaneController
         
             
             String text = numField.getText();
-            System.out.println(moneyInputHistory);
-            System.out.println(moneyNameHistory);
+
             if(!moneyInputHistory.isEmpty() && !moneyNameHistory.isEmpty())
             {
                 previousInputVal = moneyInputHistory.get(moneyInputHistory.size()-1);

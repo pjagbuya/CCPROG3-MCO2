@@ -1,20 +1,35 @@
 package MaintenanceLib;
 
+import java.util.LinkedHashMap;
+import java.util.Map;
+
+import Models.DenominationItem;
+import java.util.ArrayList;
 import Boxes.ConfirmBox;
 import DenomLib.SetDenomPaneController;
 import ItemSelectLib.CreateMenuController;
+import StartLib.AppController;
+import StartLib.AppModel;
+import javafx.application.Platform;
+import javafx.stage.Stage;
 
 public class MaintenanceController {
-    public MaintenanceController(MaintSelectView maintSelectView)
+    public MaintenanceController(AppController appController, MaintSelectView maintSelectView)
     {
         ConfirmBox confirmBox = new ConfirmBox();
-        MaintenanceReplenishCollectView maintenanceReplenishCollectView = maintSelectView.getMaintenanceReplenishCollectView();
-        
-        SetDenomPaneController setDenomPaneController = new SetDenomPaneController(maintSelectView.getMaintenanceReplenishCollectView().getRightSetDenomPane(),
-                                                                                   maintenanceReplenishCollectView);
+        this.appModel = appController.getAppModel();
+        this.parentWin = appController.getPrimaryWindow();
+        this.maintenanceReplenishCollectView = maintSelectView.getMaintenanceReplenishCollectView();
+        this.setDenomPaneController = new SetDenomPaneController(maintSelectView.getMaintenanceReplenishCollectView().getRightSetDenomPane(),
+                                                               maintenanceReplenishCollectView, this.appModel);
+
+
+
 
         this.maintSelectView = maintSelectView;
-        
+
+
+
 
         maintSelectView.addActionRestockRepriceItemBtn(e->
         {
@@ -27,7 +42,16 @@ public class MaintenanceController {
 
         maintSelectView.addActionReplenishCollectBtn(e->
         {
+            
+  
+            LinkedHashMap<String, ArrayList<DenominationItem>> rawDenom;
+            LinkedHashMap<String, Integer> denomCount;
+            rawDenom = this.appModel.getCashReserves();
+            denomCount = getDenomCountVersh(rawDenom);
             this.maintSelectView.switchToReplenishCollectDenomMenu();
+            this.maintSelectView.getMaintenanceReplenishCollectView().updateDenomSetSection(denomCount);
+            this.maintSelectView.getMaintenanceReplenishCollectView().getRightSetDenomPane().disableTextFields();
+
         });
 
         maintSelectView.addActionStockedInfoBtn(e->
@@ -57,12 +81,26 @@ public class MaintenanceController {
         
         for(int i = 0; i < 5; i++)
         {
-            this.maintSelectView.addActionTopBarExitBtn(i, e->
+            switch(i)
             {
+                case 0:
+                    this.maintSelectView.addActionTopBarExitBtn(i, e->
+                    {
 
-                this.maintSelectView.switchDefaultSelectMaintMenu();
+                        this.maintSelectView.switchDefaultSelectMaintMenu();
 
-            });
+                    });
+                    break;
+                case 1:
+                    break;
+                case 2:
+                    break;
+                case 3:
+                    break;
+                case 4:
+                    break;
+            }
+
         }
 
 
@@ -73,8 +111,25 @@ public class MaintenanceController {
     }
     public void resetForm()
     {
-        
+        this.setDenomPaneController.resetForm();
+        this.maintSelectView.getMaintenanceReplenishCollectView().resetCountLabels();
     }
+    private LinkedHashMap<String, Integer> getDenomCountVersh(LinkedHashMap<String, ArrayList<DenominationItem>> denomInfo)
+    {
+        LinkedHashMap<String, Integer> tempMap;
+        tempMap = new LinkedHashMap<String, Integer>();
+        for(Map.Entry<String, ArrayList<DenominationItem>> denom : denomInfo.entrySet())
+        {
+            tempMap.put(denom.getKey(), denom.getValue().size());
+
+        }
+        return tempMap;
+    }
+
+    private SetDenomPaneController setDenomPaneController;
+    private MaintenanceReplenishCollectView maintenanceReplenishCollectView;
+    private Stage parentWin;
+    private AppModel appModel;
     private MaintSelectView maintSelectView;
 
 }

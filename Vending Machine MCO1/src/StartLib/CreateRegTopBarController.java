@@ -88,20 +88,10 @@ public class CreateRegTopBarController {
             itemsInfo = new LinkedHashMap<String, Integer>();
             denomInfo = new LinkedHashMap<String, Integer>();
             
-            // for (ItemSectionPane item : itemSectionPanes) {
-            //     System.out.println(item.getStockField().getText());
-            //     if (!item.getStockField().getText().isEmpty()) {
-            //         stockValue = Integer.parseInt(item.getStockField().getText());
-            //         if (stockValue > 0) {
-            //             repriceInfo.put(item.getItemNameLabel().getText(), item.getFinalPrice());
-            //             itemsInfo.put(item.getItemNameLabel().getText(), stockValue);
-            //             item.getStockField().setText("0");
-            //         }
-            //     }
-            // }
+
             itemsInfo = this.createMenuController.getItemAndStock();
             
-            System.out.println(repriceInfo);
+
 
             for(DenomSetSection denom : denomSetSections)
             {
@@ -128,8 +118,7 @@ public class CreateRegTopBarController {
             { 
                 if(itemsInfo.size() != 0)
                 {
-                    System.out.println("Denoms" + denomInfo);
-                    System.out.println("Items: " + itemsInfo);
+
                     appModel.addItemToVM(itemsInfo, orderOfSlots);
                     appModel.addReservesToVM(denomInfo);
                     appModel.repriceItem(repriceInfo);
@@ -144,6 +133,7 @@ public class CreateRegTopBarController {
                     this.appView.getParentWin().centerOnScreen();
                     denomInfo.clear();
                     itemsInfo.clear();
+                    resetForm();
 
                 }
                 else
@@ -155,8 +145,7 @@ public class CreateRegTopBarController {
 
             }
             
-            resetForm();
-            appController.resetForm();
+
 
 
 
@@ -169,7 +158,7 @@ public class CreateRegTopBarController {
         ArrayList<ItemSectionPane> itemSectionPanes;
         itemSectionPanes = setItemPaneView.getItemSectionGridPanes();
         for (ItemSectionPane item : itemSectionPanes) {
-            System.out.println(item.getStockField().getText());
+
             
             item.getStockField().setText("0");
             vMachineModelPaneView.removeItemToView(item.getItemNameLabel().getText());

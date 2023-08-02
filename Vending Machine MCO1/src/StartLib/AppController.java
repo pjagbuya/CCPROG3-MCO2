@@ -31,6 +31,7 @@ public class AppController {
 
         MaintenanceController maintenanceController;
         SetupVMPopUpController setupVMPopUpController;
+
            
 
         this.appView = appView;
@@ -60,7 +61,7 @@ public class AppController {
         //                                                               this.regMenu.getvMachineModelPaneView());
 
 
-        this.maintenanceController = new MaintenanceController(appView.getMaintSelectView());
+        this.maintenanceController = new MaintenanceController(this, appView.getMaintSelectView());
         this.setupVMPopUpController = new SetupVMPopUpController(this.appView.getSetupVMPopUpView(), 
                                                                 this.regMenuTopBar, this.regMenu, 
                                                                 this.setItemPaneView, this.appModel);
@@ -191,7 +192,7 @@ public class AppController {
     {
         return regMenu;
     }
-    
+    private SetDenomPaneController setDenomPaneController;
     private MaintenanceController maintenanceController;
     private SetupVMPopUpController setupVMPopUpController;
     private VMSellingOpController vmSellingOpController;    

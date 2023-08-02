@@ -35,7 +35,7 @@ public class AppModel
     {
 
         currInd++;
-        System.out.println(vmType);
+
         this.vendingMachines.add(this.factory.createBlankVM(vmType.substring(0, 1), 
                                                             name, nOfSlots, 
                                                             nOfItems));
@@ -64,6 +64,10 @@ public class AppModel
         if(getVendingMachine().getSlot(num-1) != null)
             return "" + getVendingMachine().getSlot(num-1).getItems().size();
         return null;
+    }
+    public LinkedHashMap<String, ArrayList<DenominationItem>> getCashReserves()
+    {
+        return getVendingMachine().getCurrentMoney().getDenominations();
     }
     //Selling
     public String addToRegOrder(int slotNum, int qty) 
@@ -111,11 +115,6 @@ public class AppModel
         {
             this.seller.proceedTransaction();
             soldItems = this.seller.getSoldItems();
-            System.out.println(soldItems);
-            for(VM_Item item : soldItems)
-            {
-                System.out.println("SOLD: " + item.getItemName());
-            }
 
             
             
@@ -150,6 +149,14 @@ public class AppModel
         return this.vendingMachines.get(currInd) instanceof VM_Special;
     }
 
+    public void replenishReserves(String denom, int qty)
+    {
+        this.maintainer.replenishDenominations(denom, qty);
+    }
+    public void collectReserves(String denom, int qty)
+    {
+        this.maintainer.collectCashReserves(denom, qty);
+    }
     public void addReservesToVM(String denom, int count) {
         this.factory.specifyInitialCashReserves(denom, count);
     }
@@ -165,7 +172,7 @@ public class AppModel
     
     public void repriceItem(LinkedHashMap<String, Double> repriceItems) 
     {
-        System.out.println(repriceItems);
+
         for(Map.Entry<String, Double> item : repriceItems.entrySet())
         {
 
@@ -186,8 +193,7 @@ public class AppModel
     }
     
     public void addItemToVM(LinkedHashMap<String, Integer> itemInfo, ArrayList<String> order) {
-        System.out.println(itemInfo);
-        System.out.println(order);
+
         for(String item: order) { 
             addItemToVM(item, itemInfo.get(item));
         }
